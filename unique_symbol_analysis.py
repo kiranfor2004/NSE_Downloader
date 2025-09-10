@@ -67,26 +67,49 @@ def create_unique_symbol_analysis():
             if eq_count == 0:
                 continue
             
-            # Keep original column names but create standardized internal columns for processing
-            # Identify volume column (keep original name)
-            volume_col = None
-            if 'TTL_TRD_QNTY' in df.columns:
-                volume_col = 'TTL_TRD_QNTY'
-            elif 'total_traded_qty' in df.columns:
-                volume_col = 'total_traded_qty'
-            elif 'volume' in df.columns:
-                volume_col = 'volume'
+            # Standardize column names to ensure consistency across all files
+            column_mapping = {
+                # Symbol variations
+                'symbol': 'SYMBOL', 'SYMBOL': 'SYMBOL',
+                # Date variations  
+                'date': 'DATE', 'DATE': 'DATE', 'DATE1': 'DATE',
+                # Series variations
+                'series': 'SERIES', 'SERIES': 'SERIES',
+                # Price variations
+                'prev_close': 'PREV_CLOSE', 'PREV_CLOSE': 'PREV_CLOSE',
+                'open_price': 'OPEN_PRICE', 'OPEN_PRICE': 'OPEN_PRICE', 'open': 'OPEN_PRICE',
+                'high_price': 'HIGH_PRICE', 'HIGH_PRICE': 'HIGH_PRICE', 'high': 'HIGH_PRICE',
+                'low_price': 'LOW_PRICE', 'LOW_PRICE': 'LOW_PRICE', 'low': 'LOW_PRICE',
+                'last_price': 'LAST_PRICE', 'LAST_PRICE': 'LAST_PRICE', 'last': 'LAST_PRICE',
+                'close_price': 'CLOSE_PRICE', 'CLOSE_PRICE': 'CLOSE_PRICE', 'close': 'CLOSE_PRICE',
+                'avg_price': 'AVG_PRICE', 'AVG_PRICE': 'AVG_PRICE',
+                # Volume and trading variations
+                'TTL_TRD_QNTY': 'TTL_TRD_QNTY', 'total_traded_qty': 'TTL_TRD_QNTY', 'volume': 'TTL_TRD_QNTY',
+                'turnover_lacs': 'TURNOVER_LACS', 'TURNOVER_LACS': 'TURNOVER_LACS', 'turnover': 'TURNOVER_LACS',
+                'no_of_trades': 'NO_OF_TRADES', 'NO_OF_TRADES': 'NO_OF_TRADES', 'trades': 'NO_OF_TRADES',
+                # Delivery variations
+                'DELIV_QTY': 'DELIV_QTY', 'delivery_qty': 'DELIV_QTY', 'deliv_qty': 'DELIV_QTY',
+                'deliv_per': 'DELIV_PER', 'DELIV_PER': 'DELIV_PER', 'delivery_percentage': 'DELIV_PER'
+            }
             
-            # Identify delivery column (keep original name)
-            delivery_col = None
-            if 'DELIV_QTY' in df.columns:
-                delivery_col = 'DELIV_QTY'
-            elif 'delivery_qty' in df.columns:
-                delivery_col = 'delivery_qty'
+            # Apply column mapping and preserve original data
+            df = df.rename(columns=column_mapping)
             
-            # Identify other key columns
-            symbol_col = 'SYMBOL' if 'SYMBOL' in df.columns else 'symbol'
-            date_col = 'DATE' if 'DATE' in df.columns else 'date'
+            # Ensure numeric columns are properly converted but preserve actual values
+            numeric_columns = ['PREV_CLOSE', 'OPEN_PRICE', 'HIGH_PRICE', 'LOW_PRICE', 'LAST_PRICE', 
+                             'CLOSE_PRICE', 'AVG_PRICE', 'TTL_TRD_QNTY', 'TURNOVER_LACS', 
+                             'NO_OF_TRADES', 'DELIV_QTY', 'DELIV_PER']
+            
+            for col in numeric_columns:
+                if col in df.columns:
+                    # Convert to numeric but keep NaN for missing values, don't default to 0
+                    df[col] = pd.to_numeric(df[col], errors='coerce')
+            
+            # Identify key columns for processing
+            volume_col = 'TTL_TRD_QNTY' if 'TTL_TRD_QNTY' in df.columns else None
+            delivery_col = 'DELIV_QTY' if 'DELIV_QTY' in df.columns else None
+            symbol_col = 'SYMBOL' if 'SYMBOL' in df.columns else None
+            date_col = 'DATE' if 'DATE' in df.columns else None
             
             # Store original column info for later use
             df['_volume_col'] = volume_col
@@ -95,12 +118,35 @@ def create_unique_symbol_analysis():
             df['_date_col'] = date_col
             
             # Create internal processing columns (these won't be in final output)
-            if volume_col:
-                df['_volume_value'] = df[volume_col]
-            if delivery_col:
-                df['_delivery_value'] = df[delivery_col]
-            if symbol_col in df.columns:
-                df['_symbol_value'] = df[symbol_col]
+            if volume_col and volume_col in df.columns:
+                df['_volume_value'] = pd.to_numeric(df[volume_col], errors='coerce')
+            else:
+                df['_volume_value'] = 0
+                
+            if delivery_col and delivery_col in df.columns:
+                df['_delivery_value'] = pd.to_numeric(df[delivery_col], errors='coerce')
+            else:
+                df['_delivery_value'] = 0
+                
+            if symbol_col and symbol_col in df.columns:
+                df['_symbol_value'] = df[symbol_col].astype(str)
+            else:
+                df['_symbol_value'] = ''
+                
+            # Debug: Print sample data for IDEA to verify values are being read correctly
+            if 'IDEA' in df['SYMBOL'].values:
+                idea_sample = df[df['SYMBOL'] == 'IDEA'].head(1)
+                print(f"   🔍 IDEA sample data: TTL_TRD_QNTY={idea_sample['TTL_TRD_QNTY'].values[0] if 'TTL_TRD_QNTY' in idea_sample.columns else 'N/A'}")
+                print(f"                       CLOSE_PRICE={idea_sample['CLOSE_PRICE'].values[0] if 'CLOSE_PRICE' in idea_sample.columns else 'N/A'}")
+                print(f"                       DATE={idea_sample['DATE'].values[0] if 'DATE' in idea_sample.columns else 'N/A'}")
+            
+            # Debug: Check IDEA data after column mapping
+            if 'IDEA' in df['SYMBOL'].values if 'SYMBOL' in df.columns else []:
+                idea_debug = df[df['SYMBOL'] == 'IDEA'].copy()
+                if not idea_debug.empty:
+                    print(f"   🔍 IDEA in {file} after mapping:")
+                    for idx, row in idea_debug.head(2).iterrows():
+                        print(f"      Row {idx}: DATE={row.get('DATE','N/A')}, TTL_TRD_QNTY={row.get('TTL_TRD_QNTY','N/A')}, CLOSE_PRICE={row.get('CLOSE_PRICE','N/A')}")
             
             all_data.append(df)
             
@@ -116,28 +162,100 @@ def create_unique_symbol_analysis():
     combined_df = pd.concat(all_data, ignore_index=True)
     
     print(f"📊 Before deduplication: {len(combined_df):,} records")
-    print(f"🏢 Unique symbols: {combined_df['symbol'].nunique():,}")
+    print(f"🏢 Unique symbols: {combined_df['SYMBOL'].nunique():,}")
     
     # Create unique analysis - keep only the highest volume record per symbol
     print("🎯 Creating unique symbol analysis...")
     
     # For Volume Analysis: Keep record with highest volume per symbol
     volume_unique = pd.DataFrame()
-    if any('_volume_value' in df.columns for df in all_data if not df.empty):
-        # Group by symbol and find highest volume record
-        volume_unique = combined_df.loc[combined_df.groupby('_symbol_value')['_volume_value'].idxmax()].copy()
+    # For Volume Analysis: Keep record with highest volume per symbol, prioritizing complete data
+    volume_unique_list = []
+    for symbol in combined_df['_symbol_value'].unique():
+        if pd.isna(symbol) or symbol == '':
+            continue
+            
+        symbol_data = combined_df[combined_df['_symbol_value'] == symbol].copy()
+        
+        # Find max volume for this symbol (ignoring NaN)
+        max_volume = symbol_data['_volume_value'].max()
+        if pd.isna(max_volume):
+            continue
+        
+        # Get all records with max volume
+        max_volume_records = symbol_data[symbol_data['_volume_value'] == max_volume]
+        
+        # If multiple records have same max volume, prioritize the one with most complete price data
+        if len(max_volume_records) > 1:
+            price_cols = ['CLOSE_PRICE', 'OPEN_PRICE', 'HIGH_PRICE', 'LOW_PRICE', 'LAST_PRICE']
+            max_volume_records = max_volume_records.copy()
+            max_volume_records['_completeness_score'] = 0
+            
+            for col in price_cols:
+                if col in max_volume_records.columns:
+                    # Count non-null, non-zero values
+                    max_volume_records['_completeness_score'] += ((max_volume_records[col].notna()) & (max_volume_records[col] != 0)).astype(int)
+            
+            # Select the record with highest completeness score
+            best_idx = max_volume_records['_completeness_score'].idxmax()
+            best_record = max_volume_records.loc[best_idx]
+        else:
+            best_record = max_volume_records.iloc[0]
+        
+        volume_unique_list.append(best_record)
+    
+    volume_unique = pd.DataFrame(volume_unique_list).reset_index(drop=True) if volume_unique_list else pd.DataFrame()
+    if not volume_unique.empty:
         print(f"📈 Volume analysis: {len(volume_unique)} unique symbols")
     
     # For Delivery Analysis: Keep record with highest delivery_qty per symbol  
     delivery_unique = pd.DataFrame()
-    if any('_delivery_value' in df.columns for df in all_data if not df.empty):
-        # Group by symbol and find highest delivery record
-        delivery_unique = combined_df.loc[combined_df.groupby('_symbol_value')['_delivery_value'].idxmax()].copy()
+    # For Delivery Analysis: Keep record with highest delivery per symbol, prioritizing complete data
+    delivery_unique_list = []
+    for symbol in combined_df['_symbol_value'].unique():
+        if pd.isna(symbol) or symbol == '':
+            continue
+            
+        symbol_data = combined_df[combined_df['_symbol_value'] == symbol].copy()
+        
+        # Skip if no delivery data
+        if '_delivery_value' not in symbol_data.columns or symbol_data['_delivery_value'].isna().all():
+            continue
+        
+        # Find max delivery for this symbol (ignoring NaN)
+        max_delivery = symbol_data['_delivery_value'].max()
+        if pd.isna(max_delivery):
+            continue
+            
+        # Get all records with max delivery
+        max_delivery_records = symbol_data[symbol_data['_delivery_value'] == max_delivery]
+        
+        # If multiple records have same max delivery, prioritize the one with most complete price data
+        if len(max_delivery_records) > 1:
+            price_cols = ['CLOSE_PRICE', 'OPEN_PRICE', 'HIGH_PRICE', 'LOW_PRICE', 'LAST_PRICE']
+            max_delivery_records = max_delivery_records.copy()
+            max_delivery_records['_completeness_score'] = 0
+            
+            for col in price_cols:
+                if col in max_delivery_records.columns:
+                    # Count non-null, non-zero values
+                    max_delivery_records['_completeness_score'] += ((max_delivery_records[col].notna()) & (max_delivery_records[col] != 0)).astype(int)
+            
+            # Select the record with highest completeness score
+            best_idx = max_delivery_records['_completeness_score'].idxmax()
+            best_record = max_delivery_records.loc[best_idx]
+        else:
+            best_record = max_delivery_records.iloc[0]
+            
+        delivery_unique_list.append(best_record)
+    
+    delivery_unique = pd.DataFrame(delivery_unique_list).reset_index(drop=True) if delivery_unique_list else pd.DataFrame()
+    if not delivery_unique.empty:
         print(f"📦 Delivery analysis: {len(delivery_unique)} unique symbols")
     
     # Create output filename
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    output_file = f"NSE_Unique_Symbol_Analysis_{timestamp}.xlsx"
+    output_file = f"NSE_AUGUST2025_data_Unique_Symbol_Analysis_{timestamp}.xlsx"
     
     print(f"\n💾 Creating unique analysis: {output_file}")
     
@@ -160,46 +278,21 @@ def create_unique_symbol_analysis():
         if not volume_unique.empty:
             print("📈 Creating unique TTL_TRD_QNTY sheet...")
             volume_unique = volume_unique.sort_values('_volume_value', ascending=False)
+            # Remove internal processing columns but keep ALL original columns
             volume_cols_to_remove = [col for col in volume_unique.columns if col.startswith('_')]
             volume_sheet = volume_unique.drop(columns=volume_cols_to_remove).copy()
-            # For each row, extract the actual values for output columns
-            output_rows = []
-            for _, row in volume_sheet.iterrows():
-                symbol_val = next((row[c] for c in symbol_names if c in row and pd.notna(row[c])), '')
-                ttl_trd_qnty_val = next((row[c] for c in ttl_trd_qnty_names if c in row and pd.notna(row[c])), '')
-                deliv_qty_val = next((row[c] for c in deliv_qty_names if c in row and pd.notna(row[c])), '')
-                date_val = next((row[c] for c in date_names if c in row and pd.notna(row[c])), '')
-                output_rows.append({
-                    'SYMBOL': symbol_val,
-                    'TTL_TRD_QNTY': ttl_trd_qnty_val,
-                    'DELIV_QTY': deliv_qty_val,
-                    'DATE': date_val
-                })
-            volume_out = pd.DataFrame(output_rows)
-            volume_out.to_excel(writer, sheet_name='Unique_TTL_TRD_QNTY', index=False)
-            print(f"   ✅ {len(volume_out)} unique symbols by volume (columns: ['SYMBOL', 'TTL_TRD_QNTY', 'DELIV_QTY', 'DATE'])")
+            volume_sheet.to_excel(writer, sheet_name='Unique_TTL_TRD_QNTY', index=False)
+            print(f"   ✅ {len(volume_sheet)} unique symbols by volume (all columns included: {len(volume_sheet.columns)} columns)")
 
         # SHEET 2: Unique DELIV_QTY Analysis (One record per symbol - highest delivery)
         if not delivery_unique.empty:
             print("📦 Creating unique DELIV_QTY sheet...")
             delivery_unique = delivery_unique.sort_values('_delivery_value', ascending=False)
+            # Remove internal processing columns but keep ALL original columns
             delivery_cols_to_remove = [col for col in delivery_unique.columns if col.startswith('_')]
             delivery_sheet = delivery_unique.drop(columns=delivery_cols_to_remove).copy()
-            output_rows = []
-            for _, row in delivery_sheet.iterrows():
-                symbol_val = next((row[c] for c in symbol_names if c in row and pd.notna(row[c])), '')
-                ttl_trd_qnty_val = next((row[c] for c in ttl_trd_qnty_names if c in row and pd.notna(row[c])), '')
-                deliv_qty_val = next((row[c] for c in deliv_qty_names if c in row and pd.notna(row[c])), '')
-                date_val = next((row[c] for c in date_names if c in row and pd.notna(row[c])), '')
-                output_rows.append({
-                    'SYMBOL': symbol_val,
-                    'TTL_TRD_QNTY': ttl_trd_qnty_val,
-                    'DELIV_QTY': deliv_qty_val,
-                    'DATE': date_val
-                })
-            delivery_out = pd.DataFrame(output_rows)
-            delivery_out.to_excel(writer, sheet_name='Unique_DELIV_QTY', index=False)
-            print(f"   ✅ {len(delivery_out)} unique symbols by delivery (columns: ['SYMBOL', 'TTL_TRD_QNTY', 'DELIV_QTY', 'DATE'])")
+            delivery_sheet.to_excel(writer, sheet_name='Unique_DELIV_QTY', index=False)
+            print(f"   ✅ {len(delivery_sheet)} unique symbols by delivery (all columns included: {len(delivery_sheet.columns)} columns)")
         
         # SHEET 3: Summary
         print("📋 Creating summary sheet...")
@@ -211,7 +304,7 @@ def create_unique_symbol_analysis():
             ['RESULTS', '', '', ''],
             ['Excel Files Processed', len(excel_files), '', ''],
             ['Total Records Before Dedup', f"{len(combined_df):,}", '', ''],
-            ['Unique Symbols Found', f"{combined_df['symbol'].nunique():,}", '', '']
+            ['Unique Symbols Found', f"{combined_df['SYMBOL'].nunique():,}", '', '']
         ]
         
         if not volume_unique.empty:
@@ -281,7 +374,7 @@ def create_unique_symbol_analysis():
     print(f"\n📊 Final Results:")
     print(f"   📁 {len(excel_files)} Excel files processed")
     print(f"   🔄 {len(combined_df):,} total records before deduplication")
-    print(f"   ✨ {combined_df['symbol'].nunique():,} unique EQ symbols found")
+    print(f"   ✨ {combined_df['SYMBOL'].nunique():,} unique EQ symbols found")
     print(f"   📈 No duplicate symbols - each appears only once!")
     
     if not volume_unique.empty:
