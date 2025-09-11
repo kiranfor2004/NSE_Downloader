@@ -1,7 +1,0 @@
-Failed to download data for 27/08/2025
-Try these URLs manually:
-
-https://archives.nseindia.com/products/content/sec_bhavdata_full_27082025.csv
-https://www1.nseindia.com/archives/products/content/sec_bhavdata_full_27082025.csv
-https://nsearchives.nseindia.com/products/content/sec_bhavdata_full_27082025.csv
-https://www.nseindia.com/products/content/sec_bhavdata_full_27082025.csv
