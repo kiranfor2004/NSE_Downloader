@@ -1,0 +1,7 @@
+Failed downloads for February 2025:
+========================================
+
+Date: 26022025
+Try these URLs manually:
+- https://archives.nseindia.com/content/historical/EQUITIES/2025/FEB/cm26022025bhav.csv.zip
+- https://archives.nseindia.com/products/content/sec_bhavdata_full_26022025.csv
