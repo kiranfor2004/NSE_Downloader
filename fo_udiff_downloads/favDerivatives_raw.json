@@ -1,0 +1,65 @@
+[
+  {
+    "name": "F&O - UDiFF Common Bhavcopy Final (zip)",
+    "type": "daily-reports",
+    "category": "derivatives",
+    "section": "equity",
+    "link": "https://nsearchives.nseindia.com/content/fo/BhavCopy_NSE_FO_0_0_0_20250911_F_0000.csv.zip"
+  },
+  {
+    "name": "CD-UDiFF Common Bhavcopy Final (zip)",
+    "type": "daily-reports",
+    "category": "derivatives",
+    "section": "currency",
+    "link": "https://nsearchives.nseindia.com/archives/cd/bhav/BhavCopy_NSE_CD_0_0_0_20250911_F_0000.csv.zip"
+  },
+  {
+    "name": "COM-UDiFF Common Bhavcopy Final (zip)",
+    "type": "daily-reports",
+    "category": "derivatives",
+    "section": "commodity",
+    "link": "https://nsearchives.nseindia.com/content/com/BhavCopy_NSE_CO_0_0_0_20250911_F_0000.csv.zip"
+  },
+  {
+    "name": "IRD - Bhavcopy",
+    "type": "daily-reports",
+    "category": "derivatives",
+    "section": "irf",
+    "link": "https://nsearchives.nseindia.com/archives/ird/bhav/IRF_Bhavcopy110925.zip"
+  },
+  {
+    "name": "F&O - Daily Settlement Prices",
+    "type": "daily-reports",
+    "category": "derivatives",
+    "section": "equity",
+    "link": "https://nsearchives.nseindia.com/archives/nsccl/sett/FOSett_prce_11092025.csv"
+  },
+  {
+    "name": "F&O - Security in ban period",
+    "type": "daily-reports",
+    "category": "derivatives",
+    "section": "equity",
+    "link": "https://nsearchives.nseindia.com/archives/fo/sec_ban/fo_secban_12092025.csv"
+  },
+  {
+    "name": "CD-Daily Settlement Prices",
+    "type": "daily-reports",
+    "category": "derivatives",
+    "section": "currency",
+    "link": "https://nsearchives.nseindia.com/archives/cd/sett/CDSett_prce_11092025.csv"
+  },
+  {
+    "name": "Haircut for Approved Securities (csv)",
+    "type": "daily-reports",
+    "category": "derivatives",
+    "section": "equity",
+    "link": "https://nsearchives.nseindia.com/content/equities/APPSEC_COLLVAL_12092025.csv"
+  },
+  {
+    "name": "Haircut for Mutual Funds (csv)",
+    "type": "daily-reports",
+    "category": "derivatives",
+    "section": "equity",
+    "link": "https://nsearchives.nseindia.com/archives/fo/mf_haircut/MF_VAR_12092025.csv"
+  }
+]

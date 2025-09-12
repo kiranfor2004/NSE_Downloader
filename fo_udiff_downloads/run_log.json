@@ -1,0 +1,327 @@
+[
+  {
+    "step": "start",
+    "info": "Priming session",
+    "ts": "16:43:55"
+  },
+  {
+    "step": "prime",
+    "url": "https://www.nseindia.com/",
+    "status": 200,
+    "size": 161548,
+    "ts": "16:43:55"
+  },
+  {
+    "step": "prime",
+    "url": "https://www.nseindia.com/api/allMarketStatus",
+    "status": 401,
+    "size": 272,
+    "ts": "16:43:57"
+  },
+  {
+    "step": "fav",
+    "status": 200,
+    "size": 1807,
+    "ts": "16:43:58"
+  },
+  {
+    "step": "validate_current",
+    "info": "2025-09-11",
+    "ts": "16:43:58"
+  },
+  {
+    "step": "download",
+    "date": "2025-09-11",
+    "url": "https://nsearchives.nseindia.com/content/fo/BhavCopy_NSE_FO_0_0_0_20250911_F_0000.csv.zip",
+    "status": 200,
+    "size": 931999,
+    "ok": true,
+    "ts": "16:43:58"
+  },
+  {
+    "step": "saved",
+    "file": "fo_udiff_downloads\\BhavCopy_NSE_FO_0_0_0_20250911_F_0000.csv.zip",
+    "ts": "16:43:58"
+  },
+  {
+    "step": "download",
+    "date": "2025-02-03",
+    "url": "https://nsearchives.nseindia.com/content/fo/BhavCopy_NSE_FO_0_0_0_20250203_F_0000.csv.zip",
+    "status": 200,
+    "size": 1063883,
+    "ok": true,
+    "ts": "16:43:59"
+  },
+  {
+    "step": "saved",
+    "file": "fo_udiff_downloads\\BhavCopy_NSE_FO_0_0_0_20250203_F_0000.csv.zip",
+    "ts": "16:43:59"
+  },
+  {
+    "step": "download",
+    "date": "2025-02-04",
+    "url": "https://nsearchives.nseindia.com/content/fo/BhavCopy_NSE_FO_0_0_0_20250204_F_0000.csv.zip",
+    "status": 200,
+    "size": 1193556,
+    "ok": true,
+    "ts": "16:44:00"
+  },
+  {
+    "step": "saved",
+    "file": "fo_udiff_downloads\\BhavCopy_NSE_FO_0_0_0_20250204_F_0000.csv.zip",
+    "ts": "16:44:00"
+  },
+  {
+    "step": "download",
+    "date": "2025-02-05",
+    "url": "https://nsearchives.nseindia.com/content/fo/BhavCopy_NSE_FO_0_0_0_20250205_F_0000.csv.zip",
+    "status": 200,
+    "size": 1099000,
+    "ok": true,
+    "ts": "16:44:01"
+  },
+  {
+    "step": "saved",
+    "file": "fo_udiff_downloads\\BhavCopy_NSE_FO_0_0_0_20250205_F_0000.csv.zip",
+    "ts": "16:44:01"
+  },
+  {
+    "step": "download",
+    "date": "2025-02-06",
+    "url": "https://nsearchives.nseindia.com/content/fo/BhavCopy_NSE_FO_0_0_0_20250206_F_0000.csv.zip",
+    "status": 200,
+    "size": 1102183,
+    "ok": true,
+    "ts": "16:44:02"
+  },
+  {
+    "step": "saved",
+    "file": "fo_udiff_downloads\\BhavCopy_NSE_FO_0_0_0_20250206_F_0000.csv.zip",
+    "ts": "16:44:02"
+  },
+  {
+    "step": "download",
+    "date": "2025-02-07",
+    "url": "https://nsearchives.nseindia.com/content/fo/BhavCopy_NSE_FO_0_0_0_20250207_F_0000.csv.zip",
+    "status": 200,
+    "size": 1104888,
+    "ok": true,
+    "ts": "16:44:03"
+  },
+  {
+    "step": "saved",
+    "file": "fo_udiff_downloads\\BhavCopy_NSE_FO_0_0_0_20250207_F_0000.csv.zip",
+    "ts": "16:44:03"
+  },
+  {
+    "step": "download",
+    "date": "2025-02-10",
+    "url": "https://nsearchives.nseindia.com/content/fo/BhavCopy_NSE_FO_0_0_0_20250210_F_0000.csv.zip",
+    "status": 200,
+    "size": 1107917,
+    "ok": true,
+    "ts": "16:44:04"
+  },
+  {
+    "step": "saved",
+    "file": "fo_udiff_downloads\\BhavCopy_NSE_FO_0_0_0_20250210_F_0000.csv.zip",
+    "ts": "16:44:04"
+  },
+  {
+    "step": "download",
+    "date": "2025-02-11",
+    "url": "https://nsearchives.nseindia.com/content/fo/BhavCopy_NSE_FO_0_0_0_20250211_F_0000.csv.zip",
+    "status": 200,
+    "size": 1143924,
+    "ok": true,
+    "ts": "16:44:05"
+  },
+  {
+    "step": "saved",
+    "file": "fo_udiff_downloads\\BhavCopy_NSE_FO_0_0_0_20250211_F_0000.csv.zip",
+    "ts": "16:44:05"
+  },
+  {
+    "step": "download",
+    "date": "2025-02-12",
+    "url": "https://nsearchives.nseindia.com/content/fo/BhavCopy_NSE_FO_0_0_0_20250212_F_0000.csv.zip",
+    "status": 200,
+    "size": 1178728,
+    "ok": true,
+    "ts": "16:44:06"
+  },
+  {
+    "step": "saved",
+    "file": "fo_udiff_downloads\\BhavCopy_NSE_FO_0_0_0_20250212_F_0000.csv.zip",
+    "ts": "16:44:06"
+  },
+  {
+    "step": "download",
+    "date": "2025-02-13",
+    "url": "https://nsearchives.nseindia.com/content/fo/BhavCopy_NSE_FO_0_0_0_20250213_F_0000.csv.zip",
+    "status": 200,
+    "size": 1170604,
+    "ok": true,
+    "ts": "16:44:07"
+  },
+  {
+    "step": "saved",
+    "file": "fo_udiff_downloads\\BhavCopy_NSE_FO_0_0_0_20250213_F_0000.csv.zip",
+    "ts": "16:44:07"
+  },
+  {
+    "step": "download",
+    "date": "2025-02-14",
+    "url": "https://nsearchives.nseindia.com/content/fo/BhavCopy_NSE_FO_0_0_0_20250214_F_0000.csv.zip",
+    "status": 200,
+    "size": 1199436,
+    "ok": true,
+    "ts": "16:44:08"
+  },
+  {
+    "step": "saved",
+    "file": "fo_udiff_downloads\\BhavCopy_NSE_FO_0_0_0_20250214_F_0000.csv.zip",
+    "ts": "16:44:08"
+  },
+  {
+    "step": "download",
+    "date": "2025-02-17",
+    "url": "https://nsearchives.nseindia.com/content/fo/BhavCopy_NSE_FO_0_0_0_20250217_F_0000.csv.zip",
+    "status": 200,
+    "size": 1216786,
+    "ok": true,
+    "ts": "16:44:09"
+  },
+  {
+    "step": "saved",
+    "file": "fo_udiff_downloads\\BhavCopy_NSE_FO_0_0_0_20250217_F_0000.csv.zip",
+    "ts": "16:44:09"
+  },
+  {
+    "step": "download",
+    "date": "2025-02-18",
+    "url": "https://nsearchives.nseindia.com/content/fo/BhavCopy_NSE_FO_0_0_0_20250218_F_0000.csv.zip",
+    "status": 200,
+    "size": 1223045,
+    "ok": true,
+    "ts": "16:44:10"
+  },
+  {
+    "step": "saved",
+    "file": "fo_udiff_downloads\\BhavCopy_NSE_FO_0_0_0_20250218_F_0000.csv.zip",
+    "ts": "16:44:10"
+  },
+  {
+    "step": "download",
+    "date": "2025-02-19",
+    "url": "https://nsearchives.nseindia.com/content/fo/BhavCopy_NSE_FO_0_0_0_20250219_F_0000.csv.zip",
+    "status": 200,
+    "size": 1243290,
+    "ok": true,
+    "ts": "16:44:11"
+  },
+  {
+    "step": "saved",
+    "file": "fo_udiff_downloads\\BhavCopy_NSE_FO_0_0_0_20250219_F_0000.csv.zip",
+    "ts": "16:44:11"
+  },
+  {
+    "step": "download",
+    "date": "2025-02-20",
+    "url": "https://nsearchives.nseindia.com/content/fo/BhavCopy_NSE_FO_0_0_0_20250220_F_0000.csv.zip",
+    "status": 200,
+    "size": 1253944,
+    "ok": true,
+    "ts": "16:44:13"
+  },
+  {
+    "step": "saved",
+    "file": "fo_udiff_downloads\\BhavCopy_NSE_FO_0_0_0_20250220_F_0000.csv.zip",
+    "ts": "16:44:13"
+  },
+  {
+    "step": "download",
+    "date": "2025-02-21",
+    "url": "https://nsearchives.nseindia.com/content/fo/BhavCopy_NSE_FO_0_0_0_20250221_F_0000.csv.zip",
+    "status": 200,
+    "size": 1277005,
+    "ok": true,
+    "ts": "16:44:14"
+  },
+  {
+    "step": "saved",
+    "file": "fo_udiff_downloads\\BhavCopy_NSE_FO_0_0_0_20250221_F_0000.csv.zip",
+    "ts": "16:44:14"
+  },
+  {
+    "step": "download",
+    "date": "2025-02-24",
+    "url": "https://nsearchives.nseindia.com/content/fo/BhavCopy_NSE_FO_0_0_0_20250224_F_0000.csv.zip",
+    "status": 200,
+    "size": 1298365,
+    "ok": true,
+    "ts": "16:44:15"
+  },
+  {
+    "step": "saved",
+    "file": "fo_udiff_downloads\\BhavCopy_NSE_FO_0_0_0_20250224_F_0000.csv.zip",
+    "ts": "16:44:15"
+  },
+  {
+    "step": "download",
+    "date": "2025-02-25",
+    "url": "https://nsearchives.nseindia.com/content/fo/BhavCopy_NSE_FO_0_0_0_20250225_F_0000.csv.zip",
+    "status": 200,
+    "size": 1310166,
+    "ok": true,
+    "ts": "16:44:16"
+  },
+  {
+    "step": "saved",
+    "file": "fo_udiff_downloads\\BhavCopy_NSE_FO_0_0_0_20250225_F_0000.csv.zip",
+    "ts": "16:44:16"
+  },
+  {
+    "step": "download",
+    "date": "2025-02-26",
+    "url": "https://nsearchives.nseindia.com/content/fo/BhavCopy_NSE_FO_0_0_0_20250226_F_0000.csv.zip",
+    "status": 404,
+    "size": 3815,
+    "ok": false,
+    "ts": "16:44:17"
+  },
+  {
+    "step": "download",
+    "date": "2025-02-27",
+    "url": "https://nsearchives.nseindia.com/content/fo/BhavCopy_NSE_FO_0_0_0_20250227_F_0000.csv.zip",
+    "status": 200,
+    "size": 1303957,
+    "ok": true,
+    "ts": "16:44:18"
+  },
+  {
+    "step": "saved",
+    "file": "fo_udiff_downloads\\BhavCopy_NSE_FO_0_0_0_20250227_F_0000.csv.zip",
+    "ts": "16:44:18"
+  },
+  {
+    "step": "download",
+    "date": "2025-02-28",
+    "url": "https://nsearchives.nseindia.com/content/fo/BhavCopy_NSE_FO_0_0_0_20250228_F_0000.csv.zip",
+    "status": 200,
+    "size": 1049501,
+    "ok": true,
+    "ts": "16:44:19"
+  },
+  {
+    "step": "saved",
+    "file": "fo_udiff_downloads\\BhavCopy_NSE_FO_0_0_0_20250228_F_0000.csv.zip",
+    "ts": "16:44:19"
+  },
+  {
+    "step": "summary",
+    "feb_trading_days": 20,
+    "feb_success": 19,
+    "ts": "16:44:19"
+  }
+]

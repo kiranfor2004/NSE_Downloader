@@ -1,0 +1,1300 @@
+[
+  {
+    "time": "16:14:30",
+    "label": "PRIME https://www.nseindia.com/",
+    "status": 200,
+    "size": 161591
+  },
+  {
+    "time": "16:14:31",
+    "label": "PRIME https://www.nseindia.com/all-reports-derivatives",
+    "status": 200,
+    "size": 763436
+  },
+  {
+    "time": "16:14:32",
+    "label": "PRIME https://www.nseindia.com/api/option-chain-indices?symbol=NIFTY",
+    "status": 200,
+    "size": 708323
+  },
+  {
+    "time": "16:14:34",
+    "label": "2025-02-03 TRY 1",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/content/historical/DERIVATIVES/2025/FEB/fo03FEB2025bhav.csv.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:14:35",
+    "label": "2025-02-03 TRY 2",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/content/historical/DERIVATIVES/2025/FEB/FO_03FEB2025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:14:36",
+    "label": "2025-02-03 TRY 3",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/content/historical/DERIVATIVES/2025/FEB/udiff03FEB2025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:14:37",
+    "label": "2025-02-03 TRY 4",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/products/content/derivatives/equities/udiff_03022025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:14:38",
+    "label": "2025-02-03 TRY 5",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/products/content/derivatives/equities/udiff03FEB2025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:14:39",
+    "label": "2025-02-03 TRY 6",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/content/historical/DERIVATIVES/2025/FEB/Fo03FEB2025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:14:40",
+    "label": "2025-02-03 TRY 7",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/products/content/derivatives/equities/fo03022025bhav.csv.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:14:41",
+    "label": "2025-02-03 TRY 8",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/content/derivatives/bhav/fo03022025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:14:42",
+    "label": "2025-02-04 TRY 1",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/content/historical/DERIVATIVES/2025/FEB/fo04FEB2025bhav.csv.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:14:43",
+    "label": "2025-02-04 TRY 2",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/content/historical/DERIVATIVES/2025/FEB/FO_04FEB2025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:14:43",
+    "label": "2025-02-04 TRY 3",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/content/historical/DERIVATIVES/2025/FEB/udiff04FEB2025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:14:44",
+    "label": "2025-02-04 TRY 4",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/products/content/derivatives/equities/udiff_04022025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:14:45",
+    "label": "2025-02-04 TRY 5",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/products/content/derivatives/equities/udiff04FEB2025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:14:46",
+    "label": "2025-02-04 TRY 6",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/content/historical/DERIVATIVES/2025/FEB/Fo04FEB2025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:14:47",
+    "label": "2025-02-04 TRY 7",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/products/content/derivatives/equities/fo04022025bhav.csv.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:14:48",
+    "label": "2025-02-04 TRY 8",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/content/derivatives/bhav/fo04022025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:14:49",
+    "label": "2025-02-05 TRY 1",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/content/historical/DERIVATIVES/2025/FEB/fo05FEB2025bhav.csv.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:14:50",
+    "label": "2025-02-05 TRY 2",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/content/historical/DERIVATIVES/2025/FEB/FO_05FEB2025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:14:51",
+    "label": "2025-02-05 TRY 3",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/content/historical/DERIVATIVES/2025/FEB/udiff05FEB2025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:14:52",
+    "label": "2025-02-05 TRY 4",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/products/content/derivatives/equities/udiff_05022025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:14:53",
+    "label": "2025-02-05 TRY 5",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/products/content/derivatives/equities/udiff05FEB2025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:14:54",
+    "label": "2025-02-05 TRY 6",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/content/historical/DERIVATIVES/2025/FEB/Fo05FEB2025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:14:55",
+    "label": "2025-02-05 TRY 7",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/products/content/derivatives/equities/fo05022025bhav.csv.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:14:55",
+    "label": "2025-02-05 TRY 8",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/content/derivatives/bhav/fo05022025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:14:56",
+    "label": "2025-02-06 TRY 1",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/content/historical/DERIVATIVES/2025/FEB/fo06FEB2025bhav.csv.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:14:57",
+    "label": "2025-02-06 TRY 2",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/content/historical/DERIVATIVES/2025/FEB/FO_06FEB2025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:14:58",
+    "label": "2025-02-06 TRY 3",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/content/historical/DERIVATIVES/2025/FEB/udiff06FEB2025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:14:59",
+    "label": "2025-02-06 TRY 4",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/products/content/derivatives/equities/udiff_06022025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:15:00",
+    "label": "2025-02-06 TRY 5",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/products/content/derivatives/equities/udiff06FEB2025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:15:01",
+    "label": "2025-02-06 TRY 6",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/content/historical/DERIVATIVES/2025/FEB/Fo06FEB2025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:15:02",
+    "label": "2025-02-06 TRY 7",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/products/content/derivatives/equities/fo06022025bhav.csv.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:15:02",
+    "label": "2025-02-06 TRY 8",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/content/derivatives/bhav/fo06022025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:15:03",
+    "label": "2025-02-07 TRY 1",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/content/historical/DERIVATIVES/2025/FEB/fo07FEB2025bhav.csv.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:15:04",
+    "label": "2025-02-07 TRY 2",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/content/historical/DERIVATIVES/2025/FEB/FO_07FEB2025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:15:05",
+    "label": "2025-02-07 TRY 3",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/content/historical/DERIVATIVES/2025/FEB/udiff07FEB2025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:15:06",
+    "label": "2025-02-07 TRY 4",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/products/content/derivatives/equities/udiff_07022025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:15:07",
+    "label": "2025-02-07 TRY 5",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/products/content/derivatives/equities/udiff07FEB2025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:15:08",
+    "label": "2025-02-07 TRY 6",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/content/historical/DERIVATIVES/2025/FEB/Fo07FEB2025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:15:09",
+    "label": "2025-02-07 TRY 7",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/products/content/derivatives/equities/fo07022025bhav.csv.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:15:10",
+    "label": "2025-02-07 TRY 8",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/content/derivatives/bhav/fo07022025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:15:11",
+    "label": "2025-02-10 TRY 1",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/content/historical/DERIVATIVES/2025/FEB/fo10FEB2025bhav.csv.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:15:11",
+    "label": "2025-02-10 TRY 2",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/content/historical/DERIVATIVES/2025/FEB/FO_10FEB2025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:15:12",
+    "label": "2025-02-10 TRY 3",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/content/historical/DERIVATIVES/2025/FEB/udiff10FEB2025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:15:13",
+    "label": "2025-02-10 TRY 4",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/products/content/derivatives/equities/udiff_10022025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:15:14",
+    "label": "2025-02-10 TRY 5",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/products/content/derivatives/equities/udiff10FEB2025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:15:15",
+    "label": "2025-02-10 TRY 6",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/content/historical/DERIVATIVES/2025/FEB/Fo10FEB2025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:15:16",
+    "label": "2025-02-10 TRY 7",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/products/content/derivatives/equities/fo10022025bhav.csv.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:15:17",
+    "label": "2025-02-10 TRY 8",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/content/derivatives/bhav/fo10022025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:15:18",
+    "label": "2025-02-11 TRY 1",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/content/historical/DERIVATIVES/2025/FEB/fo11FEB2025bhav.csv.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:15:18",
+    "label": "2025-02-11 TRY 2",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/content/historical/DERIVATIVES/2025/FEB/FO_11FEB2025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:15:19",
+    "label": "2025-02-11 TRY 3",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/content/historical/DERIVATIVES/2025/FEB/udiff11FEB2025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:15:20",
+    "label": "2025-02-11 TRY 4",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/products/content/derivatives/equities/udiff_11022025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:15:21",
+    "label": "2025-02-11 TRY 5",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/products/content/derivatives/equities/udiff11FEB2025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:15:22",
+    "label": "2025-02-11 TRY 6",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/content/historical/DERIVATIVES/2025/FEB/Fo11FEB2025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:15:23",
+    "label": "2025-02-11 TRY 7",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/products/content/derivatives/equities/fo11022025bhav.csv.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:15:24",
+    "label": "2025-02-11 TRY 8",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/content/derivatives/bhav/fo11022025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:15:25",
+    "label": "2025-02-12 TRY 1",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/content/historical/DERIVATIVES/2025/FEB/fo12FEB2025bhav.csv.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:15:26",
+    "label": "2025-02-12 TRY 2",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/content/historical/DERIVATIVES/2025/FEB/FO_12FEB2025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:15:26",
+    "label": "2025-02-12 TRY 3",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/content/historical/DERIVATIVES/2025/FEB/udiff12FEB2025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:15:27",
+    "label": "2025-02-12 TRY 4",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/products/content/derivatives/equities/udiff_12022025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:15:28",
+    "label": "2025-02-12 TRY 5",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/products/content/derivatives/equities/udiff12FEB2025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:15:29",
+    "label": "2025-02-12 TRY 6",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/content/historical/DERIVATIVES/2025/FEB/Fo12FEB2025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:15:30",
+    "label": "2025-02-12 TRY 7",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/products/content/derivatives/equities/fo12022025bhav.csv.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:15:31",
+    "label": "2025-02-12 TRY 8",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/content/derivatives/bhav/fo12022025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:15:32",
+    "label": "2025-02-13 TRY 1",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/content/historical/DERIVATIVES/2025/FEB/fo13FEB2025bhav.csv.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:15:33",
+    "label": "2025-02-13 TRY 2",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/content/historical/DERIVATIVES/2025/FEB/FO_13FEB2025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:15:34",
+    "label": "2025-02-13 TRY 3",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/content/historical/DERIVATIVES/2025/FEB/udiff13FEB2025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:15:35",
+    "label": "2025-02-13 TRY 4",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/products/content/derivatives/equities/udiff_13022025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:15:35",
+    "label": "2025-02-13 TRY 5",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/products/content/derivatives/equities/udiff13FEB2025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:15:36",
+    "label": "2025-02-13 TRY 6",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/content/historical/DERIVATIVES/2025/FEB/Fo13FEB2025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:15:37",
+    "label": "2025-02-13 TRY 7",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/products/content/derivatives/equities/fo13022025bhav.csv.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:15:38",
+    "label": "2025-02-13 TRY 8",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/content/derivatives/bhav/fo13022025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:15:39",
+    "label": "2025-02-14 TRY 1",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/content/historical/DERIVATIVES/2025/FEB/fo14FEB2025bhav.csv.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:15:40",
+    "label": "2025-02-14 TRY 2",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/content/historical/DERIVATIVES/2025/FEB/FO_14FEB2025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:15:41",
+    "label": "2025-02-14 TRY 3",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/content/historical/DERIVATIVES/2025/FEB/udiff14FEB2025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:15:41",
+    "label": "2025-02-14 TRY 4",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/products/content/derivatives/equities/udiff_14022025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:15:42",
+    "label": "2025-02-14 TRY 5",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/products/content/derivatives/equities/udiff14FEB2025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:15:43",
+    "label": "2025-02-14 TRY 6",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/content/historical/DERIVATIVES/2025/FEB/Fo14FEB2025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:15:44",
+    "label": "2025-02-14 TRY 7",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/products/content/derivatives/equities/fo14022025bhav.csv.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:15:45",
+    "label": "2025-02-14 TRY 8",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/content/derivatives/bhav/fo14022025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:15:46",
+    "label": "2025-02-17 TRY 1",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/content/historical/DERIVATIVES/2025/FEB/fo17FEB2025bhav.csv.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:15:47",
+    "label": "2025-02-17 TRY 2",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/content/historical/DERIVATIVES/2025/FEB/FO_17FEB2025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:15:47",
+    "label": "2025-02-17 TRY 3",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/content/historical/DERIVATIVES/2025/FEB/udiff17FEB2025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:15:48",
+    "label": "2025-02-17 TRY 4",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/products/content/derivatives/equities/udiff_17022025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:15:49",
+    "label": "2025-02-17 TRY 5",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/products/content/derivatives/equities/udiff17FEB2025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:15:50",
+    "label": "2025-02-17 TRY 6",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/content/historical/DERIVATIVES/2025/FEB/Fo17FEB2025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:15:51",
+    "label": "2025-02-17 TRY 7",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/products/content/derivatives/equities/fo17022025bhav.csv.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:15:52",
+    "label": "2025-02-17 TRY 8",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/content/derivatives/bhav/fo17022025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:15:53",
+    "label": "2025-02-18 TRY 1",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/content/historical/DERIVATIVES/2025/FEB/fo18FEB2025bhav.csv.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:15:54",
+    "label": "2025-02-18 TRY 2",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/content/historical/DERIVATIVES/2025/FEB/FO_18FEB2025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:15:55",
+    "label": "2025-02-18 TRY 3",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/content/historical/DERIVATIVES/2025/FEB/udiff18FEB2025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:15:56",
+    "label": "2025-02-18 TRY 4",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/products/content/derivatives/equities/udiff_18022025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:15:56",
+    "label": "2025-02-18 TRY 5",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/products/content/derivatives/equities/udiff18FEB2025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:15:57",
+    "label": "2025-02-18 TRY 6",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/content/historical/DERIVATIVES/2025/FEB/Fo18FEB2025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:15:58",
+    "label": "2025-02-18 TRY 7",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/products/content/derivatives/equities/fo18022025bhav.csv.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:15:59",
+    "label": "2025-02-18 TRY 8",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/content/derivatives/bhav/fo18022025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:16:00",
+    "label": "2025-02-19 TRY 1",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/content/historical/DERIVATIVES/2025/FEB/fo19FEB2025bhav.csv.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:16:01",
+    "label": "2025-02-19 TRY 2",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/content/historical/DERIVATIVES/2025/FEB/FO_19FEB2025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:16:02",
+    "label": "2025-02-19 TRY 3",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/content/historical/DERIVATIVES/2025/FEB/udiff19FEB2025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:16:03",
+    "label": "2025-02-19 TRY 4",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/products/content/derivatives/equities/udiff_19022025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:16:04",
+    "label": "2025-02-19 TRY 5",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/products/content/derivatives/equities/udiff19FEB2025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:16:05",
+    "label": "2025-02-19 TRY 6",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/content/historical/DERIVATIVES/2025/FEB/Fo19FEB2025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:16:06",
+    "label": "2025-02-19 TRY 7",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/products/content/derivatives/equities/fo19022025bhav.csv.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:16:07",
+    "label": "2025-02-19 TRY 8",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/content/derivatives/bhav/fo19022025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:16:08",
+    "label": "2025-02-20 TRY 1",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/content/historical/DERIVATIVES/2025/FEB/fo20FEB2025bhav.csv.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:16:09",
+    "label": "2025-02-20 TRY 2",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/content/historical/DERIVATIVES/2025/FEB/FO_20FEB2025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:16:10",
+    "label": "2025-02-20 TRY 3",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/content/historical/DERIVATIVES/2025/FEB/udiff20FEB2025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:16:10",
+    "label": "2025-02-20 TRY 4",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/products/content/derivatives/equities/udiff_20022025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:16:12",
+    "label": "2025-02-20 TRY 5",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/products/content/derivatives/equities/udiff20FEB2025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:16:12",
+    "label": "2025-02-20 TRY 6",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/content/historical/DERIVATIVES/2025/FEB/Fo20FEB2025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:16:13",
+    "label": "2025-02-20 TRY 7",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/products/content/derivatives/equities/fo20022025bhav.csv.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:16:14",
+    "label": "2025-02-20 TRY 8",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/content/derivatives/bhav/fo20022025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:16:15",
+    "label": "2025-02-21 TRY 1",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/content/historical/DERIVATIVES/2025/FEB/fo21FEB2025bhav.csv.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:16:16",
+    "label": "2025-02-21 TRY 2",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/content/historical/DERIVATIVES/2025/FEB/FO_21FEB2025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:16:17",
+    "label": "2025-02-21 TRY 3",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/content/historical/DERIVATIVES/2025/FEB/udiff21FEB2025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:16:18",
+    "label": "2025-02-21 TRY 4",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/products/content/derivatives/equities/udiff_21022025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:16:19",
+    "label": "2025-02-21 TRY 5",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/products/content/derivatives/equities/udiff21FEB2025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:16:20",
+    "label": "2025-02-21 TRY 6",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/content/historical/DERIVATIVES/2025/FEB/Fo21FEB2025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:16:21",
+    "label": "2025-02-21 TRY 7",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/products/content/derivatives/equities/fo21022025bhav.csv.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:16:22",
+    "label": "2025-02-21 TRY 8",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/content/derivatives/bhav/fo21022025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:16:23",
+    "label": "2025-02-24 TRY 1",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/content/historical/DERIVATIVES/2025/FEB/fo24FEB2025bhav.csv.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:16:23",
+    "label": "2025-02-24 TRY 2",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/content/historical/DERIVATIVES/2025/FEB/FO_24FEB2025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:16:24",
+    "label": "2025-02-24 TRY 3",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/content/historical/DERIVATIVES/2025/FEB/udiff24FEB2025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:16:25",
+    "label": "2025-02-24 TRY 4",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/products/content/derivatives/equities/udiff_24022025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:16:26",
+    "label": "2025-02-24 TRY 5",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/products/content/derivatives/equities/udiff24FEB2025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:16:27",
+    "label": "2025-02-24 TRY 6",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/content/historical/DERIVATIVES/2025/FEB/Fo24FEB2025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:16:28",
+    "label": "2025-02-24 TRY 7",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/products/content/derivatives/equities/fo24022025bhav.csv.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:16:29",
+    "label": "2025-02-24 TRY 8",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/content/derivatives/bhav/fo24022025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:16:30",
+    "label": "2025-02-25 TRY 1",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/content/historical/DERIVATIVES/2025/FEB/fo25FEB2025bhav.csv.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:16:31",
+    "label": "2025-02-25 TRY 2",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/content/historical/DERIVATIVES/2025/FEB/FO_25FEB2025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:16:32",
+    "label": "2025-02-25 TRY 3",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/content/historical/DERIVATIVES/2025/FEB/udiff25FEB2025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:16:33",
+    "label": "2025-02-25 TRY 4",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/products/content/derivatives/equities/udiff_25022025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:16:33",
+    "label": "2025-02-25 TRY 5",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/products/content/derivatives/equities/udiff25FEB2025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:16:34",
+    "label": "2025-02-25 TRY 6",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/content/historical/DERIVATIVES/2025/FEB/Fo25FEB2025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:16:35",
+    "label": "2025-02-25 TRY 7",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/products/content/derivatives/equities/fo25022025bhav.csv.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:16:36",
+    "label": "2025-02-25 TRY 8",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/content/derivatives/bhav/fo25022025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:16:37",
+    "label": "2025-02-26 TRY 1",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/content/historical/DERIVATIVES/2025/FEB/fo26FEB2025bhav.csv.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:16:38",
+    "label": "2025-02-26 TRY 2",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/content/historical/DERIVATIVES/2025/FEB/FO_26FEB2025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:16:39",
+    "label": "2025-02-26 TRY 3",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/content/historical/DERIVATIVES/2025/FEB/udiff26FEB2025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:16:40",
+    "label": "2025-02-26 TRY 4",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/products/content/derivatives/equities/udiff_26022025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:16:41",
+    "label": "2025-02-26 TRY 5",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/products/content/derivatives/equities/udiff26FEB2025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:16:42",
+    "label": "2025-02-26 TRY 6",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/content/historical/DERIVATIVES/2025/FEB/Fo26FEB2025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:16:43",
+    "label": "2025-02-26 TRY 7",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/products/content/derivatives/equities/fo26022025bhav.csv.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:16:44",
+    "label": "2025-02-26 TRY 8",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/content/derivatives/bhav/fo26022025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:16:45",
+    "label": "2025-02-27 TRY 1",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/content/historical/DERIVATIVES/2025/FEB/fo27FEB2025bhav.csv.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:16:46",
+    "label": "2025-02-27 TRY 2",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/content/historical/DERIVATIVES/2025/FEB/FO_27FEB2025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:16:47",
+    "label": "2025-02-27 TRY 3",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/content/historical/DERIVATIVES/2025/FEB/udiff27FEB2025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:16:47",
+    "label": "2025-02-27 TRY 4",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/products/content/derivatives/equities/udiff_27022025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:16:48",
+    "label": "2025-02-27 TRY 5",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/products/content/derivatives/equities/udiff27FEB2025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:16:49",
+    "label": "2025-02-27 TRY 6",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/content/historical/DERIVATIVES/2025/FEB/Fo27FEB2025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:16:50",
+    "label": "2025-02-27 TRY 7",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/products/content/derivatives/equities/fo27022025bhav.csv.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:16:51",
+    "label": "2025-02-27 TRY 8",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/content/derivatives/bhav/fo27022025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:16:52",
+    "label": "2025-02-28 TRY 1",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/content/historical/DERIVATIVES/2025/FEB/fo28FEB2025bhav.csv.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:16:53",
+    "label": "2025-02-28 TRY 2",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/content/historical/DERIVATIVES/2025/FEB/FO_28FEB2025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:16:54",
+    "label": "2025-02-28 TRY 3",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/content/historical/DERIVATIVES/2025/FEB/udiff28FEB2025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:16:55",
+    "label": "2025-02-28 TRY 4",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/products/content/derivatives/equities/udiff_28022025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:16:56",
+    "label": "2025-02-28 TRY 5",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/products/content/derivatives/equities/udiff28FEB2025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:16:57",
+    "label": "2025-02-28 TRY 6",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/content/historical/DERIVATIVES/2025/FEB/Fo28FEB2025.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:16:58",
+    "label": "2025-02-28 TRY 7",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/products/content/derivatives/equities/fo28022025bhav.csv.zip",
+    "note": "NO-DATA"
+  },
+  {
+    "time": "16:16:59",
+    "label": "2025-02-28 TRY 8",
+    "status": 404,
+    "size": 3425,
+    "url": "https://archives.nseindia.com/content/derivatives/bhav/fo28022025.zip",
+    "note": "NO-DATA"
+  }
+]

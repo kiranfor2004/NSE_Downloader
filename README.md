@@ -72,6 +72,22 @@ python setup_database.py
 Creates SQLite database and imports all CSV files
 
 #### 3. Start Analysis
+#### 4. (New) Download F&O UDiFF Derivatives Bhavcopy
+Fetches "F&O - UDiFF Common Bhavcopy Final" ZIP archives discovered via the merged daily reports API.
+
+Run:
+```
+python nse_fo_udiff_real_endpoint_downloader.py
+```
+Outputs ZIP files to `fo_udiff_downloads/` named:
+`BhavCopy_NSE_FO_0_0_0_YYYYMMDD_F_0000.csv.zip`
+
+Next planned improvements:
+- Add CLI options for arbitrary month/year
+- Retry logic for transient small responses
+- PostgreSQL importer (table: fo_udiff_bhavcopy)
+- Cross-check missing days vs holiday calendar
+
 ```bash
 python nse_query_tool.py
 ```
@@ -103,6 +119,9 @@ NSE_Downloader/
 ├── 📊 Data
 │   ├── NSE_August_2025_Data/           # Downloaded CSV files
 │   └── nse_data.db                     # SQLite database
+│
+├── 🧩 Derivatives
+│   └── nse_fo_udiff_real_endpoint_downloader.py   # F&O UDiFF Step 4 downloader (ZIP archives)
 │
 └── 📦 Configuration
     ├── requirements.txt                 # Python dependencies
@@ -225,6 +244,8 @@ If you encounter any issues:
 - **Alerts System** - Price and volume-based notifications
 - **Web Dashboard** - Browser-based analysis interface
 - **Mobile App** - iOS/Android market analysis
+- **Derivatives DB Integration** - Unified Equity + F&O analytical layer
+- **Automated UDiFF Backfill** - Historical month crawling with holiday calendar
 
 ## 📞 Contact
 

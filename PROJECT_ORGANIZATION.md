@@ -6,6 +6,7 @@ This project performs comprehensive NSE (National Stock Exchange) data analysis 
 1. **Data Downloads** - Monthly NSE data collection
 2. **Monthly Analysis** - Unique symbol analysis for each month
 3. **Comparison Analysis** - Month-to-month growth tracking
+4. **(New) Derivatives UDiFF Acquisition** - F&O Common Bhavcopy Final ZIP retrieval
 
 ---
 
@@ -17,6 +18,14 @@ This project performs comprehensive NSE (National Stock Exchange) data analysis 
 - **Data Folders**: Raw CSV files organized by month
 - **Coverage**: January 2025 - August 2025 (8 months)
 - **Records**: 460,000+ trading records across 164 CSV files
+
+### ➕ Derivatives (Step 4) F&O UDiFF
+**Script**: `nse_fo_udiff_real_endpoint_downloader.py`  
+**Discovery**: Uses `merged-daily-reports?key=favDerivatives` API to obtain the static archive pattern:  
+`https://nsearchives.nseindia.com/content/fo/BhavCopy_NSE_FO_0_0_0_YYYYMMDD_F_0000.csv.zip`  
+**Output Folder**: `fo_udiff_downloads/` (ZIP archives + logs)  
+**Status**: February 2025 downloaded (19/20 trading days; one 404 pending review)  
+**Planned Enhancements**: CLI args (month/year), retries, DB importer, schema documentation.
 
 ### 2️⃣ `02_Monthly_Analysis/`
 **Purpose**: Individual month unique symbol analysis
@@ -133,9 +142,12 @@ This project performs comprehensive NSE (National Stock Exchange) data analysis 
 2. **Quarterly analysis** aggregation
 3. **Trend analysis** across complete 2025 dataset
 4. **Automated pipeline** for future months
+5. **Derivatives integration**: Import F&O UDiFF into relational store (SQLite/PostgreSQL)
+6. **Schema unification**: Join Equity + F&O for cross-segment analytics
+7. **Historical backfill**: Extend UDiFF retrieval to additional months once validated
 
 ---
 
-*Last Updated: September 11, 2025*
+*Last Updated: September 12, 2025 (Added Step 4 F&O UDiFF section)*
 *Total Files Organized: 50+ scripts and Excel files*
 *Data Coverage: 8 months of NSE trading data (460,000+ records)*
