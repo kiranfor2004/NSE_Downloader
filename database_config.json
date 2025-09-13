@@ -1,7 +1,8 @@
 {
-    "host": "localhost",
-    "port": 5432,
-    "database": "postgres",
-    "username": "postgres",
-    "password": "postgres"
+    "server": "SRIKIRANREDDY\\SQLEXPRESS",
+    "database": "master",
+    "username": "",
+    "password": "",
+    "driver": "ODBC Driver 17 for SQL Server",
+    "trusted_connection": "yes"
 }

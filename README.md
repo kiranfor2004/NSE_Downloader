@@ -93,40 +93,45 @@ python nse_query_tool.py
 ```
 Interactive analysis tool with multiple query options
 
-## 📁 Project Structure
+## 📁 Project Structure (Step-Oriented)
 
 ```
 NSE_Downloader/
-├── 📊 Data Collection
-│   └── nse_august_2025_downloader.py    # Main data downloader
+├── step01_equity_downloads/            # Wrappers for equity daily download scripts
+├── step02_monthly_analysis/            # Wrappers & docs for monthly unique symbol analysis
+├── step03_monthly_comparisons/         # Wrappers for increases-only monthly comparisons
+├── step04_derivatives_udiff/           # F&O UDiFF (Derivatives) downloader wrappers & docs
 │
-├── 🗄️ Database Management
-│   ├── nse_database.py                  # Database manager
-│   ├── nse_query_tool.py               # Analysis tool
-│   └── setup_database.py               # Quick setup
+├── 01_Data_Downloads/                  # Original equity download scripts (legacy)
+├── 02_Monthly_Analysis/                # Original analysis scripts
+├── 03_Comparison_Analysis/             # Original comparison scripts
+├── 04_Archive/                         # Experimental/deprecated utilities
 │
-├── ☁️ Cloud Integration
-│   ├── supabase_nse_uploader.py        # Cloud uploader
-│   ├── supabase_analysis_tool.py       # Cloud analysis
-│   └── supabase_setup.py               # Cloud setup guide
+├── Database
+│   ├── nse_database.py
+│   ├── nse_query_tool.py
+│   └── setup_database.py
 │
-├── 📋 Documentation
-│   ├── README_SUPABASE.md              # Cloud setup guide
-│   ├── SUPABASE_STEP_BY_STEP.md       # Detailed instructions
-│   ├── SETUP_CHECKLIST.md             # Quick reference
-│   └── API_KEY_HELP.md                 # API configuration help
+├── Derivatives Core
+│   └── nse_fo_udiff_real_endpoint_downloader.py
 │
-├── 📊 Data
-│   ├── NSE_August_2025_Data/           # Downloaded CSV files
-│   └── nse_data.db                     # SQLite database
+├── Data
+│   ├── NSE_August_2025_Data/
+│   ├── fo_udiff_downloads/
+│   └── nse_data.db
 │
-├── 🧩 Derivatives
-│   └── nse_fo_udiff_real_endpoint_downloader.py   # F&O UDiFF Step 4 downloader (ZIP archives)
+├── Documentation
+│   ├── NSE_Download_Checklist.md
+│   ├── STEP_FILE_RENAMING_PLAN.md
+│   ├── README_SUPABASE.md
+│   ├── SUPABASE_STEP_BY_STEP.md
+│   ├── SETUP_CHECKLIST.md
+│   └── API_KEY_HELP.md
 │
-└── 📦 Configuration
-    ├── requirements.txt                 # Python dependencies
-    ├── requirements_supabase.txt       # Cloud dependencies
-    └── .env.example                    # Environment template
+└── Config
+    ├── requirements.txt
+    ├── requirements_supabase.txt
+    └── .env.example
 ```
 
 ## 📈 Analysis Capabilities
