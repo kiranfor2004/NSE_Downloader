@@ -1,40 +1,33 @@
-// NSE Delivery Analysis Dashboard JavaScript
+// NSE Delivery Analysis Dashboard - Professional Version
 
-class NSEDashboard {
+class ProfessionalNSEDashboard {
     constructor() {
         this.data = null;
         this.filteredData = null;
-        this.currentPage = 1;
-        this.itemsPerPage = 20;
-        this.charts = {};
-        this.apiBaseUrl = 'http://localhost:5000/api';
-        
-        // Drill-down state management
-        this.drillDownStack = [];
-        this.currentDrillLevel = 'overview';
-        this.selectedCategory = null;
-        this.selectedIndex = null;
         this.selectedSymbol = null;
-        this.selectedSector = null;
-        this.selectedPerformanceRange = null;
+        this.apiBaseUrl = 'http://localhost:5000/api';
+        this.currentTab = 'market-overview';
         
         this.init();
     }
 
     async init() {
+        console.log('Dashboard initializing...');
         this.showLoading();
         this.setupEventListeners();
+        console.log('About to load data...');
         await this.loadData();
+        console.log('Data loaded, rendering dashboard...');
         this.renderDashboard();
         this.hideLoading();
+        console.log('Dashboard initialization complete');
     }
 
     setupEventListeners() {
         // Tab navigation
-        document.querySelectorAll('.nav-link').forEach(link => {
-            link.addEventListener('click', (e) => {
-                e.preventDefault();
-                this.switchTab(link.dataset.tab);
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                this.switchTab(btn.dataset.tab);
             });
         });
 
@@ -43,840 +36,1130 @@ class NSEDashboard {
             this.refreshData();
         });
 
-        // Category filter
-        document.getElementById('categoryFilter').addEventListener('change', (e) => {
-            this.filterByCategory(e.target.value);
+        // Global filter
+        document.getElementById('globalFilter').addEventListener('change', (e) => {
+            this.filterData(e.target.value);
         });
 
-        // Search functionality
-        document.getElementById('searchSymbol').addEventListener('input', (e) => {
-            this.searchSymbols(e.target.value);
+        // Symbol search
+        document.getElementById('symbolSearch').addEventListener('input', (e) => {
+            this.searchSymbol(e.target.value);
         });
 
-        // Sort functionality
-        document.getElementById('sortBy').addEventListener('change', (e) => {
-            this.sortData(e.target.value);
-        });
-
-        // Chart controls
-        document.querySelectorAll('.chart-toggle').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                this.toggleChartType(e.target.dataset.chart);
+        // Popular symbol chips
+        document.querySelectorAll('.symbol-chip').forEach(chip => {
+            chip.addEventListener('click', (e) => {
+                this.selectSymbol(e.target.dataset.symbol);
             });
         });
 
-        // Trend metric selector
-        document.getElementById('trendMetric').addEventListener('change', (e) => {
-            this.updateTrendChart(e.target.value);
-        });
-
-        // Comparison filters
-        document.getElementById('dateRange').addEventListener('change', () => {
-            this.updateComparisonChart();
-        });
-
-        document.getElementById('comparisonType').addEventListener('change', () => {
-            this.updateComparisonChart();
-        });
-
-        // Drill-down navigation
-        this.setupDrillDownListeners();
-    }
-
-    setupDrillDownListeners() {
-        // Add event listeners for drill-down functionality
-        document.addEventListener('click', (e) => {
-            // Handle breadcrumb navigation
-            if (e.target.classList.contains('breadcrumb-item')) {
-                this.navigateToBreadcrumb(e.target.dataset.level);
-            }
-            
-            // Handle back button
-            if (e.target.id === 'drillBackBtn') {
-                this.drillBack();
+        // Search button
+        document.querySelector('.search-btn').addEventListener('click', () => {
+            const symbol = document.getElementById('symbolSearch').value.trim().toUpperCase();
+            if (symbol) {
+                this.selectSymbol(symbol);
             }
         });
-    }
 
-    // Drill-down state management
-    pushDrillState(level, data) {
-        this.drillDownStack.push({
-            level: this.currentDrillLevel,
-            filteredData: [...this.filteredData],
-            selectedCategory: this.selectedCategory,
-            selectedIndex: this.selectedIndex,
-            selectedSymbol: this.selectedSymbol,
-            selectedSector: this.selectedSector,
-            selectedPerformanceRange: this.selectedPerformanceRange
-        });
-        
-        this.currentDrillLevel = level;
-        this.updateBreadcrumb();
-    }
-
-    drillBack() {
-        if (this.drillDownStack.length > 0) {
-            const previousState = this.drillDownStack.pop();
-            this.currentDrillLevel = previousState.level;
-            this.filteredData = previousState.filteredData;
-            this.selectedCategory = previousState.selectedCategory;
-            this.selectedIndex = previousState.selectedIndex;
-            this.selectedSymbol = previousState.selectedSymbol;
-            this.selectedSector = previousState.selectedSector;
-            this.selectedPerformanceRange = previousState.selectedPerformanceRange;
-            
-            this.updateBreadcrumb();
-            this.renderCurrentView();
-        }
-    }
-
-    navigateToBreadcrumb(level) {
-        // Find the target level in the stack and restore to that state
-        let targetStateIndex = -1;
-        for (let i = this.drillDownStack.length - 1; i >= 0; i--) {
-            if (this.drillDownStack[i].level === level) {
-                targetStateIndex = i;
-                break;
+        // Enter key for symbol search
+        document.getElementById('symbolSearch').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                const symbol = e.target.value.trim().toUpperCase();
+                if (symbol) {
+                    this.selectSymbol(symbol);
+                }
             }
-        }
-        
-        if (targetStateIndex >= 0) {
-            const targetState = this.drillDownStack[targetStateIndex];
-            this.drillDownStack = this.drillDownStack.slice(0, targetStateIndex);
-            
-            this.currentDrillLevel = targetState.level;
-            this.filteredData = targetState.filteredData;
-            this.selectedCategory = targetState.selectedCategory;
-            this.selectedIndex = targetState.selectedIndex;
-            this.selectedSymbol = targetState.selectedSymbol;
-            this.selectedSector = targetState.selectedSector;
-            this.selectedPerformanceRange = targetState.selectedPerformanceRange;
-            
-            this.updateBreadcrumb();
-            this.renderCurrentView();
-        } else if (level === 'overview') {
-            // Reset to overview
-            this.resetDrillDown();
-        }
-    }
-
-    resetDrillDown() {
-        this.drillDownStack = [];
-        this.currentDrillLevel = 'overview';
-        this.filteredData = [...this.data];
-        this.selectedCategory = null;
-        this.selectedIndex = null;
-        this.selectedSymbol = null;
-        this.selectedSector = null;
-        this.selectedPerformanceRange = null;
-        
-        this.updateBreadcrumb();
-        this.renderCurrentView();
-    }
-
-    updateBreadcrumb() {
-        const breadcrumbContainer = document.getElementById('breadcrumbNav') || this.createBreadcrumbContainer();
-        const breadcrumbs = ['overview'];
-        
-        // Build breadcrumb path
-        this.drillDownStack.forEach(state => {
-            breadcrumbs.push(state.level);
         });
-        breadcrumbs.push(this.currentDrillLevel);
-        
-        // Generate breadcrumb HTML
-        const breadcrumbHTML = breadcrumbs.map((level, index) => {
-            const isLast = index === breadcrumbs.length - 1;
-            const levelName = this.formatBreadcrumbName(level);
-            
-            if (isLast) {
-                return `<span class="breadcrumb-current">${levelName}</span>`;
-            } else {
-                return `<span class="breadcrumb-item" data-level="${level}">${levelName}</span>`;
-            }
-        }).join(' > ');
-        
-        breadcrumbContainer.innerHTML = `
-            <div class="breadcrumb-container">
-                ${breadcrumbHTML}
-                ${this.drillDownStack.length > 0 ? '<button id="drillBackBtn" class="drill-back-btn">← Back</button>' : ''}
-            </div>
-        `;
-    }
-
-    createBreadcrumbContainer() {
-        const container = document.createElement('div');
-        container.id = 'breadcrumbNav';
-        container.className = 'breadcrumb-navigation';
-        
-        // Insert after the header but before the main content
-        const header = document.querySelector('.dashboard-header');
-        header.insertAdjacentElement('afterend', container);
-        
-        return container;
-    }
-
-    formatBreadcrumbName(level) {
-        const levelNames = {
-            'overview': 'Overview',
-            'category-detail': this.selectedCategory || 'Category Detail',
-            'index-detail': this.selectedIndex || 'Index Detail',
-            'symbol-detail': this.selectedSymbol || 'Symbol Detail',
-            'sector-detail': this.selectedSector || 'Sector Detail',
-            'performance-range': this.selectedPerformanceRange || 'Performance Range'
-        };
-        
-        return levelNames[level] || level;
-    }
-
-    renderCurrentView() {
-        this.currentPage = 1; // Reset pagination
-        
-        switch (this.currentDrillLevel) {
-            case 'overview':
-                this.renderOverview();
-                break;
-            case 'category-detail':
-                this.renderCategoryDetail();
-                break;
-            case 'index-detail':
-                this.renderIndexDetail();
-                break;
-            case 'symbol-detail':
-                this.renderSymbolDetail();
-                break;
-            case 'sector-detail':
-                this.renderSectorDetail();
-                break;
-            case 'performance-range':
-                this.renderPerformanceRangeDetail();
-                break;
-            default:
-                this.renderOverview();
-        }
     }
 
     async loadData() {
         try {
-            // Try to fetch from API first, if fails use mock data
-            const response = await fetch(`${this.apiBaseUrl}/delivery-data`);
-            if (response.ok) {
-                this.data = await response.json();
-            } else {
-                // Use mock data if API is not available
-                this.data = this.generateMockData();
-            }
-            this.filteredData = [...this.data];
-        } catch (error) {
-            console.warn('API not available, using mock data:', error);
-            this.data = this.generateMockData();
-            this.filteredData = [...this.data];
-        }
-    }
-
-    generateMockData() {
-        const symbols = ['RELIANCE', 'TCS', 'HDFCBANK', 'ICICIBANK', 'INFY', 'ITC', 'BAJFINANCE', 'KOTAKBANK', 
-                        'HINDUNILVR', 'ASIANPAINT', 'MARUTI', 'SUNPHARMA', 'BRITANNIA', 'NESTLEIND', 'WIPRO'];
-        const indices = ['NIFTY 50', 'NIFTY IT', 'NIFTY BANK', 'NIFTY AUTO', 'NIFTY PHARMA', 'NIFTY FMCG', 'Other Index'];
-        const categories = ['Broad Market', 'Sectoral', 'Other'];
-        const comparisons = ['AUG_VS_JUL_2025', 'JUL_VS_JUN_2025', 'JUN_VS_MAY_2025', 'MAY_VS_APR_2025'];
-
-        const mockData = [];
-        for (let i = 0; i < 100; i++) {
-            const symbol = symbols[Math.floor(Math.random() * symbols.length)];
-            const index = indices[Math.floor(Math.random() * indices.length)];
-            const category = index === 'NIFTY 50' ? 'Broad Market' : 
-                           index === 'Other Index' ? 'Other' : 'Sectoral';
+            console.log('Starting to load data...');
+            console.log('API URL:', `${this.apiBaseUrl}/delivery-data?limit=5000`);
             
-            mockData.push({
-                id: i + 1,
-                symbol: symbol + (i > 50 ? Math.floor(Math.random() * 100) : ''),
-                index_name: index,
-                category: category,
-                current_deliv_qty: Math.floor(Math.random() * 10000000) + 100000,
-                delivery_increase_pct: Math.floor(Math.random() * 2000) + 10,
-                comparison_type: comparisons[Math.floor(Math.random() * comparisons.length)],
-                current_trade_date: this.getRandomDate(),
-                current_close_price: Math.floor(Math.random() * 5000) + 100,
-                previous_deliv_qty: Math.floor(Math.random() * 5000000) + 50000
-            });
+            const response = await fetch(`${this.apiBaseUrl}/delivery-data?limit=5000`);
+            console.log('Response received:', response.status, response.statusText);
+            
+            if (!response.ok) throw new Error(`Failed to fetch data: ${response.status} ${response.statusText}`);
+            
+            const responseData = await response.json();
+            console.log('Response data structure:', Object.keys(responseData));
+            console.log('Data length:', responseData.data?.length);
+            
+            // Extract data array from the API response with better error handling
+            if (responseData && responseData.data && Array.isArray(responseData.data)) {
+                this.data = responseData.data;
+                this.filteredData = [...this.data];
+                console.log('Data loaded successfully:', this.data.length, 'records');
+            } else {
+                console.error('Invalid data structure received:', responseData);
+                this.data = [];
+                this.filteredData = [];
+                throw new Error('Invalid data structure received from API');
+            }
+            
+            // Update header stats
+            this.updateHeaderStats();
+            
+        } catch (error) {
+            console.error('Error loading data:', error);
+            this.data = [];
+            this.filteredData = [];
+            this.showError('Failed to load data. Please check your connection.');
         }
-
-        return mockData.sort((a, b) => b.delivery_increase_pct - a.delivery_increase_pct);
     }
 
-    getRandomDate() {
-        const start = new Date(2025, 0, 1);
-        const end = new Date(2025, 8, 14);
-        return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()))
-            .toISOString().split('T')[0];
+    updateHeaderStats() {
+        const totalRecordsElement = document.getElementById('totalRecords');
+        const lastUpdatedElement = document.getElementById('lastUpdated');
+        
+        if (totalRecordsElement && this.data && Array.isArray(this.data)) {
+            totalRecordsElement.textContent = this.data.length.toLocaleString();
+        } else if (totalRecordsElement) {
+            totalRecordsElement.textContent = '0';
+        }
+        
+        if (lastUpdatedElement) {
+            lastUpdatedElement.textContent = new Date().toLocaleTimeString();
+        }
     }
 
-    async refreshData() {
-        this.showLoading();
-        await this.loadData();
-        this.renderDashboard();
-        this.hideLoading();
+    filterData(category) {
+        if (category === 'all') {
+            this.filteredData = [...this.data];
+        } else {
+            this.filteredData = this.data.filter(item => item.category === category);
+        }
+        this.renderCurrentTab();
     }
 
-    switchTab(tabName) {
-        // Update nav links
-        document.querySelectorAll('.nav-link').forEach(link => {
-            link.classList.remove('active');
+    switchTab(tabId) {
+        // Update tab buttons
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.classList.remove('active');
         });
-        document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+        document.querySelector(`[data-tab="${tabId}"]`).classList.add('active');
 
-        // Show/hide tab content
-        document.querySelectorAll('.tab-content').forEach(tab => {
-            tab.classList.remove('active');
+        // Update tab content
+        document.querySelectorAll('.tab-content').forEach(content => {
+            content.classList.remove('active');
         });
-        document.getElementById(`${tabName}-tab`).classList.add('active');
+        document.getElementById(tabId).classList.add('active');
 
-        // Render tab-specific content
-        switch(tabName) {
-            case 'overview':
-                this.renderOverview();
+        this.currentTab = tabId;
+        this.renderCurrentTab();
+    }
+
+    renderCurrentTab() {
+        console.log('renderCurrentTab called for:', this.currentTab);
+        console.log('Data available:', !!this.data, 'Length:', this.data?.length);
+        console.log('Filtered data available:', !!this.filteredData, 'Length:', this.filteredData?.length);
+        
+        switch (this.currentTab) {
+            case 'market-overview':
+                this.renderMarketOverview();
                 break;
-            case 'performance':
-                this.renderPerformance();
+            case 'symbol-analysis':
+                this.renderSymbolAnalysis();
                 break;
-            case 'indices':
-                this.renderIndices();
-                break;
-            case 'sectors':
-                this.renderSectors();
-                break;
-            case 'comparison':
-                this.renderComparison();
+            case 'category-performance':
+                this.renderCategoryPerformance();
                 break;
         }
     }
 
     renderDashboard() {
-        this.updateHeaderStats();
-        this.renderOverview();
+        this.renderMarketOverview();
+        this.renderSymbolAnalysis();
+        this.renderCategoryPerformance();
     }
 
-    updateHeaderStats() {
-        const totalRecords = this.data.length;
-        const activeSymbols = new Set(this.data.map(d => d.symbol)).size;
+    // Tab 1: Market Overview
+    renderMarketOverview() {
+        console.log('renderMarketOverview called');
+        console.log('filteredData exists:', !!this.filteredData);
+        console.log('filteredData length:', this.filteredData?.length);
         
-        document.getElementById('totalRecords').textContent = totalRecords.toLocaleString();
-        document.getElementById('activeSymbols').textContent = activeSymbols.toLocaleString();
-        document.getElementById('lastUpdated').textContent = new Date().toLocaleTimeString();
-    }
-
-    renderOverview() {
-        this.updateMetrics();
-        this.renderCategoryChart();
-        this.renderTrendChart();
-        this.renderDataTable();
-    }
-
-    updateMetrics() {
-        const avgIncrease = this.filteredData.reduce((sum, d) => sum + d.delivery_increase_pct, 0) / this.filteredData.length;
-        const maxIncrease = Math.max(...this.filteredData.map(d => d.delivery_increase_pct));
-        const topSymbol = this.filteredData.find(d => d.delivery_increase_pct === maxIncrease)?.symbol || '--';
-        const nifty50Count = this.filteredData.filter(d => d.index_name === 'NIFTY 50').length;
-        const sectoralCount = this.filteredData.filter(d => d.category === 'Sectoral').length;
-
-        document.getElementById('avgIncrease').textContent = `${avgIncrease.toFixed(1)}%`;
-        document.getElementById('maxIncrease').textContent = `${maxIncrease.toFixed(1)}%`;
-        document.getElementById('topSymbol').textContent = topSymbol;
-        document.getElementById('nifty50Count').textContent = nifty50Count.toLocaleString();
-        document.getElementById('sectoralCount').textContent = sectoralCount.toLocaleString();
-        document.getElementById('nifty50Percentage').textContent = `${((nifty50Count / this.filteredData.length) * 100).toFixed(1)}%`;
-        document.getElementById('sectoralPercentage').textContent = `${((sectoralCount / this.filteredData.length) * 100).toFixed(1)}%`;
-    }
-
-    renderCategoryChart() {
-        const ctx = document.getElementById('categoryChart').getContext('2d');
-        
-        if (this.charts.category) {
-            this.charts.category.destroy();
+        if (!this.filteredData || this.filteredData.length === 0) {
+            console.log('No filtered data available, returning early');
+            return;
         }
 
-        const categoryData = this.getCategoryDistribution();
+        console.log('Calculating KPIs...');
+        // Calculate KPIs
+        const kpis = this.calculateMarketOverviewKPIs();
         
-        this.charts.category = new Chart(ctx, {
-            type: 'doughnut',
-            data: {
-                labels: categoryData.labels,
-                datasets: [{
-                    data: categoryData.values,
-                    backgroundColor: [
-                        '#1c3f7c',
-                        '#ff6b35',
-                        '#28a745',
-                        '#ffc107'
-                    ],
-                    borderWidth: 2,
-                    borderColor: '#fff'
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        position: 'bottom',
-                        labels: {
-                            padding: 20,
-                            usePointStyle: true
-                        }
-                    }
-                },
-                onClick: (event, elements) => {
-                    if (elements.length > 0) {
-                        const elementIndex = elements[0].index;
-                        const category = categoryData.labels[elementIndex];
-                        this.drillDownToCategory(category);
-                    }
-                },
-                onHover: (event, elements) => {
-                    event.native.target.style.cursor = elements.length > 0 ? 'pointer' : 'default';
-                }
+        console.log('Updating KPI display elements...');
+        // Update KPI cards with null checks
+        const totalDeliveryElement = document.getElementById('totalDeliveryIncrease');
+        const positiveGrowthElement = document.getElementById('positiveGrowthStocks');
+        const positiveGrowthPctElement = document.getElementById('positiveGrowthPercentage');
+        const deliveryRatioElement = document.getElementById('deliveryTurnoverRatio');
+        const avgTurnoverElement = document.getElementById('avgDailyTurnover');
+
+        if (totalDeliveryElement) {
+            totalDeliveryElement.textContent = `₹${(kpis.totalDeliveryIncrease || 0).toFixed(2)}L`;
+            console.log('Updated totalDeliveryIncrease:', totalDeliveryElement.textContent);
+        }
+        
+        if (positiveGrowthElement) {
+            positiveGrowthElement.textContent = (kpis.positiveGrowthCount || 0).toLocaleString();
+            console.log('Updated positiveGrowthStocks:', positiveGrowthElement.textContent);
+        }
+        
+        if (positiveGrowthPctElement) {
+            positiveGrowthPctElement.textContent = `${(kpis.positiveGrowthPercentage || 0).toFixed(1)}% of total`;
+            console.log('Updated positiveGrowthPercentage:', positiveGrowthPctElement.textContent);
+        }
+        
+        if (deliveryRatioElement) {
+            deliveryRatioElement.textContent = `${(kpis.deliveryTurnoverRatio || 0).toFixed(2)}%`;
+            console.log('Updated deliveryTurnoverRatio:', deliveryRatioElement.textContent);
+        }
+        
+        if (avgTurnoverElement) {
+            avgTurnoverElement.textContent = this.formatCurrency(kpis.avgDailyTurnover || 0);
+            console.log('Updated avgDailyTurnover:', avgTurnoverElement.textContent);
+        }
+
+        console.log('KPI display updated successfully');
+
+        // Prepare visualization data
+        const forceGraphData = this.prepareForceDirectedGraphData();
+        const treeMapData = this.prepareTreeMapData();
+
+        // Render visualizations
+        this.renderForceDirectedGraph(forceGraphData);
+        this.renderTreeMap(treeMapData);
+        this.renderHierarchicalDistribution(treeMapData);
+        this.renderMultiMetricAnalysis();
+    }
+
+    calculateMarketOverviewKPIs() {
+        console.log('Calculating KPIs with filtered data length:', this.filteredData.length);
+        console.log('Sample data record:', this.filteredData[0]);
+        
+        // 1. Total Market Delivery Increase (in Lakhs): Sum of delivery_increase_abs
+        const totalDeliveryIncrease = this.filteredData.reduce((sum, item) => {
+            const deliveryIncreaseAbs = parseFloat(item.delivery_increase_abs) || 0;
+            return sum + deliveryIncreaseAbs;
+        }, 0) / 100000; // Convert to lakhs
+        console.log('Total Delivery Increase (Lakhs):', totalDeliveryIncrease);
+
+        // 2. Stocks with Positive Delivery Growth: Count where delivery_increase_pct > 0
+        const positiveGrowthCount = this.filteredData.filter(item => {
+            const deliveryIncreasePct = parseFloat(item.delivery_increase_pct) || 0;
+            return deliveryIncreasePct > 0;
+        }).length;
+        console.log('Positive Growth Count:', positiveGrowthCount);
+
+        const positiveGrowthPercentage = (positiveGrowthCount / this.filteredData.length) * 100;
+        console.log('Positive Growth Percentage:', positiveGrowthPercentage);
+
+        // 3. Market Delivery-to-Turnover Ratio: (Sum of current_deliv_qty / Sum of current_turnover_lacs)
+        const totalCurrentDelivQty = this.filteredData.reduce((sum, item) => {
+            const currentDelivQty = parseFloat(item.current_deliv_qty) || 0;
+            return sum + currentDelivQty;
+        }, 0);
+        console.log('Total Current Delivery Qty:', totalCurrentDelivQty);
+
+        const totalCurrentTurnoverLacs = this.filteredData.reduce((sum, item) => {
+            const currentTurnoverLacs = parseFloat(item.current_turnover_lacs) || 0;
+            return sum + currentTurnoverLacs;
+        }, 0);
+        console.log('Total Current Turnover Lacs:', totalCurrentTurnoverLacs);
+
+        const deliveryTurnoverRatio = totalCurrentTurnoverLacs > 0 ? 
+            (totalCurrentDelivQty / (totalCurrentTurnoverLacs * 100000)) * 100 : 0; // Convert lacs to actual value
+        console.log('Delivery Turnover Ratio:', deliveryTurnoverRatio);
+
+        // 4. Average Daily Turnover (keeping this for display purposes)
+        const avgDailyTurnover = this.filteredData.length > 0 ? 
+            (totalCurrentTurnoverLacs * 100000) / this.filteredData.length : 0;
+        console.log('Average Daily Turnover:', avgDailyTurnover);
+
+        const kpis = {
+            totalDeliveryIncrease,
+            positiveGrowthCount,
+            positiveGrowthPercentage,
+            deliveryTurnoverRatio,
+            avgDailyTurnover,
+            // Additional data for visualizations
+            totalCurrentTurnoverLacs,
+            totalCurrentDelivQty
+        };
+        
+        console.log('Final KPIs:', kpis);
+        return kpis;
+    }
+
+    prepareForceDirectedGraphData() {
+        // Prepare nodes and links for Force-Directed Graph visualization
+        const nodeMap = new Map();
+        const links = [];
+
+        // Group data by index_name for nodes
+        this.filteredData.forEach(item => {
+            const indexName = item.index_name || 'Other';
+            const symbol = item.symbol;
+            const turnoverLacs = parseFloat(item.current_turnover_lacs) || 0;
+            const deliveryIncPct = parseFloat(item.delivery_increase_pct) || 0;
+
+            // Create index node
+            if (!nodeMap.has(indexName)) {
+                nodeMap.set(indexName, {
+                    id: indexName,
+                    type: 'index',
+                    size: 0,
+                    count: 0
+                });
             }
+
+            // Add symbol as node
+            const symbolId = `${indexName}-${symbol}`;
+            nodeMap.set(symbolId, {
+                id: symbolId,
+                symbol: symbol,
+                index: indexName,
+                type: 'symbol',
+                size: turnoverLacs,
+                deliveryIncPct: deliveryIncPct
+            });
+
+            // Update index node size
+            const indexNode = nodeMap.get(indexName);
+            indexNode.size += turnoverLacs;
+            indexNode.count += 1;
+
+            // Create link between index and symbol
+            links.push({
+                source: indexName,
+                target: symbolId,
+                value: Math.abs(deliveryIncPct),
+                deliveryIncPct: deliveryIncPct
+            });
         });
+
+        return {
+            nodes: Array.from(nodeMap.values()),
+            links: links
+        };
     }
 
-    renderTrendChart() {
-        const ctx = document.getElementById('trendChart').getContext('2d');
-        
-        if (this.charts.trend) {
-            this.charts.trend.destroy();
-        }
+    prepareTreeMapData() {
+        // Prepare hierarchical data for TreeMap visualization
+        const categoryMap = new Map();
 
-        const trendData = this.getTrendData();
-        
-        this.charts.trend = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: trendData.labels,
-                datasets: [{
-                    label: 'Alert Count',
-                    data: trendData.values,
-                    borderColor: '#1c3f7c',
-                    backgroundColor: 'rgba(28, 63, 124, 0.1)',
-                    borderWidth: 3,
-                    fill: true,
-                    tension: 0.4
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                },
-                plugins: {
-                    legend: {
-                        display: false
-                    }
-                }
+        this.filteredData.forEach(item => {
+            const category = item.category || 'Other';
+            const symbol = item.symbol;
+            const turnoverLacs = parseFloat(item.current_turnover_lacs) || 0;
+            const deliveryIncPct = parseFloat(item.delivery_increase_pct) || 0;
+            const deliveryIncAbs = parseFloat(item.delivery_increase_abs) || 0;
+
+            if (!categoryMap.has(category)) {
+                categoryMap.set(category, {
+                    name: category,
+                    children: [],
+                    value: 0
+                });
             }
+
+            const categoryData = categoryMap.get(category);
+            categoryData.children.push({
+                name: symbol,
+                value: turnoverLacs,
+                deliveryIncPct: deliveryIncPct,
+                deliveryIncAbs: deliveryIncAbs,
+                category: category
+            });
+            categoryData.value += turnoverLacs;
         });
-    }
 
-    renderDataTable() {
-        const tbody = document.getElementById('tableBody');
-        const startIndex = (this.currentPage - 1) * this.itemsPerPage;
-        const endIndex = startIndex + this.itemsPerPage;
-        const pageData = this.filteredData.slice(startIndex, endIndex);
+        // Convert to hierarchical structure
+        const treeMapData = {
+            name: "Market",
+            children: Array.from(categoryMap.values()).sort((a, b) => b.value - a.value)
+        };
 
-        tbody.innerHTML = pageData.map(row => `
-            <tr class="clickable-row" onclick="dashboard.drillDownToSymbol('${row.symbol}')">
-                <td><strong>${row.symbol}</strong></td>
-                <td><span class="index-badge clickable" onclick="event.stopPropagation(); dashboard.drillDownToIndex('${row.index_name}')">${row.index_name}</span></td>
-                <td><span class="category-badge ${row.category.toLowerCase().replace(' ', '-')} clickable" onclick="event.stopPropagation(); dashboard.drillDownToCategory('${row.category}')">${row.category}</span></td>
-                <td>${row.current_deliv_qty?.toLocaleString() || '--'}</td>
-                <td><span class="increase-value">${row.delivery_increase_pct.toFixed(2)}%</span></td>
-                <td>${row.comparison_type}</td>
-                <td>${new Date(row.current_trade_date).toLocaleDateString()}</td>
-            </tr>
-        `).join('');
-
-        this.renderPagination();
-    }
-
-    renderPagination() {
-        const totalPages = Math.ceil(this.filteredData.length / this.itemsPerPage);
-        const pagination = document.getElementById('pagination');
-        
-        let paginationHTML = '';
-        
-        // Previous button
-        paginationHTML += `<button class="page-btn" ${this.currentPage === 1 ? 'disabled' : ''} onclick="dashboard.goToPage(${this.currentPage - 1})">Previous</button>`;
-        
-        // Page numbers
-        for (let i = Math.max(1, this.currentPage - 2); i <= Math.min(totalPages, this.currentPage + 2); i++) {
-            paginationHTML += `<button class="page-btn ${i === this.currentPage ? 'active' : ''}" onclick="dashboard.goToPage(${i})">${i}</button>`;
-        }
-        
-        // Next button
-        paginationHTML += `<button class="page-btn" ${this.currentPage === totalPages ? 'disabled' : ''} onclick="dashboard.goToPage(${this.currentPage + 1})">Next</button>`;
-        
-        pagination.innerHTML = paginationHTML;
-    }
-
-    goToPage(page) {
-        this.currentPage = page;
-        this.renderDataTable();
-    }
-
-    renderPerformance() {
-        this.renderTopPerformers();
-        this.renderPerformanceChart();
-    }
-
-    renderTopPerformers() {
-        const topPerformers = [...this.filteredData]
-            .sort((a, b) => b.delivery_increase_pct - a.delivery_increase_pct)
-            .slice(0, 10);
-
-        const container = document.getElementById('topPerformersList');
-        container.innerHTML = topPerformers.map((performer, index) => `
-            <div class="performer-item">
-                <div>
-                    <div class="performer-symbol">#${index + 1} ${performer.symbol}</div>
-                    <div class="performer-index">${performer.index_name}</div>
-                </div>
-                <div class="performer-increase">${performer.delivery_increase_pct.toFixed(2)}%</div>
-            </div>
-        `).join('');
-    }
-
-    renderPerformanceChart() {
-        const ctx = document.getElementById('performanceChart').getContext('2d');
-        
-        if (this.charts.performance) {
-            this.charts.performance.destroy();
-        }
-
-        const performanceData = this.getPerformanceDistribution();
-        
-        this.charts.performance = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: performanceData.labels,
-                datasets: [{
-                    label: 'Number of Stocks',
-                    data: performanceData.values,
-                    backgroundColor: '#ff6b35',
-                    borderColor: '#e55a2b',
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                },
-                onClick: (event, elements) => {
-                    if (elements.length > 0) {
-                        const elementIndex = elements[0].index;
-                        const range = performanceData.labels[elementIndex];
-                        this.drillDownToPerformanceRange(range);
-                    }
-                },
-                onHover: (event, elements) => {
-                    event.native.target.style.cursor = elements.length > 0 ? 'pointer' : 'default';
-                }
-            }
+        // Sort children within each category
+        treeMapData.children.forEach(category => {
+            category.children.sort((a, b) => b.value - a.value);
         });
+
+        return treeMapData;
     }
 
-    renderIndices() {
-        this.renderIndexCards();
-        this.renderIndexChart();
-    }
+    renderForceDirectedGraph(data) {
+        const container = document.getElementById('forceDirectedGraph');
+        console.log('renderForceDirectedGraph called, container found:', !!container);
+        if (!container) return;
 
-    renderIndexCards() {
-        const indexData = this.getIndexData();
-        const container = document.getElementById('indexCards');
+        // Clear existing content
+        container.innerHTML = '';
+
+        // Create visualization info
+        const info = document.createElement('div');
+        info.className = 'visualization-info';
+        info.innerHTML = `
+            <h3>Index-Stock Relationships</h3>
+            <p><strong>Nodes:</strong> ${data.nodes.length} (${data.nodes.filter(n => n.type === 'index').length} indices, ${data.nodes.filter(n => n.type === 'symbol').length} symbols)</p>
+            <p><strong>Links:</strong> ${data.links.length} symbol-index connections</p>
+            <p><strong>Total Market Size:</strong> ₹${data.nodes.filter(n => n.type === 'index').reduce((sum, n) => sum + n.size, 0).toFixed(2)}L</p>
+        `;
+        container.appendChild(info);
+
+        // Create actual data visualization
+        const visualization = document.createElement('div');
+        visualization.className = 'force-graph-data';
         
-        container.innerHTML = indexData.map(index => `
-            <div class="index-card">
-                <div class="index-name">${index.name}</div>
-                <div class="index-count">${index.count}</div>
-                <div class="index-category">${index.category}</div>
-            </div>
-        `).join('');
-    }
-
-    renderIndexChart() {
-        const ctx = document.getElementById('indexChart').getContext('2d');
-        
-        if (this.charts.index) {
-            this.charts.index.destroy();
-        }
-
-        const indexData = this.getIndexData();
-        
-        this.charts.index = new Chart(ctx, {
-            type: 'horizontalBar',
-            data: {
-                labels: indexData.map(d => d.name),
-                datasets: [{
-                    label: 'Alert Count',
-                    data: indexData.map(d => d.count),
-                    backgroundColor: '#1c3f7c',
-                    borderColor: '#2c5aa0',
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    x: {
-                        beginAtZero: true
-                    }
-                },
-                onClick: (event, elements) => {
-                    if (elements.length > 0) {
-                        const elementIndex = elements[0].index;
-                        const indexName = indexData[elementIndex].name;
-                        this.drillDownToIndex(indexName);
-                    }
-                },
-                onHover: (event, elements) => {
-                    event.native.target.style.cursor = elements.length > 0 ? 'pointer' : 'default';
-                }
-            }
-        });
-    }
-
-    renderSectors() {
-        this.renderSectorHeatmap();
-        this.renderSectorDetails();
-    }
-
-    renderSectorHeatmap() {
-        const sectorData = this.getSectorData();
-        const container = document.getElementById('sectorHeatmap');
-        
-        container.innerHTML = sectorData.map(sector => {
-            let intensity = 'low';
-            if (sector.avgIncrease > 100) intensity = 'high';
-            else if (sector.avgIncrease > 50) intensity = 'medium';
+        // Show top indices by size
+        const topIndices = data.nodes
+            .filter(n => n.type === 'index')
+            .sort((a, b) => b.size - a.size)
+            .slice(0, 6);
             
+        const indicesDisplay = topIndices.map(index => {
+            const connectedSymbols = data.links.filter(link => link.source === index.id).length;
             return `
-                <div class="heatmap-item ${intensity} clickable" onclick="dashboard.drillDownToSector('${sector.name}')">
-                    <div class="sector-name">${sector.name}</div>
-                    <div class="sector-value">${sector.avgIncrease.toFixed(1)}%</div>
+                <div class="index-card">
+                    <h4>${index.id}</h4>
+                    <p>Size: ₹${index.size.toFixed(2)}L</p>
+                    <p>Symbols: ${connectedSymbols}</p>
+                    <div class="index-bar" style="width: ${Math.min(100, (index.size / topIndices[0].size) * 100)}%"></div>
                 </div>
             `;
         }).join('');
+
+        visualization.innerHTML = `
+            <div class="network-visualization">
+                <h4>Top Indices by Market Size</h4>
+                <div class="indices-grid">
+                    ${indicesDisplay}
+                </div>
+            </div>
+        `;
+        container.appendChild(visualization);
     }
 
-    renderSectorDetails() {
-        const sectorData = this.getSectorData();
-        const container = document.getElementById('sectorDetailsList');
+    renderTreeMap(data) {
+        const container = document.getElementById('treeMap');
+        console.log('renderTreeMap called, container found:', !!container);
+        if (!container) return;
+
+        // Clear existing content
+        container.innerHTML = '';
+
+        // Create visualization info
+        const info = document.createElement('div');
+        info.className = 'visualization-info';
+        info.innerHTML = `
+            <h3>Market Hierarchy</h3>
+            <p><strong>Categories:</strong> ${data.children.length}</p>
+            <p><strong>Total Symbols:</strong> ${data.children.reduce((sum, cat) => sum + cat.children.length, 0)}</p>
+            <p><strong>Total Market Value:</strong> ₹${data.children.reduce((sum, cat) => sum + cat.value, 0).toFixed(2)}L</p>
+        `;
+        container.appendChild(info);
+
+        // Create sample visualization with top categories
+        const visualization = document.createElement('div');
+        visualization.className = 'treemap-placeholder';
         
-        container.innerHTML = sectorData.map(sector => `
-            <div class="sector-detail-item">
-                <h4>${sector.name}</h4>
-                <p>Count: ${sector.count} | Avg: ${sector.avgIncrease.toFixed(2)}% | Max: ${sector.maxIncrease.toFixed(2)}%</p>
+        const topCategories = data.children.slice(0, 5);
+        const categoryBoxes = topCategories.map(category => `
+            <div class="category-box" style="flex: ${category.value}">
+                <h4>${category.name}</h4>
+                <p>₹${category.value.toFixed(2)}L</p>
+                <p>${category.children.length} symbols</p>
             </div>
         `).join('');
+
+        visualization.innerHTML = `
+            <div class="treemap-container">
+                <h4>Top Categories by Turnover</h4>
+                <div class="category-boxes">
+                    ${categoryBoxes}
+                </div>
+            </div>
+        `;
+        container.appendChild(visualization);
     }
 
-    renderComparison() {
-        this.updateComparisonChart();
-    }
+    renderHierarchicalDistribution(data) {
+        const container = document.getElementById('sunburstChart');
+        console.log('renderHierarchicalDistribution called, container found:', !!container);
+        if (!container) return;
 
-    updateComparisonChart() {
-        const ctx = document.getElementById('comparisonChart').getContext('2d');
+        // Clear existing content
+        container.innerHTML = '';
+
+        // Create visualization info
+        const info = document.createElement('div');
+        info.className = 'visualization-info';
+        info.innerHTML = `
+            <h3>Hierarchical Market Structure</h3>
+            <p><strong>Categories:</strong> ${data.children.length}</p>
+            <p><strong>Levels:</strong> Category → Symbol → Delivery</p>
+            <p><strong>Total Market:</strong> ₹${data.children.reduce((sum, cat) => sum + cat.value, 0).toFixed(2)}L</p>
+        `;
+        container.appendChild(info);
+
+        // Create hierarchical rings display
+        const visualization = document.createElement('div');
+        visualization.className = 'sunburst-data';
         
-        if (this.charts.comparison) {
-            this.charts.comparison.destroy();
+        // Calculate percentages for each category
+        const totalValue = data.children.reduce((sum, cat) => sum + cat.value, 0);
+        const categoryRings = data.children.slice(0, 8).map((category, index) => {
+            const percentage = ((category.value / totalValue) * 100);
+            const topSymbols = category.children.slice(0, 3);
+            
+            return `
+                <div class="category-ring" style="--ring-color: hsl(${index * 45}, 70%, 60%)">
+                    <div class="ring-header">
+                        <h4>${category.name}</h4>
+                        <span class="ring-percentage">${percentage.toFixed(1)}%</span>
+                    </div>
+                    <div class="ring-value">₹${category.value.toFixed(2)}L</div>
+                    <div class="ring-symbols">
+                        ${topSymbols.map(symbol => `<span class="symbol-tag">${symbol.name}</span>`).join('')}
+                        ${category.children.length > 3 ? `<span class="more-symbols">+${category.children.length - 3} more</span>` : ''}
+                    </div>
+                </div>
+            `;
+        }).join('');
+
+        visualization.innerHTML = `
+            <div class="sunburst-container">
+                <h4>Market Hierarchy Breakdown</h4>
+                <div class="category-rings">
+                    ${categoryRings}
+                </div>
+            </div>
+        `;
+        container.appendChild(visualization);
+    }
+
+    renderMultiMetricAnalysis() {
+        const container = document.getElementById('parallelCoordinates');
+        console.log('renderMultiMetricAnalysis called, container found:', !!container);
+        if (!container) return;
+
+        // Clear existing content
+        container.innerHTML = '';
+
+        // Prepare multi-metric data
+        const topStocks = this.filteredData
+            .filter(item => parseFloat(item.current_turnover_lacs) > 0)
+            .sort((a, b) => parseFloat(b.current_turnover_lacs) - parseFloat(a.current_turnover_lacs))
+            .slice(0, 10);
+
+        // Create visualization info
+        const info = document.createElement('div');
+        info.className = 'visualization-info';
+        info.innerHTML = `
+            <h3>Multi-Dimensional Stock Analysis</h3>
+            <p><strong>Top Performers:</strong> ${topStocks.length} stocks by turnover</p>
+            <p><strong>Metrics:</strong> Turnover, Delivery %, Delivery Increase, Volume</p>
+            <p><strong>Analysis:</strong> Correlation patterns across multiple dimensions</p>
+        `;
+        container.appendChild(info);
+
+        // Create metrics table
+        const visualization = document.createElement('div');
+        visualization.className = 'parallel-coordinates-data';
+        
+        // Calculate metric scales
+        const maxTurnover = Math.max(...topStocks.map(s => parseFloat(s.current_turnover_lacs)));
+        const maxDelivPct = Math.max(...topStocks.map(s => parseFloat(s.delivery_increase_pct) || 0));
+        const maxDelivQty = Math.max(...topStocks.map(s => parseFloat(s.current_deliv_qty) || 0));
+
+        const stockRows = topStocks.map((stock, index) => {
+            const turnover = parseFloat(stock.current_turnover_lacs) || 0;
+            const delivPct = parseFloat(stock.delivery_increase_pct) || 0;
+            const delivQty = parseFloat(stock.current_deliv_qty) || 0;
+            const delivIncrease = parseFloat(stock.delivery_increase_abs) || 0;
+            
+            // Normalize values for bar display (0-100%)
+            const turnoverNorm = (turnover / maxTurnover) * 100;
+            const delivPctNorm = Math.min(100, Math.abs(delivPct / maxDelivPct) * 100);
+            const delivQtyNorm = (delivQty / maxDelivQty) * 100;
+            
+            return `
+                <tr class="stock-row">
+                    <td class="stock-symbol">${stock.symbol}</td>
+                    <td class="metric-cell">
+                        <div class="metric-bar turnover-bar" style="width: ${turnoverNorm}%"></div>
+                        <span class="metric-value">₹${turnover.toFixed(2)}L</span>
+                    </td>
+                    <td class="metric-cell">
+                        <div class="metric-bar delivery-pct-bar" style="width: ${delivPctNorm}%"></div>
+                        <span class="metric-value">${delivPct.toFixed(2)}%</span>
+                    </td>
+                    <td class="metric-cell">
+                        <div class="metric-bar delivery-qty-bar" style="width: ${delivQtyNorm}%"></div>
+                        <span class="metric-value">${(delivQty/1000).toFixed(1)}K</span>
+                    </td>
+                    <td class="metric-cell">
+                        <span class="metric-value trend-${delivIncrease > 0 ? 'up' : 'down'}">${(delivIncrease/1000).toFixed(1)}K</span>
+                    </td>
+                </tr>
+            `;
+        }).join('');
+
+        visualization.innerHTML = `
+            <div class="parallel-coordinates-container">
+                <h4>Top Stocks Multi-Metric Comparison</h4>
+                <table class="metrics-table">
+                    <thead>
+                        <tr>
+                            <th>Symbol</th>
+                            <th>Turnover (₹L)</th>
+                            <th>Delivery Change (%)</th>
+                            <th>Delivery Qty (K)</th>
+                            <th>Qty Increase (K)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${stockRows}
+                    </tbody>
+                </table>
+            </div>
+        `;
+        container.appendChild(visualization);
+    }
+
+    // Tab 2: Symbol Analysis
+    renderSymbolAnalysis() {
+        console.log('renderSymbolAnalysis called, selectedSymbol:', this.selectedSymbol);
+        
+        if (!this.selectedSymbol) {
+            this.renderDefaultSymbolView();
+            return;
         }
 
-        const comparisonData = this.getComparisonData();
+        const symbolData = this.data.find(item => item.symbol === this.selectedSymbol);
         
-        this.charts.comparison = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: comparisonData.labels,
-                datasets: comparisonData.datasets
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                }
-            }
-        });
-    }
-
-    // Data processing methods
-    getCategoryDistribution() {
-        const categories = {};
-        this.filteredData.forEach(d => {
-            categories[d.category] = (categories[d.category] || 0) + 1;
-        });
-        
-        return {
-            labels: Object.keys(categories),
-            values: Object.values(categories)
-        };
-    }
-
-    getTrendData() {
-        const trends = {};
-        this.filteredData.forEach(d => {
-            const month = d.comparison_type;
-            trends[month] = (trends[month] || 0) + 1;
-        });
-        
-        return {
-            labels: Object.keys(trends),
-            values: Object.values(trends)
-        };
-    }
-
-    getPerformanceDistribution() {
-        const ranges = {
-            '0-50%': 0,
-            '50-100%': 0,
-            '100-500%': 0,
-            '500-1000%': 0,
-            '1000%+': 0
-        };
-        
-        this.filteredData.forEach(d => {
-            const increase = d.delivery_increase_pct;
-            if (increase <= 50) ranges['0-50%']++;
-            else if (increase <= 100) ranges['50-100%']++;
-            else if (increase <= 500) ranges['100-500%']++;
-            else if (increase <= 1000) ranges['500-1000%']++;
-            else ranges['1000%+']++;
-        });
-        
-        return {
-            labels: Object.keys(ranges),
-            values: Object.values(ranges)
-        };
-    }
-
-    getIndexData() {
-        const indices = {};
-        this.filteredData.forEach(d => {
-            if (!indices[d.index_name]) {
-                indices[d.index_name] = {
-                    name: d.index_name,
-                    count: 0,
-                    category: d.category
-                };
-            }
-            indices[d.index_name].count++;
-        });
-        
-        return Object.values(indices).sort((a, b) => b.count - a.count);
-    }
-
-    getSectorData() {
-        const sectors = {};
-        this.filteredData.forEach(d => {
-            if (d.category === 'Sectoral') {
-                if (!sectors[d.index_name]) {
-                    sectors[d.index_name] = {
-                        name: d.index_name,
-                        count: 0,
-                        totalIncrease: 0,
-                        maxIncrease: 0
-                    };
-                }
-                sectors[d.index_name].count++;
-                sectors[d.index_name].totalIncrease += d.delivery_increase_pct;
-                sectors[d.index_name].maxIncrease = Math.max(sectors[d.index_name].maxIncrease, d.delivery_increase_pct);
-            }
-        });
-        
-        return Object.values(sectors).map(sector => ({
-            ...sector,
-            avgIncrease: sector.totalIncrease / sector.count
-        }));
-    }
-
-    getComparisonData() {
-        const comparisons = {};
-        this.filteredData.forEach(d => {
-            if (!comparisons[d.comparison_type]) {
-                comparisons[d.comparison_type] = [];
-            }
-            comparisons[d.comparison_type].push(d.delivery_increase_pct);
-        });
-        
-        const labels = Object.keys(comparisons);
-        const datasets = [{
-            label: 'Average Increase',
-            data: labels.map(label => {
-                const values = comparisons[label];
-                return values.reduce((sum, val) => sum + val, 0) / values.length;
-            }),
-            borderColor: '#1c3f7c',
-            backgroundColor: 'rgba(28, 63, 124, 0.1)',
-            borderWidth: 2,
-            fill: false
-        }];
-        
-        return { labels, datasets };
-    }
-
-    // Filter and search methods
-    filterByCategory(category) {
-        if (category === 'all') {
-            this.filteredData = [...this.data];
-        } else {
-            this.filteredData = this.data.filter(d => d.category === category);
+        if (!symbolData) {
+            this.renderSymbolNotFound();
+            return;
         }
-        this.currentPage = 1;
-        this.renderDashboard();
+
+        console.log('Rendering symbol analysis for:', this.selectedSymbol);
+        console.log('Symbol data:', symbolData);
+        
+        // Calculate and display KPIs
+        this.renderSymbolKPIs(symbolData);
+        
+        // Render visualizations
+        this.renderDeliveryTrendChart(symbolData);
+        this.renderVolumeProfileChart(symbolData);
+        this.renderDeliveryEfficiencyGauge(symbolData);
+        this.renderComparativeMetricsTable(symbolData);
     }
 
-    searchSymbols(query) {
-        if (!query) {
-            this.filteredData = [...this.data];
-        } else {
-            this.filteredData = this.data.filter(d => 
-                d.symbol.toLowerCase().includes(query.toLowerCase())
+    selectSymbol(symbol) {
+        console.log('selectSymbol called with:', symbol);
+        this.selectedSymbol = symbol;
+        document.getElementById('symbolSearch').value = symbol;
+        
+        // Switch to symbol analysis tab if not already there
+        if (this.currentTab !== 'symbol-analysis') {
+            this.switchTab('symbol-analysis');
+        }
+        
+        // Always render symbol analysis when a symbol is selected
+        this.renderSymbolAnalysis();
+    }
+
+    searchSymbol(searchTerm) {
+        // Enhanced autocomplete functionality could be added here
+        // For now, we'll handle the search when Enter is pressed or search button clicked
+        if (searchTerm && searchTerm.length >= 2) {
+            // Find matching symbols
+            const matches = this.data.filter(item => 
+                item.symbol && item.symbol.toLowerCase().includes(searchTerm.toLowerCase())
             );
-        }
-        this.currentPage = 1;
-        this.renderDataTable();
-    }
-
-    sortData(field) {
-        this.filteredData.sort((a, b) => {
-            if (field === 'current_trade_date') {
-                return new Date(b[field]) - new Date(a[field]);
+            
+            if (matches.length > 0) {
+                // Auto-select first match if exact match found
+                const exactMatch = matches.find(item => 
+                    item.symbol.toLowerCase() === searchTerm.toLowerCase()
+                );
+                if (exactMatch) {
+                    this.selectSymbol(exactMatch.symbol);
+                }
             }
-            return b[field] - a[field];
-        });
-        this.currentPage = 1;
-        this.renderDataTable();
+        }
     }
 
-    toggleChartType(type) {
-        document.querySelectorAll('.chart-toggle').forEach(btn => {
-            btn.classList.remove('active');
-        });
-        document.querySelector(`[data-chart="${type}"]`).classList.add('active');
-        this.renderCategoryChart();
+    renderSymbolAnalysis() {
+        console.log('renderSymbolAnalysis called');
+        console.log('Selected symbol:', this.selectedSymbol);
+        console.log('Data length:', this.data.length);
+        
+        // Debug: Show first few symbols in data
+        if (this.data && this.data.length > 0) {
+            console.log('Available symbols (first 10):', this.data.slice(0, 10).map(item => item.symbol));
+            console.log('Sample data structure:', this.data[0]);
+        }
+        
+        if (!this.selectedSymbol) {
+            console.log('No symbol selected, rendering default view');
+            this.renderDefaultSymbolView();
+            return;
+        }
+
+        const symbolData = this.data.find(item => item.symbol === this.selectedSymbol);
+        console.log('Found symbol data:', symbolData);
+        
+        if (!symbolData) {
+            console.log('Symbol not found in data:', this.selectedSymbol);
+            this.renderSymbolNotFound();
+            return;
+        }
+
+        console.log('Rendering symbol analysis for:', this.selectedSymbol);
+        console.log('Symbol data:', symbolData);
+        
+        // Calculate and display KPIs
+        this.renderSymbolKPIs(symbolData);
+        
+        // Render visualizations
+        this.renderDeliveryTrendChart(symbolData);
+        this.renderVolumeProfileChart(symbolData);
+        this.renderDeliveryEfficiencyGauge(symbolData);
+        this.renderComparativeMetricsTable(symbolData);
     }
 
-    updateTrendChart(metric) {
-        this.renderTrendChart();
+    renderSymbolKPIs(symbolData) {
+        const kpis = this.calculateSymbolAnalysisKPIs(symbolData);
+        
+        // Update all KPI cards with enhanced data
+        document.getElementById('currentDeliveryPercentage').textContent = `${kpis.currentDeliveryPercentage.toFixed(2)}%`;
+        document.getElementById('monthOverMonthChange').textContent = `${kpis.monthOverMonthChange >= 0 ? '+' : ''}${kpis.monthOverMonthChange.toFixed(2)}%`;
+        document.getElementById('currentTradingVolume').textContent = this.formatNumber(kpis.currentTradingVolume);
+        document.getElementById('deliveryTradingRatio').textContent = `${kpis.deliveryTradingRatio.toFixed(2)}%`;
+        document.getElementById('deliveryQuantityChange').textContent = `${kpis.deliveryQuantityChange >= 0 ? '+' : ''}${this.formatNumber(kpis.deliveryQuantityChange)}`;
+
+        // Update trend indicator with enhanced logic
+        const trendElement = document.getElementById('deliveryTrend');
+        if (kpis.monthOverMonthChange > 5) {
+            trendElement.textContent = '↗ Strong Bullish';
+            trendElement.className = 'kpi-trend positive';
+        } else if (kpis.monthOverMonthChange > 0) {
+            trendElement.textContent = '↗ Bullish';
+            trendElement.className = 'kpi-trend positive';
+        } else if (kpis.monthOverMonthChange < -5) {
+            trendElement.textContent = '↘ Strong Bearish';
+            trendElement.className = 'kpi-trend negative';
+        } else if (kpis.monthOverMonthChange < 0) {
+            trendElement.textContent = '↘ Bearish';
+            trendElement.className = 'kpi-trend negative';
+        } else {
+            trendElement.textContent = '→ Neutral';
+            trendElement.className = 'kpi-trend';
+        }
+    }
+
+    calculateSymbolAnalysisKPIs(symbolData) {
+        const currentDeliveryPercentage = parseFloat(symbolData.current_deliv_per) || 0;
+        const monthOverMonthChange = parseFloat(symbolData.delivery_increase_pct) || 0;
+        const deliveryQuantityChange = parseFloat(symbolData.delivery_increase_abs) || 0;
+        const currentTradingVolume = parseFloat(symbolData.current_ttl_trd_qnty) || 0;
+        const currentDelivQty = parseFloat(symbolData.current_deliv_qty) || 0;
+        
+        const deliveryTradingRatio = currentTradingVolume > 0 ? 
+            (currentDelivQty / currentTradingVolume) * 100 : 0;
+
+        return {
+            currentDeliveryPercentage,
+            monthOverMonthChange,
+            deliveryQuantityChange,
+            currentTradingVolume,
+            deliveryTradingRatio
+        };
+    }
+
+    renderDeliveryTrendChart(symbolData) {
+        console.log('renderDeliveryTrendChart called for:', symbolData.symbol);
+        const container = document.getElementById('deliveryTrendChart');
+        if (!container) {
+            console.log('Delivery trend chart container not found');
+            return;
+        }
+
+        const currentDelivPer = parseFloat(symbolData.current_deliv_per) || 0;
+        const previousDelivPer = parseFloat(symbolData.previous_deliv_per) || 0;
+        const currentVolume = parseFloat(symbolData.current_ttl_trd_qnty) || 0;
+        const previousVolume = parseFloat(symbolData.previous_ttl_trd_qnty) || 0;
+
+        container.innerHTML = `
+            <div class="trend-chart">
+                <div class="chart-title">Delivery Percentage Trend</div>
+                <div class="trend-comparison">
+                    <div class="trend-period">
+                        <div class="period-label">Previous Month</div>
+                        <div class="period-value">${previousDelivPer.toFixed(2)}%</div>
+                        <div class="period-volume">Volume: ${this.formatNumber(previousVolume)}</div>
+                    </div>
+                    <div class="trend-arrow">
+                        <i class="fas fa-arrow-right"></i>
+                    </div>
+                    <div class="trend-period current">
+                        <div class="period-label">Current Month</div>
+                        <div class="period-value">${currentDelivPer.toFixed(2)}%</div>
+                        <div class="period-volume">Volume: ${this.formatNumber(currentVolume)}</div>
+                    </div>
+                </div>
+                <div class="trend-change ${currentDelivPer >= previousDelivPer ? 'positive' : 'negative'}">
+                    Change: ${(currentDelivPer - previousDelivPer).toFixed(2)}%
+                </div>
+            </div>
+        `;
+    }
+
+    renderVolumeProfileChart(symbolData) {
+        console.log('renderVolumeProfileChart called for:', symbolData.symbol);
+        const container = document.getElementById('volumeProfileChart');
+        if (!container) {
+            console.log('Volume profile chart container not found');
+            return;
+        }
+
+        const currentTradingVol = parseFloat(symbolData.current_ttl_trd_qnty) || 0;
+        const currentDelivVol = parseFloat(symbolData.current_deliv_qty) || 0;
+        const previousTradingVol = parseFloat(symbolData.previous_ttl_trd_qnty) || 0;
+        const previousDelivVol = parseFloat(symbolData.previous_deliv_qty) || 0;
+
+        const maxValue = Math.max(currentTradingVol, currentDelivVol, previousTradingVol, previousDelivVol);
+
+        container.innerHTML = `
+            <div class="volume-profile">
+                <div class="chart-title">Volume Comparison Analysis</div>
+                <div class="volume-bars">
+                    <div class="volume-group">
+                        <div class="group-label">Current Month</div>
+                        <div class="bar-item">
+                            <div class="bar-label">Trading Volume</div>
+                            <div class="bar-container">
+                                <div class="bar trading" style="width: ${(currentTradingVol / maxValue) * 100}%"></div>
+                                <span class="bar-value">${this.formatNumber(currentTradingVol)}</span>
+                            </div>
+                        </div>
+                        <div class="bar-item">
+                            <div class="bar-label">Delivery Volume</div>
+                            <div class="bar-container">
+                                <div class="bar delivery" style="width: ${(currentDelivVol / maxValue) * 100}%"></div>
+                                <span class="bar-value">${this.formatNumber(currentDelivVol)}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="volume-group">
+                        <div class="group-label">Previous Month</div>
+                        <div class="bar-item">
+                            <div class="bar-label">Trading Volume</div>
+                            <div class="bar-container">
+                                <div class="bar trading previous" style="width: ${(previousTradingVol / maxValue) * 100}%"></div>
+                                <span class="bar-value">${this.formatNumber(previousTradingVol)}</span>
+                            </div>
+                        </div>
+                        <div class="bar-item">
+                            <div class="bar-label">Delivery Volume</div>
+                            <div class="bar-container">
+                                <div class="bar delivery previous" style="width: ${(previousDelivVol / maxValue) * 100}%"></div>
+                                <span class="bar-value">${this.formatNumber(previousDelivVol)}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    renderDeliveryEfficiencyGauge(symbolData) {
+        console.log('renderDeliveryEfficiencyGauge called for:', symbolData.symbol);
+        const container = document.getElementById('deliveryEfficiencyGauge');
+        if (!container) {
+            console.log('Delivery efficiency gauge container not found');
+            return;
+        }
+
+        const currentDelivQty = parseFloat(symbolData.current_deliv_qty) || 0;
+        const currentTradingVol = parseFloat(symbolData.current_ttl_trd_qnty) || 0;
+        
+        const efficiency = currentTradingVol > 0 ? (currentDelivQty / currentTradingVol) * 100 : 0;
+        
+        const getEfficiencyRating = (percentage) => {
+            if (percentage >= 80) return { rating: 'Excellent', color: '#4CAF50', icon: 'fas fa-star' };
+            if (percentage >= 60) return { rating: 'Good', color: '#2196F3', icon: 'fas fa-thumbs-up' };
+            if (percentage >= 40) return { rating: 'Average', color: '#FF9800', icon: 'fas fa-minus-circle' };
+            if (percentage >= 20) return { rating: 'Below Average', color: '#FF5722', icon: 'fas fa-exclamation-triangle' };
+            return { rating: 'Poor', color: '#F44336', icon: 'fas fa-times-circle' };
+        };
+
+        const rating = getEfficiencyRating(efficiency);
+
+        container.innerHTML = `
+            <div class="efficiency-gauge">
+                <div class="gauge-header">
+                    <div class="gauge-title">Delivery Efficiency</div>
+                    <div class="gauge-subtitle">${symbolData.symbol}</div>
+                </div>
+                <div class="gauge-circle" style="--efficiency: ${efficiency}; --color: ${rating.color}">
+                    <div class="gauge-value">${efficiency.toFixed(1)}%</div>
+                </div>
+                <div class="gauge-rating" style="color: ${rating.color}">
+                    <i class="${rating.icon}"></i>
+                    <span>${rating.rating}</span>
+                </div>
+                <div class="gauge-details">
+                    <div class="detail-item">
+                        <span class="detail-label">Delivery Qty:</span>
+                        <span class="detail-value">${this.formatNumber(currentDelivQty)}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Trading Vol:</span>
+                        <span class="detail-value">${this.formatNumber(currentTradingVol)}</span>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    renderComparativeMetricsTable(symbolData) {
+        console.log('renderComparativeMetricsTable called for:', symbolData.symbol);
+        const container = document.getElementById('comparativeMetricsTable');
+        if (!container) {
+            console.log('Comparative metrics table container not found');
+            return;
+        }
+
+        const metrics = [
+            {
+                metric: 'Delivery Percentage',
+                current: parseFloat(symbolData.current_deliv_per) || 0,
+                previous: parseFloat(symbolData.previous_deliv_per) || 0,
+                change: parseFloat(symbolData.delivery_increase_pct) || 0,
+                unit: '%'
+            },
+            {
+                metric: 'Delivery Quantity',
+                current: parseFloat(symbolData.current_deliv_qty) || 0,
+                previous: parseFloat(symbolData.previous_deliv_qty) || 0,
+                change: parseFloat(symbolData.delivery_increase_abs) || 0,
+                unit: 'qty'
+            },
+            {
+                metric: 'Trading Volume',
+                current: parseFloat(symbolData.current_ttl_trd_qnty) || 0,
+                previous: parseFloat(symbolData.previous_ttl_trd_qnty) || 0,
+                change: (parseFloat(symbolData.current_ttl_trd_qnty) || 0) - (parseFloat(symbolData.previous_ttl_trd_qnty) || 0),
+                unit: 'qty'
+            },
+            {
+                metric: 'Turnover (Lakhs)',
+                current: parseFloat(symbolData.current_turnover_lacs) || 0,
+                previous: parseFloat(symbolData.previous_turnover_lacs) || 0,
+                change: (parseFloat(symbolData.current_turnover_lacs) || 0) - (parseFloat(symbolData.previous_turnover_lacs) || 0),
+                unit: '₹L'
+            }
+        ];
+
+        const calculatePercentageChange = (current, previous) => {
+            return previous > 0 ? ((current - previous) / previous) * 100 : 0;
+        };
+
+        const tableRows = metrics.map(metric => {
+            const percentChange = calculatePercentageChange(metric.current, metric.previous);
+            const changeClass = percentChange > 0 ? 'positive' : percentChange < 0 ? 'negative' : 'neutral';
+            
+            return `
+                <tr class="metric-row">
+                    <td class="metric-name">${metric.metric}</td>
+                    <td class="metric-current">${metric.unit === 'qty' ? this.formatNumber(metric.current) : metric.current.toFixed(2)}${metric.unit === '%' ? '%' : ''}</td>
+                    <td class="metric-previous">${metric.unit === 'qty' ? this.formatNumber(metric.previous) : metric.previous.toFixed(2)}${metric.unit === '%' ? '%' : ''}</td>
+                    <td class="metric-change ${changeClass}">
+                        ${metric.change >= 0 ? '+' : ''}${metric.unit === 'qty' ? this.formatNumber(metric.change) : metric.change.toFixed(2)}${metric.unit === '%' ? '%' : ''}
+                    </td>
+                    <td class="metric-percent-change ${changeClass}">
+                        ${percentChange >= 0 ? '+' : ''}${percentChange.toFixed(1)}%
+                    </td>
+                </tr>
+            `;
+        }).join('');
+
+        container.innerHTML = `
+            <div class="metrics-table">
+                <div class="table-header">
+                    <h4>Detailed Metrics Comparison - ${symbolData.symbol}</h4>
+                </div>
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Metric</th>
+                            <th>Current Month</th>
+                            <th>Previous Month</th>
+                            <th>Absolute Change</th>
+                            <th>% Change</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${tableRows}
+                    </tbody>
+                </table>
+            </div>
+        `;
+    }
+
+    renderDefaultSymbolView() {
+        // Show default values when no symbol is selected
+        document.getElementById('currentDeliveryPercentage').textContent = '--';
+        document.getElementById('monthOverMonthChange').textContent = '--';
+        document.getElementById('currentTradingVolume').textContent = '--';
+        document.getElementById('deliveryTradingRatio').textContent = '--';
+        document.getElementById('deliveryQuantityChange').textContent = '--';
+        document.getElementById('deliveryTrend').textContent = 'Select a symbol';
+        document.getElementById('deliveryTrend').className = 'kpi-trend';
+        
+        // Clear visualization containers
+        const containers = ['deliveryTrendChart', 'volumeProfileChart', 'deliveryEfficiencyGauge', 'comparativeMetricsTable'];
+        containers.forEach(containerId => {
+            const container = document.getElementById(containerId);
+            if (container) {
+                container.innerHTML = `
+                    <div class="no-symbol-message">
+                        <i class="fas fa-search"></i>
+                        <h4>No Symbol Selected</h4>
+                        <p>Please select a symbol to view detailed analysis</p>
+                    </div>
+                `;
+            }
+        });
+    }
+
+    renderSymbolNotFound() {
+        document.getElementById('currentDeliveryPercentage').textContent = 'N/A';
+        document.getElementById('monthOverMonthChange').textContent = 'N/A';
+        document.getElementById('currentTradingVolume').textContent = 'N/A';
+        document.getElementById('deliveryTradingRatio').textContent = 'N/A';
+        document.getElementById('deliveryQuantityChange').textContent = 'N/A';
+        document.getElementById('deliveryTrend').textContent = 'Not Found';
+        document.getElementById('deliveryTrend').className = 'kpi-trend';
+        
+        // Show symbol not found message in containers
+        const containers = ['deliveryTrendChart', 'volumeProfileChart', 'deliveryEfficiencyGauge', 'comparativeMetricsTable'];
+        containers.forEach(containerId => {
+            const container = document.getElementById(containerId);
+            if (container) {
+                container.innerHTML = `
+                    <div class="symbol-not-found">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <h4>Symbol Not Found</h4>
+                        <p>The symbol "${this.selectedSymbol}" was not found in the current dataset</p>
+                    </div>
+                `;
+            }
+        });
+    }
+
+    renderSelectedSymbolData() {
+        // Legacy function - now calls the enhanced renderSymbolAnalysis
+        this.renderSymbolAnalysis();
+    }
+
+    calculateSymbolKPIs(symbolData) {
+        // Legacy function - now calls the enhanced calculateSymbolAnalysisKPIs
+        return this.calculateSymbolAnalysisKPIs(symbolData);
+    }
+
+    // Tab 3: Category & Index Performance
+    renderCategoryPerformance() {
+        if (!this.filteredData || this.filteredData.length === 0) return;
+
+        const kpis = this.calculateCategoryKPIs();
+        
+        // Update KPI cards
+        document.getElementById('bestPerformingIndex').textContent = kpis.bestIndex.name;
+        document.getElementById('indexPerformance').textContent = `${kpis.bestIndex.performance.toFixed(1)}%`;
+        document.getElementById('bestPerformingCategory').textContent = kpis.bestCategory.name;
+        document.getElementById('categoryPerformance').textContent = `${kpis.bestCategory.performance.toFixed(1)}%`;
+        document.getElementById('totalWatchlistSymbols').textContent = kpis.totalSymbols.toLocaleString();
+    }
+
+    calculateCategoryKPIs() {
+        // Group by index
+        const indexPerformance = {};
+        const categoryPerformance = {};
+
+        this.filteredData.forEach(item => {
+            const indexName = item.index_name || 'Other';
+            const categoryName = item.category || 'Other';
+            const performance = parseFloat(item.delivery_percentage_change) || 0;
+
+            // Index performance
+            if (!indexPerformance[indexName]) {
+                indexPerformance[indexName] = { total: 0, count: 0 };
+            }
+            indexPerformance[indexName].total += performance;
+            indexPerformance[indexName].count += 1;
+
+            // Category performance
+            if (!categoryPerformance[categoryName]) {
+                categoryPerformance[categoryName] = { total: 0, count: 0 };
+            }
+            categoryPerformance[categoryName].total += performance;
+            categoryPerformance[categoryName].count += 1;
+        });
+
+        // Find best performing index
+        let bestIndex = { name: '--', performance: 0 };
+        Object.entries(indexPerformance).forEach(([name, data]) => {
+            const avgPerformance = data.total / data.count;
+            if (avgPerformance > bestIndex.performance) {
+                bestIndex = { name, performance: avgPerformance };
+            }
+        });
+
+        // Find best performing category
+        let bestCategory = { name: '--', performance: 0 };
+        Object.entries(categoryPerformance).forEach(([name, data]) => {
+            const avgPerformance = data.total / data.count;
+            if (avgPerformance > bestCategory.performance) {
+                bestCategory = { name, performance: avgPerformance };
+            }
+        });
+
+        return {
+            bestIndex,
+            bestCategory,
+            totalSymbols: this.filteredData.length
+        };
+    }
+
+    // Utility Functions
+    formatCurrency(value) {
+        if (value >= 10000000) { // 1 crore
+            return `₹${(value / 10000000).toFixed(2)}Cr`;
+        } else if (value >= 100000) { // 1 lakh
+            return `₹${(value / 100000).toFixed(2)}L`;
+        } else if (value >= 1000) { // 1 thousand
+            return `₹${(value / 1000).toFixed(2)}K`;
+        } else {
+            return `₹${value.toFixed(2)}`;
+        }
+    }
+
+    formatNumber(value) {
+        if (value >= 10000000) {
+            return `${(value / 10000000).toFixed(2)}Cr`;
+        } else if (value >= 100000) {
+            return `${(value / 100000).toFixed(2)}L`;
+        } else if (value >= 1000) {
+            return `${(value / 1000).toFixed(2)}K`;
+        } else {
+            return value.toLocaleString();
+        }
     }
 
     showLoading() {
@@ -887,901 +1170,33 @@ class NSEDashboard {
         document.getElementById('loadingOverlay').classList.remove('active');
     }
 
-    // Drill-down functionality methods
-    drillDownToCategory(category) {
-        this.pushDrillState('category-detail', { category });
-        this.selectedCategory = category;
-        this.filteredData = this.data.filter(d => d.category === category);
-        this.renderCurrentView();
+    showError(message) {
+        // You could implement a toast notification system here
+        console.error(message);
+        alert(message);
     }
 
-    drillDownToIndex(indexName) {
-        this.pushDrillState('index-detail', { index: indexName });
-        this.selectedIndex = indexName;
-        this.filteredData = this.data.filter(d => d.index_name === indexName);
-        this.renderCurrentView();
-    }
-
-    drillDownToSymbol(symbol) {
-        this.pushDrillState('symbol-detail', { symbol });
-        this.selectedSymbol = symbol;
-        this.filteredData = this.data.filter(d => d.symbol === symbol);
-        this.renderCurrentView();
-    }
-
-    drillDownToSector(sectorName) {
-        this.pushDrillState('sector-detail', { sector: sectorName });
-        this.selectedSector = sectorName;
-        this.filteredData = this.data.filter(d => d.index_name === sectorName);
-        this.renderCurrentView();
-    }
-
-    drillDownToPerformanceRange(range) {
-        this.pushDrillState('performance-range', { range });
-        this.selectedPerformanceRange = range;
-        
-        // Filter data based on performance range
-        this.filteredData = this.data.filter(d => {
-            const increase = d.delivery_increase_pct;
-            switch (range) {
-                case '0-50%': return increase <= 50;
-                case '50-100%': return increase > 50 && increase <= 100;
-                case '100-500%': return increase > 100 && increase <= 500;
-                case '500-1000%': return increase > 500 && increase <= 1000;
-                case '1000%+': return increase > 1000;
-                default: return true;
-            }
-        });
-        
-        this.renderCurrentView();
-    }
-
-    // Detailed view renderers
-    renderCategoryDetail() {
-        const mainContent = document.querySelector('.tab-content.active .card-grid') || 
-                           document.querySelector('.tab-content.active');
-        
-        if (!mainContent) return;
-        
-        mainContent.innerHTML = `
-            <div class="drill-down-header">
-                <h2>Category Analysis: ${this.selectedCategory}</h2>
-                <p>Detailed breakdown of ${this.filteredData.length} symbols in ${this.selectedCategory} category</p>
-            </div>
-            
-            <div class="category-detail-grid">
-                <div class="card">
-                    <h3>Index Distribution in ${this.selectedCategory}</h3>
-                    <div class="chart-container">
-                        <canvas id="categoryIndexChart"></canvas>
-                    </div>
-                </div>
-                
-                <div class="card">
-                    <h3>Performance Metrics</h3>
-                    <div class="metrics-grid">
-                        <div class="metric-item">
-                            <span class="metric-label">Average Increase</span>
-                            <span class="metric-value">${this.getAverageIncrease().toFixed(2)}%</span>
-                        </div>
-                        <div class="metric-item">
-                            <span class="metric-label">Top Performer</span>
-                            <span class="metric-value">${this.getTopPerformer()}</span>
-                        </div>
-                        <div class="metric-item">
-                            <span class="metric-label">Total Symbols</span>
-                            <span class="metric-value">${this.filteredData.length}</span>
-                        </div>
-                        <div class="metric-item">
-                            <span class="metric-label">Median Increase</span>
-                            <span class="metric-value">${this.getMedianIncrease().toFixed(2)}%</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="card">
-                <h3>Symbols in ${this.selectedCategory}</h3>
-                <div class="table-container">
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>Symbol</th>
-                                <th>Index</th>
-                                <th>Delivery Qty</th>
-                                <th>Increase %</th>
-                                <th>Trade Date</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody id="categoryDetailTable">
-                            <!-- Dynamic content -->
-                        </tbody>
-                    </table>
-                </div>
-                <div id="categoryDetailPagination" class="pagination-container"></div>
-            </div>
-        `;
-        
-        this.renderCategoryIndexChart();
-        this.renderCategoryDetailTable();
-    }
-
-    renderIndexDetail() {
-        const mainContent = document.querySelector('.tab-content.active .card-grid') || 
-                           document.querySelector('.tab-content.active');
-        
-        if (!mainContent) return;
-        
-        mainContent.innerHTML = `
-            <div class="drill-down-header">
-                <h2>Index Analysis: ${this.selectedIndex}</h2>
-                <p>Detailed analysis of ${this.filteredData.length} symbols in ${this.selectedIndex}</p>
-            </div>
-            
-            <div class="index-detail-grid">
-                <div class="card">
-                    <h3>Performance Distribution</h3>
-                    <div class="chart-container">
-                        <canvas id="indexPerformanceChart"></canvas>
-                    </div>
-                </div>
-                
-                <div class="card">
-                    <h3>Top & Bottom Performers</h3>
-                    <div class="performers-grid">
-                        <div class="top-performers">
-                            <h4>Top 5 Performers</h4>
-                            <div id="indexTopPerformers"></div>
-                        </div>
-                        <div class="bottom-performers">
-                            <h4>Bottom 5 Performers</h4>
-                            <div id="indexBottomPerformers"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="card">
-                <h3>All Symbols in ${this.selectedIndex}</h3>
-                <div class="table-container">
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>Symbol</th>
-                                <th>Delivery Qty</th>
-                                <th>Increase %</th>
-                                <th>Close Price</th>
-                                <th>Trade Date</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody id="indexDetailTable">
-                            <!-- Dynamic content -->
-                        </tbody>
-                    </table>
-                </div>
-                <div id="indexDetailPagination" class="pagination-container"></div>
-            </div>
-        `;
-        
-        this.renderIndexPerformanceChart();
-        this.renderIndexTopBottomPerformers();
-        this.renderIndexDetailTable();
-    }
-
-    renderSymbolDetail() {
-        if (!this.selectedSymbol || this.filteredData.length === 0) return;
-        
-        const symbolData = this.filteredData[0]; // Should be single symbol
-        const mainContent = document.querySelector('.tab-content.active .card-grid') || 
-                           document.querySelector('.tab-content.active');
-        
-        if (!mainContent) return;
-        
-        mainContent.innerHTML = `
-            <div class="drill-down-header">
-                <h2>Symbol Analysis: ${this.selectedSymbol}</h2>
-                <p>Detailed analysis for ${symbolData.symbol} in ${symbolData.index_name}</p>
-            </div>
-            
-            <div class="symbol-detail-grid">
-                <div class="card">
-                    <h3>Symbol Overview</h3>
-                    <div class="symbol-overview">
-                        <div class="symbol-metric">
-                            <span class="label">Current Delivery Qty</span>
-                            <span class="value">${(symbolData.current_deliv_qty || 0).toLocaleString()}</span>
-                        </div>
-                        <div class="symbol-metric">
-                            <span class="label">Delivery Increase</span>
-                            <span class="value increase">${symbolData.delivery_increase_pct.toFixed(2)}%</span>
-                        </div>
-                        <div class="symbol-metric">
-                            <span class="label">Current Price</span>
-                            <span class="value">₹${(symbolData.current_close_price || 0).toFixed(2)}</span>
-                        </div>
-                        <div class="symbol-metric">
-                            <span class="label">Previous Delivery Qty</span>
-                            <span class="value">${(symbolData.previous_deliv_qty || 0).toLocaleString()}</span>
-                        </div>
-                        <div class="symbol-metric">
-                            <span class="label">Index</span>
-                            <span class="value">${symbolData.index_name}</span>
-                        </div>
-                        <div class="symbol-metric">
-                            <span class="label">Category</span>
-                            <span class="value">${symbolData.category}</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="card">
-                    <h3>Comparison Analysis</h3>
-                    <div class="comparison-details">
-                        <div class="comparison-item">
-                            <span class="label">Comparison Type</span>
-                            <span class="value">${symbolData.comparison_type}</span>
-                        </div>
-                        <div class="comparison-item">
-                            <span class="label">Current Trade Date</span>
-                            <span class="value">${new Date(symbolData.current_trade_date).toLocaleDateString()}</span>
-                        </div>
-                        <div class="comparison-item">
-                            <span class="label">Previous Trade Date</span>
-                            <span class="value">${symbolData.previous_trade_date ? new Date(symbolData.previous_trade_date).toLocaleDateString() : 'N/A'}</span>
-                        </div>
-                        <div class="comparison-item">
-                            <span class="label">Previous Price</span>
-                            <span class="value">₹${(symbolData.previous_close_price || 0).toFixed(2)}</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="card">
-                <h3>Performance Context</h3>
-                <div class="performance-context">
-                    <p><strong>Index Performance:</strong> This symbol belongs to ${symbolData.index_name} index in the ${symbolData.category} category.</p>
-                    <p><strong>Delivery Trend:</strong> The delivery quantity increased by ${symbolData.delivery_increase_pct.toFixed(2)}% compared to the previous period (${symbolData.comparison_type}).</p>
-                    <p><strong>Market Context:</strong> ${this.getSymbolMarketContext(symbolData)}</p>
-                </div>
-            </div>
-        `;
-    }
-
-    getSymbolMarketContext(symbolData) {
-        const categoryAvg = this.data
-            .filter(d => d.category === symbolData.category)
-            .reduce((sum, d) => sum + d.delivery_increase_pct, 0) / 
-            this.data.filter(d => d.category === symbolData.category).length;
-        
-        const indexAvg = this.data
-            .filter(d => d.index_name === symbolData.index_name)
-            .reduce((sum, d) => sum + d.delivery_increase_pct, 0) / 
-            this.data.filter(d => d.index_name === symbolData.index_name).length;
-        
-        const performance = symbolData.delivery_increase_pct;
-        let context = '';
-        
-        if (performance > categoryAvg * 1.5) {
-            context = `This symbol is significantly outperforming the ${symbolData.category} category average of ${categoryAvg.toFixed(2)}%.`;
-        } else if (performance > categoryAvg) {
-            context = `This symbol is performing above the ${symbolData.category} category average of ${categoryAvg.toFixed(2)}%.`;
-        } else {
-            context = `This symbol is performing below the ${symbolData.category} category average of ${categoryAvg.toFixed(2)}%.`;
+    async refreshData() {
+        this.showLoading();
+        try {
+            await this.loadData();
+            this.renderDashboard();
+        } catch (error) {
+            this.showError('Failed to refresh data');
+        } finally {
+            this.hideLoading();
         }
-        
-        context += ` Within the ${symbolData.index_name} index, the average increase is ${indexAvg.toFixed(2)}%.`;
-        
-        return context;
-    }
-
-    // Helper methods for drill-down views
-    getAverageIncrease() {
-        return this.filteredData.reduce((sum, d) => sum + d.delivery_increase_pct, 0) / this.filteredData.length;
-    }
-
-    getMedianIncrease() {
-        const sorted = [...this.filteredData].sort((a, b) => a.delivery_increase_pct - b.delivery_increase_pct);
-        const mid = Math.floor(sorted.length / 2);
-        return sorted.length % 2 !== 0 ? sorted[mid].delivery_increase_pct : 
-               (sorted[mid - 1].delivery_increase_pct + sorted[mid].delivery_increase_pct) / 2;
-    }
-
-    getTopPerformer() {
-        if (this.filteredData.length === 0) return 'N/A';
-        const top = this.filteredData.reduce((max, d) => 
-            d.delivery_increase_pct > max.delivery_increase_pct ? d : max
-        );
-        return `${top.symbol} (${top.delivery_increase_pct.toFixed(2)}%)`;
-    }
-
-    renderCategoryIndexChart() {
-        const ctx = document.getElementById('categoryIndexChart');
-        if (!ctx) return;
-        
-        const indexData = {};
-        this.filteredData.forEach(d => {
-            indexData[d.index_name] = (indexData[d.index_name] || 0) + 1;
-        });
-        
-        new Chart(ctx.getContext('2d'), {
-            type: 'bar',
-            data: {
-                labels: Object.keys(indexData),
-                datasets: [{
-                    label: 'Symbol Count',
-                    data: Object.values(indexData),
-                    backgroundColor: '#1c3f7c',
-                    borderColor: '#2c5aa0',
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                onClick: (event, elements) => {
-                    if (elements.length > 0) {
-                        const elementIndex = elements[0].index;
-                        const indexName = Object.keys(indexData)[elementIndex];
-                        this.drillDownToIndex(indexName);
-                    }
-                },
-                onHover: (event, elements) => {
-                    event.native.target.style.cursor = elements.length > 0 ? 'pointer' : 'default';
-                }
-            }
-        });
-    }
-
-    renderCategoryDetailTable() {
-        const tbody = document.getElementById('categoryDetailTable');
-        if (!tbody) return;
-        
-        const startIndex = (this.currentPage - 1) * this.itemsPerPage;
-        const endIndex = startIndex + this.itemsPerPage;
-        const pageData = this.filteredData.slice(startIndex, endIndex);
-
-        tbody.innerHTML = pageData.map(row => `
-            <tr>
-                <td><strong>${row.symbol}</strong></td>
-                <td><span class="index-badge" onclick="dashboard.drillDownToIndex('${row.index_name}')" style="cursor: pointer;">${row.index_name}</span></td>
-                <td>${(row.current_deliv_qty || 0).toLocaleString()}</td>
-                <td><span class="increase-value">${row.delivery_increase_pct.toFixed(2)}%</span></td>
-                <td>${new Date(row.current_trade_date).toLocaleDateString()}</td>
-                <td><button class="drill-btn" onclick="dashboard.drillDownToSymbol('${row.symbol}')">Details</button></td>
-            </tr>
-        `).join('');
-
-        this.renderCategoryDetailPagination();
-    }
-
-    renderCategoryDetailPagination() {
-        const totalPages = Math.ceil(this.filteredData.length / this.itemsPerPage);
-        const pagination = document.getElementById('categoryDetailPagination');
-        
-        if (!pagination) return;
-        
-        let paginationHTML = '';
-        
-        paginationHTML += `<button class="page-btn" ${this.currentPage === 1 ? 'disabled' : ''} onclick="dashboard.goToCategoryDetailPage(${this.currentPage - 1})">Previous</button>`;
-        
-        for (let i = Math.max(1, this.currentPage - 2); i <= Math.min(totalPages, this.currentPage + 2); i++) {
-            paginationHTML += `<button class="page-btn ${i === this.currentPage ? 'active' : ''}" onclick="dashboard.goToCategoryDetailPage(${i})">${i}</button>`;
-        }
-        
-        paginationHTML += `<button class="page-btn" ${this.currentPage === totalPages ? 'disabled' : ''} onclick="dashboard.goToCategoryDetailPage(${this.currentPage + 1})">Next</button>`;
-        
-        pagination.innerHTML = paginationHTML;
-    }
-
-    goToCategoryDetailPage(page) {
-        this.currentPage = page;
-        this.renderCategoryDetailTable();
-    }
-
-    renderIndexPerformanceChart() {
-        const ctx = document.getElementById('indexPerformanceChart');
-        if (!ctx) return;
-        
-        const ranges = {
-            '0-50%': 0, '50-100%': 0, '100-500%': 0, '500-1000%': 0, '1000%+': 0
-        };
-        
-        this.filteredData.forEach(d => {
-            const increase = d.delivery_increase_pct;
-            if (increase <= 50) ranges['0-50%']++;
-            else if (increase <= 100) ranges['50-100%']++;
-            else if (increase <= 500) ranges['100-500%']++;
-            else if (increase <= 1000) ranges['500-1000%']++;
-            else ranges['1000%+']++;
-        });
-        
-        new Chart(ctx.getContext('2d'), {
-            type: 'bar',
-            data: {
-                labels: Object.keys(ranges),
-                datasets: [{
-                    label: 'Number of Symbols',
-                    data: Object.values(ranges),
-                    backgroundColor: '#ff6b35',
-                    borderColor: '#e55a2b',
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                onClick: (event, elements) => {
-                    if (elements.length > 0) {
-                        const elementIndex = elements[0].index;
-                        const range = Object.keys(ranges)[elementIndex];
-                        this.drillDownToPerformanceRange(range);
-                    }
-                },
-                onHover: (event, elements) => {
-                    event.native.target.style.cursor = elements.length > 0 ? 'pointer' : 'default';
-                }
-            }
-        });
-    }
-
-    renderIndexTopBottomPerformers() {
-        const sorted = [...this.filteredData].sort((a, b) => b.delivery_increase_pct - a.delivery_increase_pct);
-        const top5 = sorted.slice(0, 5);
-        const bottom5 = sorted.slice(-5).reverse();
-        
-        const topContainer = document.getElementById('indexTopPerformers');
-        const bottomContainer = document.getElementById('indexBottomPerformers');
-        
-        if (topContainer) {
-            topContainer.innerHTML = top5.map((item, index) => `
-                <div class="performer-item" onclick="dashboard.drillDownToSymbol('${item.symbol}')" style="cursor: pointer;">
-                    <span class="rank">#${index + 1}</span>
-                    <span class="symbol">${item.symbol}</span>
-                    <span class="increase">${item.delivery_increase_pct.toFixed(2)}%</span>
-                </div>
-            `).join('');
-        }
-        
-        if (bottomContainer) {
-            bottomContainer.innerHTML = bottom5.map((item, index) => `
-                <div class="performer-item" onclick="dashboard.drillDownToSymbol('${item.symbol}')" style="cursor: pointer;">
-                    <span class="rank">#${sorted.length - index}</span>
-                    <span class="symbol">${item.symbol}</span>
-                    <span class="increase">${item.delivery_increase_pct.toFixed(2)}%</span>
-                </div>
-            `).join('');
-        }
-    }
-
-    renderIndexDetailTable() {
-        const tbody = document.getElementById('indexDetailTable');
-        if (!tbody) return;
-        
-        const startIndex = (this.currentPage - 1) * this.itemsPerPage;
-        const endIndex = startIndex + this.itemsPerPage;
-        const pageData = this.filteredData.slice(startIndex, endIndex);
-
-        tbody.innerHTML = pageData.map(row => `
-            <tr onclick="dashboard.drillDownToSymbol('${row.symbol}')" style="cursor: pointer;">
-                <td><strong>${row.symbol}</strong></td>
-                <td>${(row.current_deliv_qty || 0).toLocaleString()}</td>
-                <td><span class="increase-value">${row.delivery_increase_pct.toFixed(2)}%</span></td>
-                <td>₹${(row.current_close_price || 0).toFixed(2)}</td>
-                <td>${new Date(row.current_trade_date).toLocaleDateString()}</td>
-                <td><button class="drill-btn" onclick="event.stopPropagation(); dashboard.drillDownToSymbol('${row.symbol}')">Details</button></td>
-            </tr>
-        `).join('');
-
-        this.renderIndexDetailPagination();
-    }
-
-    renderIndexDetailPagination() {
-        const totalPages = Math.ceil(this.filteredData.length / this.itemsPerPage);
-        const pagination = document.getElementById('indexDetailPagination');
-        
-        if (!pagination) return;
-        
-        let paginationHTML = '';
-        
-        paginationHTML += `<button class="page-btn" ${this.currentPage === 1 ? 'disabled' : ''} onclick="dashboard.goToIndexDetailPage(${this.currentPage - 1})">Previous</button>`;
-        
-        for (let i = Math.max(1, this.currentPage - 2); i <= Math.min(totalPages, this.currentPage + 2); i++) {
-            paginationHTML += `<button class="page-btn ${i === this.currentPage ? 'active' : ''}" onclick="dashboard.goToIndexDetailPage(${i})">${i}</button>`;
-        }
-        
-        paginationHTML += `<button class="page-btn" ${this.currentPage === totalPages ? 'disabled' : ''} onclick="dashboard.goToIndexDetailPage(${this.currentPage + 1})">Next</button>`;
-        
-        pagination.innerHTML = paginationHTML;
-    }
-
-    goToIndexDetailPage(page) {
-        this.currentPage = page;
-        this.renderIndexDetailTable();
-    }
-
-    renderPerformanceRangeDetail() {
-        const mainContent = document.querySelector('.tab-content.active .card-grid') || 
-                           document.querySelector('.tab-content.active');
-        
-        if (!mainContent) return;
-        
-        const rangeStats = this.getPerformanceRangeStats();
-        
-        mainContent.innerHTML = `
-            <div class="drill-down-header">
-                <h2>Performance Range Analysis: ${this.selectedPerformanceRange}</h2>
-                <p>Detailed analysis of ${this.filteredData.length} symbols in ${this.selectedPerformanceRange} performance range</p>
-            </div>
-            
-            <div class="performance-range-grid">
-                <div class="card">
-                    <h3>Range Statistics</h3>
-                    <div class="range-stats">
-                        <div class="stat-item">
-                            <span class="label">Total Symbols</span>
-                            <span class="value">${this.filteredData.length}</span>
-                        </div>
-                        <div class="stat-item">
-                            <span class="label">Average Increase</span>
-                            <span class="value">${rangeStats.average.toFixed(2)}%</span>
-                        </div>
-                        <div class="stat-item">
-                            <span class="label">Median Increase</span>
-                            <span class="value">${rangeStats.median.toFixed(2)}%</span>
-                        </div>
-                        <div class="stat-item">
-                            <span class="label">Range Span</span>
-                            <span class="value">${rangeStats.min.toFixed(2)}% - ${rangeStats.max.toFixed(2)}%</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="card">
-                    <h3>Category Distribution</h3>
-                    <div class="chart-container">
-                        <canvas id="rangeCategoyChart"></canvas>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="card">
-                <h3>Symbols in ${this.selectedPerformanceRange} Range</h3>
-                <div class="table-container">
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>Symbol</th>
-                                <th>Index</th>
-                                <th>Category</th>
-                                <th>Increase %</th>
-                                <th>Delivery Qty</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody id="rangeDetailTable">
-                            <!-- Dynamic content -->
-                        </tbody>
-                    </table>
-                </div>
-                <div id="rangeDetailPagination" class="pagination-container"></div>
-            </div>
-        `;
-        
-        this.renderRangeCategoryChart();
-        this.renderRangeDetailTable();
-    }
-
-    getPerformanceRangeStats() {
-        const increases = this.filteredData.map(d => d.delivery_increase_pct);
-        const sorted = [...increases].sort((a, b) => a - b);
-        const mid = Math.floor(sorted.length / 2);
-        
-        return {
-            average: increases.reduce((sum, val) => sum + val, 0) / increases.length,
-            median: sorted.length % 2 !== 0 ? sorted[mid] : (sorted[mid - 1] + sorted[mid]) / 2,
-            min: Math.min(...increases),
-            max: Math.max(...increases)
-        };
-    }
-
-    renderRangeCategoryChart() {
-        const ctx = document.getElementById('rangeCategoyChart');
-        if (!ctx) return;
-        
-        const categoryData = this.getCategoryDistribution();
-        
-        new Chart(ctx.getContext('2d'), {
-            type: 'pie',
-            data: {
-                labels: categoryData.labels,
-                datasets: [{
-                    data: categoryData.values,
-                    backgroundColor: ['#1c3f7c', '#ff6b35', '#28a745', '#ffc107'],
-                    borderWidth: 2,
-                    borderColor: '#fff'
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                onClick: (event, elements) => {
-                    if (elements.length > 0) {
-                        const elementIndex = elements[0].index;
-                        const category = categoryData.labels[elementIndex];
-                        this.drillDownToCategory(category);
-                    }
-                },
-                onHover: (event, elements) => {
-                    event.native.target.style.cursor = elements.length > 0 ? 'pointer' : 'default';
-                }
-            }
-        });
-    }
-
-    renderRangeDetailTable() {
-        const tbody = document.getElementById('rangeDetailTable');
-        if (!tbody) return;
-        
-        const startIndex = (this.currentPage - 1) * this.itemsPerPage;
-        const endIndex = startIndex + this.itemsPerPage;
-        const pageData = this.filteredData.slice(startIndex, endIndex);
-
-        tbody.innerHTML = pageData.map(row => `
-            <tr onclick="dashboard.drillDownToSymbol('${row.symbol}')" style="cursor: pointer;">
-                <td><strong>${row.symbol}</strong></td>
-                <td><span class="index-badge clickable" onclick="event.stopPropagation(); dashboard.drillDownToIndex('${row.index_name}')">${row.index_name}</span></td>
-                <td><span class="category-badge ${row.category.toLowerCase().replace(' ', '-')} clickable" onclick="event.stopPropagation(); dashboard.drillDownToCategory('${row.category}')">${row.category}</span></td>
-                <td><span class="increase-value">${row.delivery_increase_pct.toFixed(2)}%</span></td>
-                <td>${(row.current_deliv_qty || 0).toLocaleString()}</td>
-                <td><button class="drill-btn" onclick="event.stopPropagation(); dashboard.drillDownToSymbol('${row.symbol}')">Details</button></td>
-            </tr>
-        `).join('');
-
-        this.renderRangeDetailPagination();
-    }
-
-    renderRangeDetailPagination() {
-        const totalPages = Math.ceil(this.filteredData.length / this.itemsPerPage);
-        const pagination = document.getElementById('rangeDetailPagination');
-        
-        if (!pagination) return;
-        
-        let paginationHTML = '';
-        
-        paginationHTML += `<button class="page-btn" ${this.currentPage === 1 ? 'disabled' : ''} onclick="dashboard.goToRangeDetailPage(${this.currentPage - 1})">Previous</button>`;
-        
-        for (let i = Math.max(1, this.currentPage - 2); i <= Math.min(totalPages, this.currentPage + 2); i++) {
-            paginationHTML += `<button class="page-btn ${i === this.currentPage ? 'active' : ''}" onclick="dashboard.goToRangeDetailPage(${i})">${i}</button>`;
-        }
-        
-        paginationHTML += `<button class="page-btn" ${this.currentPage === totalPages ? 'disabled' : ''} onclick="dashboard.goToRangeDetailPage(${this.currentPage + 1})">Next</button>`;
-        
-        pagination.innerHTML = paginationHTML;
-    }
-
-    goToRangeDetailPage(page) {
-        this.currentPage = page;
-        this.renderRangeDetailTable();
-    }
-
-    renderSectorDetail() {
-        const mainContent = document.querySelector('.tab-content.active .card-grid') || 
-                           document.querySelector('.tab-content.active');
-        
-        if (!mainContent) return;
-        
-        mainContent.innerHTML = `
-            <div class="drill-down-header">
-                <h2>Sector Analysis: ${this.selectedSector}</h2>
-                <p>Detailed analysis of ${this.filteredData.length} symbols in ${this.selectedSector} sector</p>
-            </div>
-            
-            <div class="sector-detail-analysis">
-                <div class="card">
-                    <h3>Sector Performance Overview</h3>
-                    <div class="sector-overview">
-                        <div class="sector-metric">
-                            <span class="label">Average Increase</span>
-                            <span class="value">${this.getAverageIncrease().toFixed(2)}%</span>
-                        </div>
-                        <div class="sector-metric">
-                            <span class="label">Top Performer</span>
-                            <span class="value">${this.getTopPerformer()}</span>
-                        </div>
-                        <div class="sector-metric">
-                            <span class="label">Total Symbols</span>
-                            <span class="value">${this.filteredData.length}</span>
-                        </div>
-                        <div class="sector-metric">
-                            <span class="label">Sector Category</span>
-                            <span class="value">${this.filteredData[0]?.category || 'N/A'}</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="card">
-                    <h3>Performance Distribution</h3>
-                    <div class="chart-container">
-                        <canvas id="sectorPerformanceChart"></canvas>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="card">
-                <h3>All Symbols in ${this.selectedSector}</h3>
-                <div class="table-container">
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>Symbol</th>
-                                <th>Delivery Qty</th>
-                                <th>Increase %</th>
-                                <th>Close Price</th>
-                                <th>Trade Date</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody id="sectorDetailTable">
-                            <!-- Dynamic content -->
-                        </tbody>
-                    </table>
-                </div>
-                <div id="sectorDetailPagination" class="pagination-container"></div>
-            </div>
-        `;
-        
-        this.renderSectorPerformanceChart();
-        this.renderSectorDetailTable();
-    }
-
-    renderSectorPerformanceChart() {
-        const ctx = document.getElementById('sectorPerformanceChart');
-        if (!ctx) return;
-        
-        const sorted = [...this.filteredData].sort((a, b) => b.delivery_increase_pct - a.delivery_increase_pct);
-        const top10 = sorted.slice(0, 10);
-        
-        new Chart(ctx.getContext('2d'), {
-            type: 'bar',
-            data: {
-                labels: top10.map(d => d.symbol),
-                datasets: [{
-                    label: 'Delivery Increase %',
-                    data: top10.map(d => d.delivery_increase_pct),
-                    backgroundColor: '#1c3f7c',
-                    borderColor: '#2c5aa0',
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                onClick: (event, elements) => {
-                    if (elements.length > 0) {
-                        const elementIndex = elements[0].index;
-                        const symbol = top10[elementIndex].symbol;
-                        this.drillDownToSymbol(symbol);
-                    }
-                },
-                onHover: (event, elements) => {
-                    event.native.target.style.cursor = elements.length > 0 ? 'pointer' : 'default';
-                }
-            }
-        });
-    }
-
-    renderSectorDetailTable() {
-        const tbody = document.getElementById('sectorDetailTable');
-        if (!tbody) return;
-        
-        const startIndex = (this.currentPage - 1) * this.itemsPerPage;
-        const endIndex = startIndex + this.itemsPerPage;
-        const pageData = this.filteredData.slice(startIndex, endIndex);
-
-        tbody.innerHTML = pageData.map(row => `
-            <tr onclick="dashboard.drillDownToSymbol('${row.symbol}')" style="cursor: pointer;">
-                <td><strong>${row.symbol}</strong></td>
-                <td>${(row.current_deliv_qty || 0).toLocaleString()}</td>
-                <td><span class="increase-value">${row.delivery_increase_pct.toFixed(2)}%</span></td>
-                <td>₹${(row.current_close_price || 0).toFixed(2)}</td>
-                <td>${new Date(row.current_trade_date).toLocaleDateString()}</td>
-                <td><button class="drill-btn" onclick="event.stopPropagation(); dashboard.drillDownToSymbol('${row.symbol}')">Details</button></td>
-            </tr>
-        `).join('');
-
-        this.renderSectorDetailPagination();
-    }
-
-    renderSectorDetailPagination() {
-        const totalPages = Math.ceil(this.filteredData.length / this.itemsPerPage);
-        const pagination = document.getElementById('sectorDetailPagination');
-        
-        if (!pagination) return;
-        
-        let paginationHTML = '';
-        
-        paginationHTML += `<button class="page-btn" ${this.currentPage === 1 ? 'disabled' : ''} onclick="dashboard.goToSectorDetailPage(${this.currentPage - 1})">Previous</button>`;
-        
-        for (let i = Math.max(1, this.currentPage - 2); i <= Math.min(totalPages, this.currentPage + 2); i++) {
-            paginationHTML += `<button class="page-btn ${i === this.currentPage ? 'active' : ''}" onclick="dashboard.goToSectorDetailPage(${i})">${i}</button>`;
-        }
-        
-        paginationHTML += `<button class="page-btn" ${this.currentPage === totalPages ? 'disabled' : ''} onclick="dashboard.goToSectorDetailPage(${this.currentPage + 1})">Next</button>`;
-        
-        pagination.innerHTML = paginationHTML;
-    }
-
-    goToSectorDetailPage(page) {
-        this.currentPage = page;
-        this.renderSectorDetailTable();
     }
 }
 
-// Initialize dashboard when DOM is loaded
-let dashboard;
+// Initialize the dashboard when the page loads
 document.addEventListener('DOMContentLoaded', () => {
-    dashboard = new NSEDashboard();
+    window.dashboard = new ProfessionalNSEDashboard();
 });
 
-// Add some CSS for dynamic elements
-const style = document.createElement('style');
-style.textContent = `
-    .index-badge {
-        background: #e3f2fd;
-        color: #1976d2;
-        padding: 0.25rem 0.5rem;
-        border-radius: 4px;
-        font-size: 0.8rem;
-        font-weight: 500;
+// Auto-refresh every 5 minutes
+setInterval(() => {
+    if (window.dashboard) {
+        window.dashboard.refreshData();
     }
-    
-    .category-badge {
-        padding: 0.25rem 0.5rem;
-        border-radius: 4px;
-        font-size: 0.8rem;
-        font-weight: 500;
-    }
-    
-    .category-badge.broad-market {
-        background: #e8f5e8;
-        color: #2e7d32;
-    }
-    
-    .category-badge.sectoral {
-        background: #fff3e0;
-        color: #f57c00;
-    }
-    
-    .category-badge.other {
-        background: #f3e5f5;
-        color: #7b1fa2;
-    }
-    
-    .increase-value {
-        color: #c62828;
-        font-weight: 600;
-    }
-    
-    .sector-detail-item {
-        background: #f8f9fa;
-        padding: 1rem;
-        margin-bottom: 0.5rem;
-        border-radius: 8px;
-        border-left: 4px solid #1c3f7c;
-    }
-    
-    .sector-detail-item h4 {
-        color: #1c3f7c;
-        margin-bottom: 0.5rem;
-    }
-    
-    .sector-detail-item p {
-        margin: 0;
-        color: #666;
-        font-size: 0.9rem;
-    }
-`;
-document.head.appendChild(style);
+}, 300000);

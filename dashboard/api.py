@@ -3,13 +3,14 @@ NSE Delivery Analysis Dashboard API
 Provides REST endpoints for the dashboard frontend
 """
 
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, send_from_directory
 from flask_cors import CORS
 import pyodbc
 import json
 import logging
 from datetime import datetime
 from typing import Dict, List, Optional
+import os
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
@@ -29,23 +30,31 @@ class DatabaseConnection:
             with open('database_config.json', 'r') as f:
                 config = json.load(f)
             
-            # Use master database for step03 table
-            master_config = config.get('master_database', {})
+            # Try to get from master_database first, fallback to root level
+            master_config = config.get('master_database', config)
+            
+            # Get server name and escape backslashes properly
+            server_name = master_config.get('server', 'SRIKIRANREDDY\\SQLEXPRESS')
+            database_name = master_config.get('database', 'master')
+            driver_name = master_config.get('driver', 'ODBC Driver 17 for SQL Server')
+            
+            # Use the same connection pattern as working scripts
             self.connection_string = (
-                f"DRIVER={{ODBC Driver 17 for SQL Server}};"
-                f"SERVER={master_config.get('server', 'localhost')};"
-                f"DATABASE={master_config.get('database', 'master')};"
-                f"Integrated Security=yes;"
+                f"DRIVER={{{driver_name}}};"
+                f"SERVER={server_name};"
+                f"DATABASE={database_name};"
+                f"Trusted_Connection=yes;"
             )
-            logger.info("Database configuration loaded successfully")
+            logger.info(f"Database configuration loaded successfully")
+            logger.info(f"Connection string: {self.connection_string}")
         except Exception as e:
             logger.error(f"Failed to load database config: {e}")
-            # Fallback configuration
+            # Fallback configuration using same pattern as working test
             self.connection_string = (
                 "DRIVER={ODBC Driver 17 for SQL Server};"
-                "SERVER=localhost;"
+                "SERVER=SRIKIRANREDDY\\SQLEXPRESS;"
                 "DATABASE=master;"
-                "Integrated Security=yes;"
+                "Trusted_Connection=yes;"
             )
 
     def get_connection(self):
@@ -86,6 +95,16 @@ class DatabaseConnection:
 
 # Initialize database connection
 db = DatabaseConnection()
+
+@app.route('/')
+def serve_dashboard():
+    """Serve the main dashboard HTML"""
+    return send_from_directory('.', 'index.html')
+
+@app.route('/<path:filename>')
+def serve_static_files(filename):
+    """Serve static files like CSS, JS, etc."""
+    return send_from_directory('.', filename)
 
 @app.route('/api/health', methods=['GET'])
 def health_check():
@@ -130,7 +149,7 @@ def get_delivery_data():
                 current_trade_date,
                 current_close_price,
                 previous_deliv_qty,
-                previous_trade_date,
+                previous_baseline_date,
                 previous_close_price
             FROM step03_compare_monthvspreviousmonth
             WHERE 1=1

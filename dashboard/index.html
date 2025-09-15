@@ -5,55 +5,65 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NSE Delivery Analysis Dashboard</title>
     <link rel="stylesheet" href="dashboard.css">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
     <!-- Header Section -->
-    <header class="main-header">
-        <div class="header-container">
-            <div class="logo-section">
-                <img src="https://nseindia.com/static/images/NSE_logo.png" alt="NSE Logo" class="nse-logo">
-                <div class="logo-text">
+    <header class="dashboard-header">
+        <div class="header-content">
+            <div class="brand-section">
+                <div class="brand-logo">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <div class="brand-text">
                     <h1>NSE Delivery Analysis</h1>
-                    <p>Real-time Market Insights</p>
+                    <p>Professional Market Intelligence Platform</p>
                 </div>
             </div>
             <div class="header-stats">
-                <div class="stat-item">
-                    <span class="stat-label">Last Updated</span>
+                <div class="stat-card">
+                    <span class="stat-label">Live Data</span>
                     <span class="stat-value" id="lastUpdated">--</span>
                 </div>
-                <div class="stat-item">
+                <div class="stat-card">
                     <span class="stat-label">Total Records</span>
                     <span class="stat-value" id="totalRecords">--</span>
                 </div>
-                <div class="stat-item">
-                    <span class="stat-label">Active Symbols</span>
-                    <span class="stat-value" id="activeSymbols">--</span>
+                <div class="stat-card">
+                    <span class="stat-label">Active Markets</span>
+                    <span class="stat-value" id="activeMarkets">5</span>
                 </div>
             </div>
         </div>
     </header>
 
-    <!-- Navigation Bar -->
-    <nav class="main-nav">
+    <!-- Navigation Tabs -->
+    <nav class="tab-navigation">
         <div class="nav-container">
-            <ul class="nav-links">
-                <li><a href="#overview" class="nav-link active" data-tab="overview">Overview</a></li>
-                <li><a href="#performance" class="nav-link" data-tab="performance">Top Performers</a></li>
-                <li><a href="#indices" class="nav-link" data-tab="indices">Index Analysis</a></li>
-                <li><a href="#sectors" class="nav-link" data-tab="sectors">Sector Insights</a></li>
-                <li><a href="#comparison" class="nav-link" data-tab="comparison">Monthly Trends</a></li>
-            </ul>
-            <div class="nav-controls">
-                <button class="refresh-btn" id="refreshData">
-                    <i class="fas fa-sync-alt"></i> Refresh
+            <div class="tab-buttons">
+                <button class="tab-btn active" data-tab="market-overview">
+                    <i class="fas fa-globe"></i>
+                    <span>Market Overview</span>
                 </button>
-                <div class="filter-dropdown">
-                    <select id="categoryFilter" class="filter-select">
+                <button class="tab-btn" data-tab="symbol-analysis">
+                    <i class="fas fa-search"></i>
+                    <span>Symbol Analysis</span>
+                </button>
+                <button class="tab-btn" data-tab="category-performance">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Category & Index Performance</span>
+                </button>
+            </div>
+            <div class="nav-controls">
+                <button class="control-btn" id="refreshData">
+                    <i class="fas fa-sync-alt"></i>
+                    <span>Refresh</span>
+                </button>
+                <div class="filter-control">
+                    <select id="globalFilter" class="filter-select">
                         <option value="all">All Categories</option>
                         <option value="Broad Market">Broad Market</option>
                         <option value="Sectoral">Sectoral</option>
@@ -64,192 +74,336 @@
         </div>
     </nav>
 
-    <!-- Main Content -->
-    <main class="main-content">
-        <!-- Overview Tab -->
-        <section id="overview-tab" class="tab-content active">
-            <div class="dashboard-grid">
-                <!-- Key Metrics Cards -->
-                <div class="metrics-row">
-                    <div class="metric-card">
-                        <div class="metric-icon">
-                            <i class="fas fa-chart-line"></i>
-                        </div>
-                        <div class="metric-content">
-                            <h3 id="avgIncrease">--</h3>
-                            <p>Avg Delivery Increase</p>
-                            <span class="metric-change positive" id="avgIncreaseChange">--</span>
+    <!-- Main Dashboard Content -->
+    <main class="dashboard-main">
+        <!-- Tab 1: Market Overview -->
+        <section id="market-overview" class="tab-content active">
+            <div class="tab-header">
+                <h2>Market Overview</h2>
+                <p>Comprehensive view of market delivery trends and performance</p>
+            </div>
+
+            <!-- KPI Cards Row -->
+            <div class="kpi-grid">
+                <div class="kpi-card primary">
+                    <div class="kpi-icon">
+                        <i class="fas fa-arrow-trend-up"></i>
+                    </div>
+                    <div class="kpi-content">
+                        <h3 id="totalDeliveryIncrease">--</h3>
+                        <p>Total Market Delivery Increase</p>
+                        <span class="kpi-unit">(in Lakhs)</span>
+                    </div>
+                </div>
+                <div class="kpi-card success">
+                    <div class="kpi-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="kpi-content">
+                        <h3 id="positiveGrowthStocks">--</h3>
+                        <p>Stocks with Positive Growth</p>
+                        <span class="kpi-percentage" id="positiveGrowthPercentage">--</span>
+                    </div>
+                </div>
+                <div class="kpi-card accent">
+                    <div class="kpi-icon">
+                        <i class="fas fa-balance-scale"></i>
+                    </div>
+                    <div class="kpi-content">
+                        <h3 id="deliveryTurnoverRatio">--</h3>
+                        <p>Market Delivery-to-Turnover Ratio</p>
+                        <span class="kpi-unit">Market Commitment</span>
+                    </div>
+                </div>
+                <div class="kpi-card warning">
+                    <div class="kpi-icon">
+                        <i class="fas fa-coins"></i>
+                    </div>
+                    <div class="kpi-content">
+                        <h3 id="avgDailyTurnover">--</h3>
+                        <p>Average Daily Turnover</p>
+                        <span class="kpi-unit">Liquidity Indicator</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Visualizations Grid -->
+            <div class="visualization-grid">
+                <div class="viz-card large">
+                    <div class="viz-header">
+                        <h3>Category Turnover Distribution</h3>
+                        <div class="viz-controls">
+                            <span class="viz-type">Treemap</span>
                         </div>
                     </div>
-                    <div class="metric-card">
-                        <div class="metric-icon">
-                            <i class="fas fa-trophy"></i>
-                        </div>
-                        <div class="metric-content">
-                            <h3 id="maxIncrease">--</h3>
-                            <p>Highest Increase</p>
-                            <span class="metric-symbol" id="topSymbol">--</span>
-                        </div>
-                    </div>
-                    <div class="metric-card">
-                        <div class="metric-icon">
-                            <i class="fas fa-building"></i>
-                        </div>
-                        <div class="metric-content">
-                            <h3 id="nifty50Count">--</h3>
-                            <p>NIFTY 50 Alerts</p>
-                            <span class="metric-percentage" id="nifty50Percentage">--</span>
-                        </div>
-                    </div>
-                    <div class="metric-card">
-                        <div class="metric-icon">
-                            <i class="fas fa-industry"></i>
-                        </div>
-                        <div class="metric-content">
-                            <h3 id="sectoralCount">--</h3>
-                            <p>Sectoral Alerts</p>
-                            <span class="metric-percentage" id="sectoralPercentage">--</span>
+                    <div class="viz-content treemap-container" id="treeMap">
+                        <div class="viz-placeholder">
+                            <i class="fas fa-th-large"></i>
+                            <h4>Treemap Visualization</h4>
+                            <p>Hierarchical view of turnover by category and symbol</p>
                         </div>
                     </div>
                 </div>
 
-                <!-- Charts Row -->
-                <div class="charts-row">
-                    <div class="chart-container">
-                        <div class="chart-header">
-                            <h3>Category Distribution</h3>
-                            <div class="chart-controls">
-                                <button class="chart-toggle" data-chart="pie">Pie</button>
-                                <button class="chart-toggle active" data-chart="doughnut">Doughnut</button>
-                            </div>
+                <div class="viz-card large">
+                    <div class="viz-header">
+                        <h3>Index-Stock Relationships</h3>
+                        <div class="viz-controls">
+                            <span class="viz-type">Force Graph</span>
                         </div>
-                        <canvas id="categoryChart"></canvas>
                     </div>
-                    <div class="chart-container">
-                        <div class="chart-header">
-                            <h3>Monthly Comparison Trends</h3>
-                            <div class="chart-controls">
-                                <select id="trendMetric" class="trend-select">
-                                    <option value="count">Alert Count</option>
-                                    <option value="average">Average Increase</option>
-                                </select>
-                            </div>
+                    <div class="viz-content force-graph-container" id="forceDirectedGraph">
+                        <div class="viz-placeholder">
+                            <i class="fas fa-project-diagram"></i>
+                            <h4>Force-Directed Graph</h4>
+                            <p>Interactive network of delivery relationships</p>
                         </div>
-                        <canvas id="trendChart"></canvas>
                     </div>
                 </div>
 
-                <!-- Data Table -->
-                <div class="table-container">
-                    <div class="table-header">
-                        <h3>Recent Delivery Alerts</h3>
-                        <div class="table-controls">
-                            <input type="text" id="searchSymbol" placeholder="Search symbol..." class="search-input">
-                            <select id="sortBy" class="sort-select">
-                                <option value="delivery_increase_pct">% Increase</option>
-                                <option value="current_deliv_qty">Delivery Qty</option>
-                                <option value="current_trade_date">Date</option>
+                <div class="viz-card large">
+                    <div class="viz-header">
+                        <h3>Hierarchical Distribution</h3>
+                        <div class="viz-controls">
+                            <span class="viz-type">Sunburst</span>
+                        </div>
+                    </div>
+                    <div class="viz-content sunburst-container" id="sunburstChart">
+                        <div class="viz-placeholder">
+                            <i class="fas fa-sun"></i>
+                            <h4>Sunburst Chart</h4>
+                            <p>Multi-level breakdown of delivery data</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="viz-card large">
+                    <div class="viz-header">
+                        <h3>Multi-Metric Analysis</h3>
+                        <div class="viz-controls">
+                            <span class="viz-type">Parallel Coordinates</span>
+                        </div>
+                    </div>
+                    <div class="viz-content parallel-coords-container" id="parallelCoordinates">
+                        <div class="viz-placeholder">
+                            <i class="fas fa-stream"></i>
+                            <h4>Parallel Coordinates</h4>
+                            <p>Comparative analysis across multiple dimensions</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tab 2: Symbol Analysis -->
+        <section id="symbol-analysis" class="tab-content">
+            <div class="tab-header">
+                <h2>Symbol Analysis</h2>
+                <p>Deep dive into individual stock performance and delivery characteristics</p>
+            </div>
+
+            <!-- Symbol Selection -->
+            <div class="symbol-selector">
+                <div class="search-container">
+                    <input type="text" id="symbolSearch" placeholder="Search for a symbol..." class="symbol-input">
+                    <button class="search-btn">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+                <div class="popular-symbols">
+                    <span class="label">Popular:</span>
+                    <button class="symbol-chip" data-symbol="RELIANCE">RELIANCE</button>
+                    <button class="symbol-chip" data-symbol="TCS">TCS</button>
+                    <button class="symbol-chip" data-symbol="HDFCBANK">HDFCBANK</button>
+                    <button class="symbol-chip" data-symbol="INFY">INFY</button>
+                    <button class="symbol-chip" data-symbol="WIPRO">WIPRO</button>
+                </div>
+            </div>
+
+            <!-- Symbol Analysis KPIs -->
+            <div class="symbol-kpi-grid">
+                <div class="kpi-card primary">
+                    <div class="kpi-icon">
+                        <i class="fas fa-percentage"></i>
+                    </div>
+                    <div class="kpi-content">
+                        <h3 id="currentDeliveryPercentage">--</h3>
+                        <p>Current Delivery Percentage</p>
+                        <span class="kpi-trend" id="deliveryTrend">Select a symbol</span>
+                    </div>
+                </div>
+                <div class="kpi-card accent">
+                    <div class="kpi-icon">
+                        <i class="fas fa-calendar-alt"></i>
+                    </div>
+                    <div class="kpi-content">
+                        <h3 id="monthOverMonthChange">--</h3>
+                        <p>Month-over-Month Change</p>
+                        <span class="kpi-unit">Delivery Growth</span>
+                    </div>
+                </div>
+                <div class="kpi-card success">
+                    <div class="kpi-icon">
+                        <i class="fas fa-chart-area"></i>
+                    </div>
+                    <div class="kpi-content">
+                        <h3 id="currentTradingVolume">--</h3>
+                        <p>Current Trading Volume</p>
+                        <span class="kpi-unit">Total Traded Quantity</span>
+                    </div>
+                </div>
+                <div class="kpi-card warning">
+                    <div class="kpi-icon">
+                        <i class="fas fa-balance-scale"></i>
+                    </div>
+                    <div class="kpi-content">
+                        <h3 id="deliveryTradingRatio">--</h3>
+                        <p>Delivery-to-Trading Ratio</p>
+                        <span class="kpi-unit">Efficiency Metric</span>
+                    </div>
+                </div>
+                <div class="kpi-card info">
+                    <div class="kpi-icon">
+                        <i class="fas fa-exchange-alt"></i>
+                    </div>
+                    <div class="kpi-content">
+                        <h3 id="deliveryQuantityChange">--</h3>
+                        <p>Delivery Quantity Change</p>
+                        <span class="kpi-unit">Absolute Change</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Symbol Analysis Visualizations -->
+            <div class="symbol-viz-grid">
+                <div class="viz-card large">
+                    <div class="viz-header">
+                        <h3>Delivery Trend Analysis</h3>
+                        <div class="viz-controls">
+                            <span class="viz-type">Current vs Previous</span>
+                        </div>
+                    </div>
+                    <div class="viz-content">
+                        <div id="deliveryTrendChart" class="chart-container"></div>
+                    </div>
+                </div>
+
+                <div class="viz-card large">
+                    <div class="viz-header">
+                        <h3>Volume Profile Analysis</h3>
+                        <div class="viz-controls">
+                            <span class="viz-type">Trading vs Delivery</span>
+                        </div>
+                    </div>
+                    <div class="viz-content">
+                        <div id="volumeProfileChart" class="chart-container"></div>
+                    </div>
+                </div>
+
+                <div class="viz-card medium">
+                    <div class="viz-header">
+                        <h3>Delivery Efficiency Gauge</h3>
+                        <div class="viz-controls">
+                            <span class="viz-type">Performance Rating</span>
+                        </div>
+                    </div>
+                    <div class="viz-content">
+                        <div id="deliveryEfficiencyGauge" class="gauge-container"></div>
+                    </div>
+                </div>
+
+                <div class="viz-card xlarge">
+                    <div class="viz-header">
+                        <h3>Comparative Metrics Analysis</h3>
+                        <div class="viz-controls">
+                            <span class="viz-type">Historical Comparison</span>
+                        </div>
+                    </div>
+                    <div class="viz-content">
+                        <div id="comparativeMetricsTable" class="table-container"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tab 3: Category & Index Performance -->
+        <section id="category-performance" class="tab-content">
+            <div class="tab-header">
+                <h2>Category & Index Performance</h2>
+                <p>Sector-wise analysis and index comparison</p>
+            </div>
+
+            <!-- Category KPIs -->
+            <div class="category-kpi-grid">
+                <div class="kpi-card success">
+                    <div class="kpi-icon">
+                        <i class="fas fa-trophy"></i>
+                    </div>
+                    <div class="kpi-content">
+                        <h3 id="bestPerformingIndex">--</h3>
+                        <p>Best Performing Index</p>
+                        <span class="kpi-percentage" id="indexPerformance">--</span>
+                    </div>
+                </div>
+                <div class="kpi-card primary">
+                    <div class="kpi-icon">
+                        <i class="fas fa-industry"></i>
+                    </div>
+                    <div class="kpi-content">
+                        <h3 id="bestPerformingCategory">--</h3>
+                        <p>Best Performing Category</p>
+                        <span class="kpi-percentage" id="categoryPerformance">--</span>
+                    </div>
+                </div>
+                <div class="kpi-card accent">
+                    <div class="kpi-icon">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <div class="kpi-content">
+                        <h3 id="totalWatchlistSymbols">--</h3>
+                        <p>Total Symbols in Watchlist</p>
+                        <span class="kpi-unit">Active Tracking</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Category Visualizations -->
+            <div class="category-viz-grid">
+                <div class="viz-card large">
+                    <div class="viz-header">
+                        <h3>Category Performance Comparison</h3>
+                        <div class="viz-controls">
+                            <span class="viz-type">Radial Bar</span>
+                        </div>
+                    </div>
+                    <div class="viz-content radial-bar-container">
+                        <div class="viz-placeholder">
+                            <i class="fas fa-chart-pie"></i>
+                            <h4>Radial Bar Chart</h4>
+                            <p>Circular comparison of delivery increase by category</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="viz-card xlarge">
+                    <div class="viz-header">
+                        <h3>Stock Performance Heatmap</h3>
+                        <div class="viz-controls">
+                            <span class="viz-type">Heatmap</span>
+                            <select class="heatmap-filter">
+                                <option value="all">All Categories</option>
+                                <option value="Broad Market">Broad Market</option>
+                                <option value="Sectoral">Sectoral</option>
                             </select>
                         </div>
                     </div>
-                    <div class="table-wrapper">
-                        <table id="deliveryTable" class="data-table">
-                            <thead>
-                                <tr>
-                                    <th>Symbol</th>
-                                    <th>Index</th>
-                                    <th>Category</th>
-                                    <th>Current Delivery</th>
-                                    <th>% Increase</th>
-                                    <th>Comparison</th>
-                                    <th>Date</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tableBody">
-                                <!-- Data will be populated by JavaScript -->
-                            </tbody>
-                        </table>
+                    <div class="viz-content heatmap-container">
+                        <div class="viz-placeholder">
+                            <i class="fas fa-th"></i>
+                            <h4>Performance Heatmap</h4>
+                            <p>Color-coded grid showing delivery percentages by category</p>
+                        </div>
                     </div>
-                    <div class="pagination" id="pagination">
-                        <!-- Pagination will be added by JavaScript -->
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Performance Tab -->
-        <section id="performance-tab" class="tab-content">
-            <div class="performance-grid">
-                <div class="top-performers">
-                    <h3>Top 10 Performers</h3>
-                    <div class="performers-list" id="topPerformersList">
-                        <!-- Top performers will be populated by JavaScript -->
-                    </div>
-                </div>
-                <div class="performance-chart">
-                    <h3>Performance Distribution</h3>
-                    <canvas id="performanceChart"></canvas>
-                </div>
-            </div>
-        </section>
-
-        <!-- Indices Tab -->
-        <section id="indices-tab" class="tab-content">
-            <div class="indices-grid">
-                <div class="index-cards" id="indexCards">
-                    <!-- Index cards will be populated by JavaScript -->
-                </div>
-                <div class="index-comparison">
-                    <h3>Index Comparison</h3>
-                    <canvas id="indexChart"></canvas>
-                </div>
-            </div>
-        </section>
-
-        <!-- Sectors Tab -->
-        <section id="sectors-tab" class="tab-content">
-            <div class="sectors-grid">
-                <div class="sector-heatmap">
-                    <h3>Sector Performance Heatmap</h3>
-                    <div id="sectorHeatmap" class="heatmap-container">
-                        <!-- Heatmap will be populated by JavaScript -->
-                    </div>
-                </div>
-                <div class="sector-details">
-                    <h3>Sector Details</h3>
-                    <div id="sectorDetailsList">
-                        <!-- Sector details will be populated by JavaScript -->
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Comparison Tab -->
-        <section id="comparison-tab" class="tab-content">
-            <div class="comparison-grid">
-                <div class="comparison-filters">
-                    <h3>Filter Options</h3>
-                    <div class="filter-group">
-                        <label for="dateRange">Date Range:</label>
-                        <select id="dateRange" class="filter-input">
-                            <option value="all">All Time</option>
-                            <option value="recent">Last 30 Days</option>
-                            <option value="quarter">Last Quarter</option>
-                        </select>
-                    </div>
-                    <div class="filter-group">
-                        <label for="comparisonType">Comparison Type:</label>
-                        <select id="comparisonType" class="filter-input">
-                            <option value="all">All Comparisons</option>
-                            <option value="AUG_VS_JUL_2025">Aug vs Jul 2025</option>
-                            <option value="JUL_VS_JUN_2025">Jul vs Jun 2025</option>
-                            <option value="JUN_VS_MAY_2025">Jun vs May 2025</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="comparison-chart">
-                    <h3>Monthly Trend Analysis</h3>
-                    <canvas id="comparisonChart"></canvas>
                 </div>
             </div>
         </section>
@@ -257,13 +411,24 @@
 
     <!-- Loading Overlay -->
     <div id="loadingOverlay" class="loading-overlay">
-        <div class="loading-spinner">
-            <i class="fas fa-spinner fa-spin"></i>
-            <p>Loading data...</p>
+        <div class="loading-content">
+            <div class="loading-spinner">
+                <div class="spinner-ring"></div>
+                <div class="spinner-ring"></div>
+                <div class="spinner-ring"></div>
+            </div>
+            <p>Loading market data...</p>
         </div>
     </div>
 
     <!-- JavaScript -->
     <script src="dashboard.js"></script>
+    <script>
+        // Initialize the dashboard when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded, initializing dashboard...');
+            const dashboard = new ProfessionalNSEDashboard();
+        });
+    </script>
 </body>
 </html>

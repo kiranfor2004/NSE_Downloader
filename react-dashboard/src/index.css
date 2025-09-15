@@ -1,0 +1,173 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom CSS Variables for Theme */
+:root {
+  --color-primary: #00B0FF;
+  --color-success: #00C853;
+  --color-danger: #D50000;
+  --color-bg-primary: #1A1A1A;
+  --color-bg-secondary: #2C2C2C;
+  --color-text-primary: #FFFFFF;
+  --color-text-secondary: #B0B0B0;
+  --color-border: #404040;
+  
+  /* Chart colors */
+  --chart-color-1: #00B0FF;
+  --chart-color-2: #00C853;
+  --chart-color-3: #FFD700;
+  --chart-color-4: #FF6B35;
+  --chart-color-5: #9C27B0;
+  --chart-color-6: #FF5722;
+}
+
+/* Base Styles */
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #1A1A1A;
+  color: white;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #2C2C2C;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #404040;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #505050;
+}
+
+/* Firefox Scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #404040 #2C2C2C;
+}
+
+/* Custom Classes - No @apply directives */
+.text-gradient {
+  background: linear-gradient(135deg, #00B0FF 0%, #00C853 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.text-gradient-danger {
+  background: linear-gradient(135deg, #D50000 0%, #FF6B35 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ApexCharts Dark Theme Override */
+.apexcharts-canvas {
+  background: transparent !important;
+}
+
+.apexcharts-tooltip {
+  background: #2C2C2C !important;
+  border: 1px solid #404040 !important;
+  color: #FFFFFF !important;
+}
+
+.apexcharts-tooltip-title {
+  background: #1A1A1A !important;
+  border-bottom: 1px solid #404040 !important;
+  color: #FFFFFF !important;
+}
+
+.apexcharts-legend-text {
+  color: #B0B0B0 !important;
+}
+
+.apexcharts-gridline {
+  stroke: #404040 !important;
+}
+
+.apexcharts-text {
+  fill: #B0B0B0 !important;
+}
+
+/* Animation Keyframes */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+.animate-slide-in-right {
+  animation: slideInRight 0.4s ease-out;
+}
+
+.animate-scale-in {
+  animation: scaleIn 0.3s ease-out;
+}
+
+/* Responsive Design Helpers */
+@media (max-width: 768px) {
+  .metric-value {
+    font-size: 1.5rem;
+  }
+}
+
+/* Print Styles */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+}
