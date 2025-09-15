@@ -1,0 +1,856 @@
+[
+  {
+    "INDEX": "NIFTY 50",
+    "SYMBOL": "RELIANCE",
+    "CATEGORY": "Broad Market",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:28:36"
+  },
+  {
+    "INDEX": "NIFTY 50",
+    "SYMBOL": "TCS",
+    "CATEGORY": "Broad Market",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:28:36"
+  },
+  {
+    "INDEX": "NIFTY 50",
+    "SYMBOL": "HDFCBANK",
+    "CATEGORY": "Broad Market",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:28:36"
+  },
+  {
+    "INDEX": "NIFTY 50",
+    "SYMBOL": "ICICIBANK",
+    "CATEGORY": "Broad Market",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:28:36"
+  },
+  {
+    "INDEX": "NIFTY 50",
+    "SYMBOL": "HINDUNILVR",
+    "CATEGORY": "Broad Market",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:28:36"
+  },
+  {
+    "INDEX": "NIFTY 50",
+    "SYMBOL": "INFY",
+    "CATEGORY": "Broad Market",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:28:36"
+  },
+  {
+    "INDEX": "NIFTY 50",
+    "SYMBOL": "ITC",
+    "CATEGORY": "Broad Market",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:28:36"
+  },
+  {
+    "INDEX": "NIFTY 50",
+    "SYMBOL": "SBIN",
+    "CATEGORY": "Broad Market",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:28:36"
+  },
+  {
+    "INDEX": "NIFTY 50",
+    "SYMBOL": "BHARTIARTL",
+    "CATEGORY": "Broad Market",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:28:36"
+  },
+  {
+    "INDEX": "NIFTY 50",
+    "SYMBOL": "ASIANPAINT",
+    "CATEGORY": "Broad Market",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:28:36"
+  },
+  {
+    "INDEX": "NIFTY 50",
+    "SYMBOL": "MARUTI",
+    "CATEGORY": "Broad Market",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:28:36"
+  },
+  {
+    "INDEX": "NIFTY 50",
+    "SYMBOL": "HCLTECH",
+    "CATEGORY": "Broad Market",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:28:36"
+  },
+  {
+    "INDEX": "NIFTY 50",
+    "SYMBOL": "BAJFINANCE",
+    "CATEGORY": "Broad Market",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:28:36"
+  },
+  {
+    "INDEX": "NIFTY 50",
+    "SYMBOL": "KOTAKBANK",
+    "CATEGORY": "Broad Market",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:28:36"
+  },
+  {
+    "INDEX": "NIFTY 50",
+    "SYMBOL": "LT",
+    "CATEGORY": "Broad Market",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:28:36"
+  },
+  {
+    "INDEX": "NIFTY 50",
+    "SYMBOL": "AXISBANK",
+    "CATEGORY": "Broad Market",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:28:36"
+  },
+  {
+    "INDEX": "NIFTY 50",
+    "SYMBOL": "TITAN",
+    "CATEGORY": "Broad Market",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:28:36"
+  },
+  {
+    "INDEX": "NIFTY 50",
+    "SYMBOL": "SUNPHARMA",
+    "CATEGORY": "Broad Market",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:28:36"
+  },
+  {
+    "INDEX": "NIFTY 50",
+    "SYMBOL": "ULTRACEMCO",
+    "CATEGORY": "Broad Market",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:28:36"
+  },
+  {
+    "INDEX": "NIFTY 50",
+    "SYMBOL": "DMART",
+    "CATEGORY": "Broad Market",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:28:36"
+  },
+  {
+    "INDEX": "NIFTY 50",
+    "SYMBOL": "TECHM",
+    "CATEGORY": "Broad Market",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:28:36"
+  },
+  {
+    "INDEX": "NIFTY 50",
+    "SYMBOL": "WIPRO",
+    "CATEGORY": "Broad Market",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:28:36"
+  },
+  {
+    "INDEX": "NIFTY 50",
+    "SYMBOL": "NESTLEIND",
+    "CATEGORY": "Broad Market",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:28:36"
+  },
+  {
+    "INDEX": "NIFTY 50",
+    "SYMBOL": "NTPC",
+    "CATEGORY": "Broad Market",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:28:36"
+  },
+  {
+    "INDEX": "NIFTY 50",
+    "SYMBOL": "TATAMOTORS",
+    "CATEGORY": "Broad Market",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:28:36"
+  },
+  {
+    "INDEX": "NIFTY 50",
+    "SYMBOL": "BAJAJFINSV",
+    "CATEGORY": "Broad Market",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:28:36"
+  },
+  {
+    "INDEX": "NIFTY 50",
+    "SYMBOL": "M&M",
+    "CATEGORY": "Broad Market",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:28:36"
+  },
+  {
+    "INDEX": "NIFTY 50",
+    "SYMBOL": "POWERGRID",
+    "CATEGORY": "Broad Market",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:28:36"
+  },
+  {
+    "INDEX": "NIFTY 50",
+    "SYMBOL": "HDFCLIFE",
+    "CATEGORY": "Broad Market",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:28:36"
+  },
+  {
+    "INDEX": "NIFTY 50",
+    "SYMBOL": "SBILIFE",
+    "CATEGORY": "Broad Market",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:28:36"
+  },
+  {
+    "INDEX": "NIFTY 50",
+    "SYMBOL": "COALINDIA",
+    "CATEGORY": "Broad Market",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:28:36"
+  },
+  {
+    "INDEX": "NIFTY 50",
+    "SYMBOL": "GRASIM",
+    "CATEGORY": "Broad Market",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:28:36"
+  },
+  {
+    "INDEX": "NIFTY 50",
+    "SYMBOL": "ADANIENT",
+    "CATEGORY": "Broad Market",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:28:36"
+  },
+  {
+    "INDEX": "NIFTY 50",
+    "SYMBOL": "JSWSTEEL",
+    "CATEGORY": "Broad Market",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:28:36"
+  },
+  {
+    "INDEX": "NIFTY 50",
+    "SYMBOL": "INDUSINDBK",
+    "CATEGORY": "Broad Market",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:28:36"
+  },
+  {
+    "INDEX": "NIFTY 50",
+    "SYMBOL": "TATASTEEL",
+    "CATEGORY": "Broad Market",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:28:36"
+  },
+  {
+    "INDEX": "NIFTY 50",
+    "SYMBOL": "HINDALCO",
+    "CATEGORY": "Broad Market",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:28:36"
+  },
+  {
+    "INDEX": "NIFTY 50",
+    "SYMBOL": "CIPLA",
+    "CATEGORY": "Broad Market",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:28:36"
+  },
+  {
+    "INDEX": "NIFTY 50",
+    "SYMBOL": "EICHERMOT",
+    "CATEGORY": "Broad Market",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:28:36"
+  },
+  {
+    "INDEX": "NIFTY 50",
+    "SYMBOL": "BRITANNIA",
+    "CATEGORY": "Broad Market",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:28:36"
+  },
+  {
+    "INDEX": "NIFTY 50",
+    "SYMBOL": "BPCL",
+    "CATEGORY": "Broad Market",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:28:36"
+  },
+  {
+    "INDEX": "NIFTY 50",
+    "SYMBOL": "DRREDDY",
+    "CATEGORY": "Broad Market",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:28:36"
+  },
+  {
+    "INDEX": "NIFTY 50",
+    "SYMBOL": "APOLLOHOSP",
+    "CATEGORY": "Broad Market",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:28:36"
+  },
+  {
+    "INDEX": "NIFTY 50",
+    "SYMBOL": "UPL",
+    "CATEGORY": "Broad Market",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:28:36"
+  },
+  {
+    "INDEX": "NIFTY 50",
+    "SYMBOL": "DIVISLAB",
+    "CATEGORY": "Broad Market",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:28:36"
+  },
+  {
+    "INDEX": "NIFTY 50",
+    "SYMBOL": "BAJAJ-AUTO",
+    "CATEGORY": "Broad Market",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:28:36"
+  },
+  {
+    "INDEX": "NIFTY 50",
+    "SYMBOL": "TATACONSUM",
+    "CATEGORY": "Broad Market",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:28:36"
+  },
+  {
+    "INDEX": "NIFTY 50",
+    "SYMBOL": "HEROMOTOCO",
+    "CATEGORY": "Broad Market",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:28:36"
+  },
+  {
+    "INDEX": "NIFTY 50",
+    "SYMBOL": "ONGC",
+    "CATEGORY": "Broad Market",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:28:36"
+  },
+  {
+    "INDEX": "NIFTY 50",
+    "SYMBOL": "LTIM",
+    "CATEGORY": "Broad Market",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:28:36"
+  },
+  {
+    "INDEX": "NIFTY BANK",
+    "SYMBOL": "HDFCBANK",
+    "CATEGORY": "Sectoral",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:28:42"
+  },
+  {
+    "INDEX": "NIFTY BANK",
+    "SYMBOL": "ICICIBANK",
+    "CATEGORY": "Sectoral",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:28:42"
+  },
+  {
+    "INDEX": "NIFTY BANK",
+    "SYMBOL": "SBIN",
+    "CATEGORY": "Sectoral",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:28:42"
+  },
+  {
+    "INDEX": "NIFTY BANK",
+    "SYMBOL": "KOTAKBANK",
+    "CATEGORY": "Sectoral",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:28:42"
+  },
+  {
+    "INDEX": "NIFTY BANK",
+    "SYMBOL": "AXISBANK",
+    "CATEGORY": "Sectoral",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:28:42"
+  },
+  {
+    "INDEX": "NIFTY BANK",
+    "SYMBOL": "INDUSINDBK",
+    "CATEGORY": "Sectoral",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:28:42"
+  },
+  {
+    "INDEX": "NIFTY BANK",
+    "SYMBOL": "FEDERALBNK",
+    "CATEGORY": "Sectoral",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:28:42"
+  },
+  {
+    "INDEX": "NIFTY BANK",
+    "SYMBOL": "BANDHANBNK",
+    "CATEGORY": "Sectoral",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:28:42"
+  },
+  {
+    "INDEX": "NIFTY BANK",
+    "SYMBOL": "AUBANK",
+    "CATEGORY": "Sectoral",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:28:42"
+  },
+  {
+    "INDEX": "NIFTY BANK",
+    "SYMBOL": "IDFCFIRSTB",
+    "CATEGORY": "Sectoral",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:28:42"
+  },
+  {
+    "INDEX": "NIFTY BANK",
+    "SYMBOL": "PNB",
+    "CATEGORY": "Sectoral",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:28:42"
+  },
+  {
+    "INDEX": "NIFTY BANK",
+    "SYMBOL": "BANKBARODA",
+    "CATEGORY": "Sectoral",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:28:42"
+  },
+  {
+    "INDEX": "NIFTY IT",
+    "SYMBOL": "TCS",
+    "CATEGORY": "Sectoral",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:28:49"
+  },
+  {
+    "INDEX": "NIFTY IT",
+    "SYMBOL": "INFY",
+    "CATEGORY": "Sectoral",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:28:49"
+  },
+  {
+    "INDEX": "NIFTY IT",
+    "SYMBOL": "HCLTECH",
+    "CATEGORY": "Sectoral",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:28:49"
+  },
+  {
+    "INDEX": "NIFTY IT",
+    "SYMBOL": "TECHM",
+    "CATEGORY": "Sectoral",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:28:49"
+  },
+  {
+    "INDEX": "NIFTY IT",
+    "SYMBOL": "WIPRO",
+    "CATEGORY": "Sectoral",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:28:49"
+  },
+  {
+    "INDEX": "NIFTY IT",
+    "SYMBOL": "LTIM",
+    "CATEGORY": "Sectoral",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:28:49"
+  },
+  {
+    "INDEX": "NIFTY IT",
+    "SYMBOL": "MPHASIS",
+    "CATEGORY": "Sectoral",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:28:49"
+  },
+  {
+    "INDEX": "NIFTY IT",
+    "SYMBOL": "PERSISTENT",
+    "CATEGORY": "Sectoral",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:28:49"
+  },
+  {
+    "INDEX": "NIFTY IT",
+    "SYMBOL": "COFORGE",
+    "CATEGORY": "Sectoral",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:28:49"
+  },
+  {
+    "INDEX": "NIFTY IT",
+    "SYMBOL": "LTTS",
+    "CATEGORY": "Sectoral",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:28:49"
+  },
+  {
+    "INDEX": "NIFTY AUTO",
+    "SYMBOL": "MARUTI",
+    "CATEGORY": "Sectoral",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:28:55"
+  },
+  {
+    "INDEX": "NIFTY AUTO",
+    "SYMBOL": "TATAMOTORS",
+    "CATEGORY": "Sectoral",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:28:55"
+  },
+  {
+    "INDEX": "NIFTY AUTO",
+    "SYMBOL": "M&M",
+    "CATEGORY": "Sectoral",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:28:55"
+  },
+  {
+    "INDEX": "NIFTY AUTO",
+    "SYMBOL": "EICHERMOT",
+    "CATEGORY": "Sectoral",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:28:55"
+  },
+  {
+    "INDEX": "NIFTY AUTO",
+    "SYMBOL": "BAJAJ-AUTO",
+    "CATEGORY": "Sectoral",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:28:55"
+  },
+  {
+    "INDEX": "NIFTY AUTO",
+    "SYMBOL": "HEROMOTOCO",
+    "CATEGORY": "Sectoral",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:28:55"
+  },
+  {
+    "INDEX": "NIFTY AUTO",
+    "SYMBOL": "ASHOKLEY",
+    "CATEGORY": "Sectoral",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:28:55"
+  },
+  {
+    "INDEX": "NIFTY AUTO",
+    "SYMBOL": "TVSMOTOR",
+    "CATEGORY": "Sectoral",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:28:55"
+  },
+  {
+    "INDEX": "NIFTY AUTO",
+    "SYMBOL": "MOTHERSON",
+    "CATEGORY": "Sectoral",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:28:55"
+  },
+  {
+    "INDEX": "NIFTY AUTO",
+    "SYMBOL": "BALKRISIND",
+    "CATEGORY": "Sectoral",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:28:55"
+  },
+  {
+    "INDEX": "NIFTY PHARMA",
+    "SYMBOL": "SUNPHARMA",
+    "CATEGORY": "Sectoral",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:29:02"
+  },
+  {
+    "INDEX": "NIFTY PHARMA",
+    "SYMBOL": "CIPLA",
+    "CATEGORY": "Sectoral",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:29:02"
+  },
+  {
+    "INDEX": "NIFTY PHARMA",
+    "SYMBOL": "DRREDDY",
+    "CATEGORY": "Sectoral",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:29:02"
+  },
+  {
+    "INDEX": "NIFTY PHARMA",
+    "SYMBOL": "APOLLOHOSP",
+    "CATEGORY": "Sectoral",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:29:02"
+  },
+  {
+    "INDEX": "NIFTY PHARMA",
+    "SYMBOL": "DIVISLAB",
+    "CATEGORY": "Sectoral",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:29:02"
+  },
+  {
+    "INDEX": "NIFTY PHARMA",
+    "SYMBOL": "LUPIN",
+    "CATEGORY": "Sectoral",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:29:02"
+  },
+  {
+    "INDEX": "NIFTY PHARMA",
+    "SYMBOL": "BIOCON",
+    "CATEGORY": "Sectoral",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:29:02"
+  },
+  {
+    "INDEX": "NIFTY PHARMA",
+    "SYMBOL": "CADILAHC",
+    "CATEGORY": "Sectoral",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:29:02"
+  },
+  {
+    "INDEX": "NIFTY PHARMA",
+    "SYMBOL": "ALKEM",
+    "CATEGORY": "Sectoral",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:29:02"
+  },
+  {
+    "INDEX": "NIFTY PHARMA",
+    "SYMBOL": "TORNTPHARM",
+    "CATEGORY": "Sectoral",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:29:02"
+  },
+  {
+    "INDEX": "NIFTY FMCG",
+    "SYMBOL": "HINDUNILVR",
+    "CATEGORY": "Sectoral",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:29:08"
+  },
+  {
+    "INDEX": "NIFTY FMCG",
+    "SYMBOL": "ITC",
+    "CATEGORY": "Sectoral",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:29:08"
+  },
+  {
+    "INDEX": "NIFTY FMCG",
+    "SYMBOL": "NESTLEIND",
+    "CATEGORY": "Sectoral",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:29:08"
+  },
+  {
+    "INDEX": "NIFTY FMCG",
+    "SYMBOL": "BRITANNIA",
+    "CATEGORY": "Sectoral",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:29:08"
+  },
+  {
+    "INDEX": "NIFTY FMCG",
+    "SYMBOL": "TATACONSUM",
+    "CATEGORY": "Sectoral",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:29:08"
+  },
+  {
+    "INDEX": "NIFTY FMCG",
+    "SYMBOL": "DABUR",
+    "CATEGORY": "Sectoral",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:29:08"
+  },
+  {
+    "INDEX": "NIFTY FMCG",
+    "SYMBOL": "GODREJCP",
+    "CATEGORY": "Sectoral",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:29:08"
+  },
+  {
+    "INDEX": "NIFTY FMCG",
+    "SYMBOL": "MARICO",
+    "CATEGORY": "Sectoral",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:29:08"
+  },
+  {
+    "INDEX": "NIFTY FMCG",
+    "SYMBOL": "COLPAL",
+    "CATEGORY": "Sectoral",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:29:08"
+  },
+  {
+    "INDEX": "NIFTY FMCG",
+    "SYMBOL": "UBL",
+    "CATEGORY": "Sectoral",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:29:08"
+  },
+  {
+    "INDEX": "NIFTY METAL",
+    "SYMBOL": "JSWSTEEL",
+    "CATEGORY": "Sectoral",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:29:15"
+  },
+  {
+    "INDEX": "NIFTY METAL",
+    "SYMBOL": "TATASTEEL",
+    "CATEGORY": "Sectoral",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:29:15"
+  },
+  {
+    "INDEX": "NIFTY METAL",
+    "SYMBOL": "HINDALCO",
+    "CATEGORY": "Sectoral",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:29:15"
+  },
+  {
+    "INDEX": "NIFTY METAL",
+    "SYMBOL": "COALINDIA",
+    "CATEGORY": "Sectoral",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:29:15"
+  },
+  {
+    "INDEX": "NIFTY METAL",
+    "SYMBOL": "VEDL",
+    "CATEGORY": "Sectoral",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:29:15"
+  },
+  {
+    "INDEX": "NIFTY METAL",
+    "SYMBOL": "NMDC",
+    "CATEGORY": "Sectoral",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:29:15"
+  },
+  {
+    "INDEX": "NIFTY METAL",
+    "SYMBOL": "SAIL",
+    "CATEGORY": "Sectoral",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:29:15"
+  },
+  {
+    "INDEX": "NIFTY METAL",
+    "SYMBOL": "JINDALSTEL",
+    "CATEGORY": "Sectoral",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:29:15"
+  },
+  {
+    "INDEX": "NIFTY METAL",
+    "SYMBOL": "NATIONALUM",
+    "CATEGORY": "Sectoral",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:29:15"
+  },
+  {
+    "INDEX": "NIFTY METAL",
+    "SYMBOL": "MOIL",
+    "CATEGORY": "Sectoral",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:29:15"
+  },
+  {
+    "INDEX": "NIFTY ENERGY",
+    "SYMBOL": "RELIANCE",
+    "CATEGORY": "Sectoral",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:29:22"
+  },
+  {
+    "INDEX": "NIFTY ENERGY",
+    "SYMBOL": "NTPC",
+    "CATEGORY": "Sectoral",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:29:22"
+  },
+  {
+    "INDEX": "NIFTY ENERGY",
+    "SYMBOL": "POWERGRID",
+    "CATEGORY": "Sectoral",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:29:22"
+  },
+  {
+    "INDEX": "NIFTY ENERGY",
+    "SYMBOL": "BPCL",
+    "CATEGORY": "Sectoral",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:29:22"
+  },
+  {
+    "INDEX": "NIFTY ENERGY",
+    "SYMBOL": "ONGC",
+    "CATEGORY": "Sectoral",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:29:22"
+  },
+  {
+    "INDEX": "NIFTY ENERGY",
+    "SYMBOL": "IOC",
+    "CATEGORY": "Sectoral",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:29:22"
+  },
+  {
+    "INDEX": "NIFTY ENERGY",
+    "SYMBOL": "GAIL",
+    "CATEGORY": "Sectoral",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:29:22"
+  },
+  {
+    "INDEX": "NIFTY ENERGY",
+    "SYMBOL": "ADANIGREEN",
+    "CATEGORY": "Sectoral",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:29:22"
+  },
+  {
+    "INDEX": "NIFTY ENERGY",
+    "SYMBOL": "TATAPOWER",
+    "CATEGORY": "Sectoral",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:29:22"
+  },
+  {
+    "INDEX": "NIFTY ENERGY",
+    "SYMBOL": "NHPC",
+    "CATEGORY": "Sectoral",
+    "DOWNLOAD_DATE": "2025-09-14",
+    "DOWNLOAD_TIME": "13:29:22"
+  }
+]

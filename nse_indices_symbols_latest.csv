@@ -1,0 +1,27 @@
+SYMBOL,INDEX_NAME,CATEGORY,LAST_PRICE,CHANGE,PERCENT_CHANGE,DOWNLOAD_DATE,DOWNLOAD_TIME,DATA_SOURCE
+NIFTY 50,Nifty 50,Broad Market,N/A,N/A,N/A,2025-09-14,13:19:54,Sample Data
+NIFTY NEXT 50,Nifty Next 50,Broad Market,N/A,N/A,N/A,2025-09-14,13:19:54,Sample Data
+NIFTY 100,Nifty 100,Broad Market,N/A,N/A,N/A,2025-09-14,13:19:54,Sample Data
+NIFTY 200,Nifty 200,Broad Market,N/A,N/A,N/A,2025-09-14,13:19:54,Sample Data
+NIFTY 500,Nifty 500,Broad Market,N/A,N/A,N/A,2025-09-14,13:19:54,Sample Data
+NIFTY MIDCAP 50,Nifty Midcap 50,Mid Cap,N/A,N/A,N/A,2025-09-14,13:19:54,Sample Data
+NIFTY MIDCAP 100,Nifty Midcap 100,Mid Cap,N/A,N/A,N/A,2025-09-14,13:19:54,Sample Data
+NIFTY MIDCAP 150,Nifty Midcap 150,Mid Cap,N/A,N/A,N/A,2025-09-14,13:19:54,Sample Data
+NIFTY SMALLCAP 50,Nifty Smallcap 50,Small Cap,N/A,N/A,N/A,2025-09-14,13:19:54,Sample Data
+NIFTY SMALLCAP 100,Nifty Smallcap 100,Small Cap,N/A,N/A,N/A,2025-09-14,13:19:54,Sample Data
+NIFTY SMALLCAP 250,Nifty Smallcap 250,Small Cap,N/A,N/A,N/A,2025-09-14,13:19:54,Sample Data
+NIFTY AUTO,Nifty Auto,Sectoral,N/A,N/A,N/A,2025-09-14,13:19:54,Sample Data
+NIFTY BANK,Nifty Bank,Sectoral,N/A,N/A,N/A,2025-09-14,13:19:54,Sample Data
+NIFTY ENERGY,Nifty Energy,Sectoral,N/A,N/A,N/A,2025-09-14,13:19:54,Sample Data
+NIFTY FMCG,Nifty FMCG,Sectoral,N/A,N/A,N/A,2025-09-14,13:19:54,Sample Data
+NIFTY IT,Nifty IT,Sectoral,N/A,N/A,N/A,2025-09-14,13:19:54,Sample Data
+NIFTY MEDIA,Nifty Media,Sectoral,N/A,N/A,N/A,2025-09-14,13:19:54,Sample Data
+NIFTY METAL,Nifty Metal,Sectoral,N/A,N/A,N/A,2025-09-14,13:19:54,Sample Data
+NIFTY PHARMA,Nifty Pharma,Sectoral,N/A,N/A,N/A,2025-09-14,13:19:54,Sample Data
+NIFTY PSU BANK,Nifty PSU Bank,Sectoral,N/A,N/A,N/A,2025-09-14,13:19:54,Sample Data
+NIFTY REALTY,Nifty Realty,Sectoral,N/A,N/A,N/A,2025-09-14,13:19:54,Sample Data
+NIFTY FINANCIAL SERVICES,Nifty Financial Services,Sectoral,N/A,N/A,N/A,2025-09-14,13:19:54,Sample Data
+NIFTY PRIVATE BANK,Nifty Private Bank,Sectoral,N/A,N/A,N/A,2025-09-14,13:19:54,Sample Data
+NIFTY HEALTHCARE,Nifty Healthcare,Sectoral,N/A,N/A,N/A,2025-09-14,13:19:54,Sample Data
+NIFTY CONSUMER DURABLES,Nifty Consumer Durables,Sectoral,N/A,N/A,N/A,2025-09-14,13:19:54,Sample Data
+NIFTY OIL & GAS,Nifty Oil & Gas,Sectoral,N/A,N/A,N/A,2025-09-14,13:19:54,Sample Data

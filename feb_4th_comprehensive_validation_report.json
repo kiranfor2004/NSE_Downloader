@@ -1,0 +1,15 @@
+{
+  "validation_date": "2025-09-14T02:30:18.515688",
+  "source_file": "C:\\Users\\kiran\\Downloads\\4th month.csv",
+  "database_table": "master.dbo.step04_fo_udiff_daily",
+  "trade_date": "2025-02-04",
+  "verdict": "PASSED",
+  "metrics": {
+    "csv_records": 35100,
+    "db_records": 35100,
+    "csv_columns": 34,
+    "db_columns": 34,
+    "csv_symbols": 232,
+    "db_symbols": 232,
+    "instrument_types": {
+      "IDF": 

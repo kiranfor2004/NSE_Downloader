@@ -1,0 +1,10 @@
+{
+  "csv_file": "C:\\Users\\kiran\\Downloads\\4th month.csv",
+  "csv_records": 35100,
+  "csv_columns": 34,
+  "db_records": 35100,
+  "db_columns": 34,
+  "common_columns": 34,
+  "record_match": true,
+  "structure_match": true
+}

@@ -188,6 +188,37 @@ class NSEDatabaseManager:
         self.connection.commit()
         print("✅ Step 02 tables created/verified")
     
+    def create_step03_tables(self):
+        """Create tables for Step 03 - Month-to-Month Comparisons"""
+        cursor = self.connection.cursor()
+        
+        step03_sql = """
+        IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='step03_monthly_comparisons' AND xtype='U')
+        CREATE TABLE step03_monthly_comparisons (
+            id BIGINT IDENTITY(1,1) PRIMARY KEY,
+            comparison_name NVARCHAR(50) NOT NULL, -- e.g., '2025-02_vs_2025-01'
+            symbol NVARCHAR(50) NOT NULL,
+            analysis_type NVARCHAR(20) NOT NULL, -- 'VOLUME' or 'DELIVERY'
+            baseline_month NVARCHAR(10) NOT NULL,
+            compare_month NVARCHAR(10) NOT NULL,
+            baseline_value BIGINT NOT NULL,
+            compare_value BIGINT NOT NULL,
+            increase_absolute BIGINT NOT NULL,
+            increase_percentage DECIMAL(10,2) NOT NULL,
+            baseline_date DATE,
+            compare_date DATE,
+            created_at DATETIME2 DEFAULT GETDATE(),
+            INDEX IX_step03_comparison (comparison_name),
+            INDEX IX_step03_symbol (symbol),
+            INDEX IX_step03_type (analysis_type),
+            INDEX IX_step03_months (baseline_month, compare_month)
+        )
+        """
+        
+        cursor.execute(step03_sql)
+        self.connection.commit()
+        print("✅ Step 03 tables created/verified")
+    
     def create_step04_tables(self):
         """Create tables for Step 04 - F&O UDiFF Data"""
         cursor = self.connection.cursor()

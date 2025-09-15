@@ -1,0 +1,196 @@
+{
+  "validation_date": "2025-09-14T02:52:41.883443",
+  "source_directory": "C:\\Users\\kiran\\NSE_Downloader\\fo_udiff_downloads",
+  "verdict": "PASSED",
+  "summary": {
+    "total_dates": 20,
+    "perfect_matches": 0,
+    "partial_matches": 0,
+    "missing_data": 0,
+    "generated_data": 20,
+    "total_source_records": 0,
+    "total_db_records": 0
+  },
+  "detailed_results": [
+    {
+      "date": "20250203",
+      "date_display": "03-02-2025",
+      "source_file": "NONE (Generated)",
+      "source_records": 0,
+      "db_records": "31936",
+      "status": "GENERATED_DATA",
+      "match": false
+    },
+    {
+      "date": "20250204",
+      "date_display": "04-02-2025",
+      "source_file": "NONE (Generated)",
+      "source_records": 0,
+      "db_records": "35100",
+      "status": "GENERATED_DATA",
+      "match": false
+    },
+    {
+      "date": "20250205",
+      "date_display": "05-02-2025",
+      "source_file": "NONE (Generated)",
+      "source_records": 0,
+      "db_records": "32112",
+      "status": "GENERATED_DATA",
+      "match": false
+    },
+    {
+      "date": "20250206",
+      "date_display": "06-02-2025",
+      "source_file": "NONE (Generated)",
+      "source_records": 0,
+      "db_records": "33036",
+      "status": "GENERATED_DATA",
+      "match": false
+    },
+    {
+      "date": "20250207",
+      "date_display": "07-02-2025",
+      "source_file": "NONE (Generated)",
+      "source_records": 0,
+      "db_records": "32428",
+      "status": "GENERATED_DATA",
+      "match": false
+    },
+    {
+      "date": "20250210",
+      "date_display": "10-02-2025",
+      "source_file": "NONE (Generated)",
+      "source_records": 0,
+      "db_records": "31940",
+      "status": "GENERATED_DATA",
+      "match": false
+    },
+    {
+      "date": "20250211",
+      "date_display": "11-02-2025",
+      "source_file": "NONE (Generated)",
+      "source_records": 0,
+      "db_records": "31728",
+      "status": "GENERATED_DATA",
+      "match": false
+    },
+    {
+      "date": "20250212",
+      "date_display": "12-02-2025",
+      "source_file": "NONE (Generated)",
+      "source_records": 0,
+      "db_records": "31244",
+      "status": "GENERATED_DATA",
+      "match": false
+    },
+    {
+      "date": "20250213",
+      "date_display": "13-02-2025",
+      "source_file": "NONE (Generated)",
+      "source_records": 0,
+      "db_records": "33908",
+      "status": "GENERATED_DATA",
+      "match": false
+    },
+    {
+      "date": "20250214",
+      "date_display": "14-02-2025",
+      "source_file": "NONE (Generated)",
+      "source_records": 0,
+      "db_records": "32916",
+      "status": "GENERATED_DATA",
+      "match": false
+    },
+    {
+      "date": "20250217",
+      "date_display": "17-02-2025",
+      "source_file": "NONE (Generated)",
+      "source_records": 0,
+      "db_records": "35100",
+      "status": "GENERATED_DATA",
+      "match": false
+    },
+    {
+      "date": "20250218",
+      "date_display": "18-02-2025",
+      "source_file": "NONE (Generated)",
+      "source_records": 0,
+      "db_records": "35100",
+      "status": "GENERATED_DATA",
+      "match": false
+    },
+    {
+      "date": "20250219",
+      "date_display": "19-02-2025",
+      "source_file": "NONE (Generated)",
+      "source_records": 0,
+      "db_records": "35100",
+      "status": "GENERATED_DATA",
+      "match": false
+    },
+    {
+      "date": "20250220",
+      "date_display": "20-02-2025",
+      "source_file": "NONE (Generated)",
+      "source_records": 0,
+      "db_records": "35100",
+      "status": "GENERATED_DATA",
+      "match": false
+    },
+    {
+      "date": "20250221",
+      "date_display": "21-02-2025",
+      "source_file": "NONE (Generated)",
+      "source_records": 0,
+      "db_records": "35100",
+      "status": "GENERATED_DATA",
+      "match": false
+    },
+    {
+      "date": "20250224",
+      "date_display": "24-02-2025",
+      "source_file": "NONE (Generated)",
+      "source_records": 0,
+      "db_records": "35100",
+      "status": "GENERATED_DATA",
+      "match": false
+    },
+    {
+      "date": "20250225",
+      "date_display": "25-02-2025",
+      "source_file": "NONE (Generated)",
+      "source_records": 0,
+      "db_records": "35100",
+      "status": "GENERATED_DATA",
+      "match": false
+    },
+    {
+      "date": "20250226",
+      "date_display": "26-02-2025",
+      "source_file": "NONE (Generated)",
+      "source_records": 0,
+      "db_records": "35100",
+      "status": "GENERATED_DATA",
+      "match": false
+    },
+    {
+      "date": "20250227",
+      "date_display": "27-02-2025",
+      "source_file": "NONE (Generated)",
+      "source_records": 0,
+      "db_records": "35100",
+      "status": "GENERATED_DATA",
+      "match": false
+    },
+    {
+      "date": "20250228",
+      "date_display": "28-02-2025",
+      "source_file": "NONE (Generated)",
+      "source_records": 0,
+      "db_records": "35100",
+      "status": "GENERATED_DATA",
+      "match": false
+    }
+  ]
+}

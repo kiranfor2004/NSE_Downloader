@@ -1,0 +1,27 @@
+Symbol,Index_name,Category
+NIFTY 50,Nifty 50,Broad Market
+NIFTY NEXT 50,Nifty Next 50,Broad Market
+NIFTY 100,Nifty 100,Broad Market
+NIFTY 200,Nifty 200,Broad Market
+NIFTY 500,Nifty 500,Broad Market
+NIFTY MIDCAP 50,Nifty Midcap 50,Mid Cap
+NIFTY MIDCAP 100,Nifty Midcap 100,Mid Cap
+NIFTY MIDCAP 150,Nifty Midcap 150,Mid Cap
+NIFTY SMALLCAP 50,Nifty Smallcap 50,Small Cap
+NIFTY SMALLCAP 100,Nifty Smallcap 100,Small Cap
+NIFTY SMALLCAP 250,Nifty Smallcap 250,Small Cap
+NIFTY AUTO,Nifty Auto,Sectoral
+NIFTY BANK,Nifty Bank,Sectoral
+NIFTY ENERGY,Nifty Energy,Sectoral
+NIFTY FMCG,Nifty FMCG,Sectoral
+NIFTY IT,Nifty IT,Sectoral
+NIFTY MEDIA,Nifty Media,Sectoral
+NIFTY METAL,Nifty Metal,Sectoral
+NIFTY PHARMA,Nifty Pharma,Sectoral
+NIFTY PSU BANK,Nifty PSU Bank,Sectoral
+NIFTY REALTY,Nifty Realty,Sectoral
+NIFTY FINANCIAL SERVICES,Nifty Financial Services,Sectoral
+NIFTY PRIVATE BANK,Nifty Private Bank,Sectoral
+NIFTY HEALTHCARE,Nifty Healthcare,Sectoral
+NIFTY CONSUMER DURABLES,Nifty Consumer Durables,Sectoral
+NIFTY OIL & GAS,Nifty Oil & Gas,Sectoral

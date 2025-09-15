@@ -1,0 +1,201 @@
+{
+  "validation_timestamp": "2025-09-14T07:34:01.559482",
+  "source_directory": "C:\\Users\\kiran\\NSE_Downloader\\fo_udiff_downloads",
+  "verdict": "FAILED",
+  "summary": {
+    "total_source_files": 19,
+    "perfect_matches": 0,
+    "total_mismatches": 19,
+    "db_only_dates": 1,
+    "total_source_records": 722655,
+    "total_db_records": 677348
+  },
+  "validation_results": [
+    {
+      "date": "20250203",
+      "date_display": "03-02-2025",
+      "source_file": "BhavCopy_NSE_FO_0_0_0_20250203_F_0000.csv.zip",
+      "source_records": 34304,
+      "db_records": 31936,
+      "status": "COUNT_MISMATCH",
+      "match": false
+    },
+    {
+      "date": "20250204",
+      "date_display": "04-02-2025",
+      "source_file": "BhavCopy_NSE_FO_0_0_0_20250204_F_0000.csv.zip",
+      "source_records": 35100,
+      "db_records": 35100,
+      "status": "COUNT_MATCH_CONTENT_DIFF",
+      "match": false,
+      "details": {
+        "content_match": false,
+        "symbol_overlap": 0.004310344827586207,
+        "source_symbols_count": 232,
+        "db_symbols_sample": 1
+      }
+    },
+    {
+      "date": "20250205",
+      "date_display": "05-02-2025",
+      "source_file": "BhavCopy_NSE_FO_0_0_0_20250205_F_0000.csv.zip",
+      "source_records": 35580,
+      "db_records": 32112,
+      "status": "COUNT_MISMATCH",
+      "match": false
+    },
+    {
+      "date": "20250206",
+      "date_display": "06-02-2025",
+      "source_file": "BhavCopy_NSE_FO_0_0_0_20250206_F_0000.csv.zip",
+      "source_records": 35984,
+      "db_records": 33036,
+      "status": "COUNT_MISMATCH",
+      "match": false
+    },
+    {
+      "date": "20250207",
+      "date_display": "07-02-2025",
+      "source_file": "BhavCopy_NSE_FO_0_0_0_20250207_F_0000.csv.zip",
+      "source_records": 36158,
+      "db_records": 32428,
+      "status": "COUNT_MISMATCH",
+      "match": false
+    },
+    {
+      "date": "20250210",
+      "date_display": "10-02-2025",
+      "source_file": "BhavCopy_NSE_FO_0_0_0_20250210_F_0000.csv.zip",
+      "source_records": 36487,
+      "db_records": 31940,
+      "status": "COUNT_MISMATCH",
+      "match": false
+    },
+    {
+      "date": "20250211",
+      "date_display": "11-02-2025",
+      "source_file": "BhavCopy_NSE_FO_0_0_0_20250211_F_0000.csv.zip",
+      "source_records": 37039,
+      "db_records": 31728,
+      "status": "COUNT_MISMATCH",
+      "match": false
+    },
+    {
+      "date": "20250212",
+      "date_display": "12-02-2025",
+      "source_file": "BhavCopy_NSE_FO_0_0_0_20250212_F_0000.csv.zip",
+      "source_records": 37922,
+      "db_records": 31244,
+      "status": "COUNT_MISMATCH",
+      "match": false
+    },
+    {
+      "date": "20250213",
+      "date_display": "13-02-2025",
+      "source_file": "BhavCopy_NSE_FO_0_0_0_20250213_F_0000.csv.zip",
+      "source_records": 38311,
+      "db_records": 33908,
+      "status": "COUNT_MISMATCH",
+      "match": false
+    },
+    {
+      "date": "20250214",
+      "date_display": "14-02-2025",
+      "source_file": "BhavCopy_NSE_FO_0_0_0_20250214_F_0000.csv.zip",
+      "source_records": 38727,
+      "db_records": 32916,
+      "status": "COUNT_MISMATCH",
+      "match": false
+    },
+    {
+      "date": "20250217",
+      "date_display": "17-02-2025",
+      "source_file": "BhavCopy_NSE_FO_0_0_0_20250217_F_0000.csv.zip",
+      "source_records": 39573,
+      "db_records": 35100,
+      "status": "COUNT_MISMATCH",
+      "match": false
+    },
+    {
+      "date": "20250218",
+      "date_display": "18-02-2025",
+      "source_file": "BhavCopy_NSE_FO_0_0_0_20250218_F_0000.csv.zip",
+      "source_records": 39767,
+      "db_records": 35100,
+      "status": "COUNT_MISMATCH",
+      "match": false
+    },
+    {
+      "date": "20250219",
+      "date_display": "19-02-2025",
+      "source_file": "BhavCopy_NSE_FO_0_0_0_20250219_F_0000.csv.zip",
+      "source_records": 40071,
+      "db_records": 35100,
+      "status": "COUNT_MISMATCH",
+      "match": false
+    },
+    {
+      "date": "20250220",
+      "date_display": "20-02-2025",
+      "source_file": "BhavCopy_NSE_FO_0_0_0_20250220_F_0000.csv.zip",
+      "source_records": 40182,
+      "db_records": 35100,
+      "status": "COUNT_MISMATCH",
+      "match": false
+    },
+    {
+      "date": "20250221",
+      "date_display": "21-02-2025",
+      "source_file": "BhavCopy_NSE_FO_0_0_0_20250221_F_0000.csv.zip",
+      "source_records": 40227,
+      "db_records": 35100,
+      "status": "COUNT_MISMATCH",
+      "match": false
+    },
+    {
+      "date": "20250224",
+      "date_display": "24-02-2025",
+      "source_file": "BhavCopy_NSE_FO_0_0_0_20250224_F_0000.csv.zip",
+      "source_records": 40440,
+      "db_records": 35100,
+      "status": "COUNT_MISMATCH",
+      "match": false
+    },
+    {
+      "date": "20250225",
+      "date_display": "25-02-2025",
+      "source_file": "BhavCopy_NSE_FO_0_0_0_20250225_F_0000.csv.zip",
+      "source_records": 40709,
+      "db_records": 35100,
+      "status": "COUNT_MISMATCH",
+      "match": false
+    },
+    {
+      "date": "20250227",
+      "date_display": "27-02-2025",
+      "source_file": "BhavCopy_NSE_FO_0_0_0_20250227_F_0000.csv.zip",
+      "source_records": 41097,
+      "db_records": 35100,
+      "status": "COUNT_MISMATCH",
+      "match": false
+    },
+    {
+      "date": "20250228",
+      "date_display": "28-02-2025",
+      "source_file": "BhavCopy_NSE_FO_0_0_0_20250228_F_0000.csv.zip",
+      "source_records": 34977,
+      "db_records": 35100,
+      "status": "COUNT_MISMATCH",
+      "match": false
+    },
+    {
+      "date": "20250226",
+      "date_display": "26-02-2025",
+      "source_file": "NONE (Generated/Manual)",
+      "source_records": 0,
+      "db_records": 35100,
+      "status": "DB_ONLY_DATA",
+      "match": false
+    }
+  ]
+}
