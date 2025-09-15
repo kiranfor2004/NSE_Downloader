@@ -19,12 +19,46 @@ class ProfessionalNSEDashboard {
         this.setupEventListeners();
         console.log('Loading trading dates...');
         await this.loadTradingDates();
-        console.log('About to load data...');
+        console.log('Loading summary stats for fast KPIs...');
+        await this.loadSummaryStats();
+        console.log('Loading essential data...');
         await this.loadData();
         console.log('Data loaded, rendering dashboard...');
         this.renderDashboard();
         this.hideLoading();
         console.log('Dashboard initialization complete');
+    }
+
+    async loadSummaryStats() {
+        try {
+            let url = `${this.apiBaseUrl}/summary-stats`;
+            if (this.selectedDate) {
+                url += `?trading_date=${this.selectedDate}`;
+            }
+            
+            const response = await fetch(url);
+            if (!response.ok) throw new Error(`Failed to fetch summary stats: ${response.status}`);
+            
+            this.summaryStats = await response.json();
+            console.log('Summary stats loaded:', this.summaryStats);
+            
+            // Update header stats immediately with summary data
+            this.updateHeaderStatsFromSummary();
+            
+        } catch (error) {
+            console.error('Error loading summary stats:', error);
+            this.summaryStats = null;
+        }
+    }
+
+    updateHeaderStatsFromSummary() {
+        if (!this.summaryStats) return;
+        
+        const stats = this.summaryStats;
+        document.getElementById('totalRecords').textContent = 
+            stats.unique_symbols?.toLocaleString() || '--';
+        document.getElementById('lastUpdated').textContent = 
+            new Date().toLocaleTimeString();
     }
 
     setupEventListeners() {
@@ -85,7 +119,8 @@ class ProfessionalNSEDashboard {
     async loadTradingDates() {
         try {
             console.log('Loading trading dates...');
-            const response = await fetch(`${this.apiBaseUrl}/trading-dates`);
+            // Date filter disabled: skip loading trading dates from API
+            return;
             
             if (!response.ok) throw new Error(`Failed to fetch trading dates: ${response.status}`);
             
@@ -106,32 +141,16 @@ class ProfessionalNSEDashboard {
         const selector = document.getElementById('tradingDateFilter');
         if (!selector) return;
         
-        // Clear existing options except the first one
-        selector.innerHTML = '<option value="">Latest Date</option>';
-        
-        // Add trading dates
-        this.tradingDates.forEach(date => {
-            const option = document.createElement('option');
-            option.value = date;
-            option.textContent = new Date(date).toLocaleDateString('en-US', {
-                weekday: 'short',
-                year: 'numeric',
-                month: 'short',
-                day: 'numeric'
-            });
-            selector.appendChild(option);
-        });
+        // Date filter disabled: show only default option
+        selector.innerHTML = '<option value="">All Dates</option>';
     }
 
     async loadData() {
         try {
-            console.log('Starting to load data...');
+            console.log('Starting optimized data loading...');
             
-            // Build URL with date filter if selected
-            let url = `${this.apiBaseUrl}/delivery-data?limit=5000`;
-            if (this.selectedDate) {
-                url += `&trading_date=${this.selectedDate}`;
-            }
+            // Load only essential data first for faster initial load
+            let url = `${this.apiBaseUrl}/delivery-data?limit=50`;  // Date filter disabled
             
             console.log('API URL:', url);
             
@@ -159,11 +178,235 @@ class ProfessionalNSEDashboard {
             // Update header stats
             this.updateHeaderStats();
             
+            // Load advanced analytics data
+            await this.loadAdvancedAnalytics();
+            
         } catch (error) {
             console.error('Error loading data:', error);
             this.data = [];
             this.filteredData = [];
             this.showError('Failed to load data. Please check your connection.');
+        }
+    }
+
+    async loadAdvancedAnalytics() {
+        try {
+            console.log('Loading advanced analytics...');
+            
+            // Build URL with date filter if selected
+            let url = `${this.apiBaseUrl}/advanced-analytics`; // Date filter disabled
+            
+            const response = await fetch(url);
+            if (!response.ok) throw new Error(`Failed to fetch advanced analytics: ${response.status}`);
+            
+            const analyticsData = await response.json();
+            
+            // Update advanced KPIs
+            this.updateAdvancedKPIs(analyticsData);
+            
+            // Render advanced visualizations
+            this.renderRadialBarChart(analyticsData.top_categories);
+            this.renderPerformanceHeatmap(analyticsData.heatmap_data);
+            
+            console.log('Advanced analytics loaded successfully');
+            
+        } catch (error) {
+            console.error('Error loading advanced analytics:', error);
+        }
+    }
+
+    updateAdvancedKPIs(analyticsData) {
+        // Update Best Performing Index
+        const bestIndexElement = document.getElementById('bestPerformingIndex');
+        const bestIndexDeliveryElement = document.getElementById('bestIndexDelivery');
+        if (bestIndexElement && analyticsData.best_performing_index) {
+            const index = analyticsData.best_performing_index;
+            bestIndexElement.textContent = index.index_name || '--';
+            if (bestIndexDeliveryElement) {
+                const deliveryIncrease = parseFloat(index.total_delivery_increase) || 0;
+                bestIndexDeliveryElement.textContent = `+${deliveryIncrease.toFixed(1)}%`;
+            }
+        }
+
+        // Update Best Performing Category
+        const bestCategoryElement = document.getElementById('bestPerformingCategory');
+        const bestCategoryTurnoverElement = document.getElementById('bestCategoryTurnover');
+        if (bestCategoryElement && analyticsData.best_performing_category) {
+            const category = analyticsData.best_performing_category;
+            bestCategoryElement.textContent = category.category || '--';
+            if (bestCategoryTurnoverElement) {
+                const turnover = parseFloat(category.total_turnover) || 0;
+                bestCategoryTurnoverElement.textContent = `₹${(turnover/100).toFixed(1)}Cr`;
+            }
+        }
+
+        // Update Watchlist Count (from localStorage)
+        const watchlistElement = document.getElementById('totalWatchlistSymbols');
+        if (watchlistElement) {
+            const watchlist = JSON.parse(localStorage.getItem('symbolWatchlist') || '[]');
+            watchlistElement.textContent = watchlist.length;
+        }
+    }
+
+    renderRadialBarChart(categoriesData) {
+        const container = document.getElementById('radialBarChart');
+        if (!container || !categoriesData) return;
+
+        // Clear existing content
+        container.innerHTML = '';
+
+        try {
+            // Create radial bar chart using Chart.js
+            const canvas = document.createElement('canvas');
+            canvas.width = 400;
+            canvas.height = 400;
+            container.appendChild(canvas);
+
+            const ctx = canvas.getContext('2d');
+            
+            // Prepare data for radial chart (using polar area chart)
+            const data = {
+                labels: categoriesData.map(item => item.category),
+                datasets: [{
+                    label: 'Delivery Performance',
+                    data: categoriesData.map(item => Math.abs(item.avg_delivery_increase) || 0),
+                    backgroundColor: [
+                        'rgba(34, 197, 94, 0.8)',
+                        'rgba(59, 130, 246, 0.8)',
+                        'rgba(168, 85, 247, 0.8)',
+                        'rgba(245, 158, 11, 0.8)',
+                        'rgba(239, 68, 68, 0.8)',
+                        'rgba(6, 182, 212, 0.8)',
+                        'rgba(139, 92, 246, 0.8)',
+                        'rgba(34, 197, 94, 0.6)',
+                        'rgba(59, 130, 246, 0.6)',
+                        'rgba(168, 85, 247, 0.6)'
+                    ],
+                    borderColor: [
+                        'rgba(34, 197, 94, 1)',
+                        'rgba(59, 130, 246, 1)',
+                        'rgba(168, 85, 247, 1)',
+                        'rgba(245, 158, 11, 1)',
+                        'rgba(239, 68, 68, 1)',
+                        'rgba(6, 182, 212, 1)',
+                        'rgba(139, 92, 246, 1)',
+                        'rgba(34, 197, 94, 1)',
+                        'rgba(59, 130, 246, 1)',
+                        'rgba(168, 85, 247, 1)'
+                    ],
+                    borderWidth: 2
+                }]
+            };
+
+            new Chart(ctx, {
+                type: 'polarArea',
+                data: data,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Top Categories by Delivery Performance',
+                            color: '#e2e8f0',
+                            font: { size: 16 }
+                        },
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        r: {
+                            ticks: {
+                                color: '#94a3b8'
+                            },
+                            grid: {
+                                color: 'rgba(148, 163, 184, 0.2)'
+                            },
+                            angleLines: {
+                                color: 'rgba(148, 163, 184, 0.2)'
+                            }
+                        }
+                    }
+                }
+            });
+
+        } catch (error) {
+            console.error('Error rendering radial bar chart:', error);
+            container.innerHTML = `
+                <div class="viz-placeholder">
+                    <i class="fas fa-chart-pie"></i>
+                    <h4>Radial Bar Chart</h4>
+                    <p>Error loading chart data</p>
+                </div>
+            `;
+        }
+    }
+
+    renderPerformanceHeatmap(heatmapData) {
+        const container = document.getElementById('performanceHeatmap');
+        if (!container || !heatmapData) return;
+
+        // Clear existing content
+        container.innerHTML = '';
+
+        try {
+            // Create heatmap table
+            const table = document.createElement('div');
+            table.className = 'heatmap-table';
+
+            // Group data by category
+            const groupedData = heatmapData.reduce((acc, item) => {
+                if (!acc[item.category]) {
+                    acc[item.category] = [];
+                }
+                acc[item.category].push(item);
+                return acc;
+            }, {});
+
+            // Create heatmap HTML
+            let heatmapHTML = '<div class="heatmap-grid">';
+            
+            Object.keys(groupedData).forEach(category => {
+                heatmapHTML += `<div class="heatmap-category">`;
+                heatmapHTML += `<div class="heatmap-category-header">${category}</div>`;
+                heatmapHTML += `<div class="heatmap-symbols">`;
+                
+                groupedData[category].forEach(symbol => {
+                    const deliveryIncreasePct = parseFloat(symbol.delivery_increase_pct) || 0;
+                    const deliveryPct = parseFloat(symbol.delivery_percentage) || 0;
+                    const intensity = Math.min(Math.abs(deliveryIncreasePct) / 20, 1); // Normalize to 0-1
+                    const color = deliveryIncreasePct >= 0 ? 
+                        `rgba(34, 197, 94, ${intensity})` : 
+                        `rgba(239, 68, 68, ${intensity})`;
+                    
+                    heatmapHTML += `
+                        <div class="heatmap-cell" 
+                             style="background-color: ${color}" 
+                             title="${symbol.symbol}: ${deliveryPct.toFixed(2)}%">
+                            <span class="symbol-code">${symbol.symbol}</span>
+                            <span class="performance-value">${deliveryPct.toFixed(1)}%</span>
+                        </div>
+                    `;
+                });
+                
+                heatmapHTML += '</div></div>';
+            });
+            
+            heatmapHTML += '</div>';
+            
+            table.innerHTML = heatmapHTML;
+            container.appendChild(table);
+
+        } catch (error) {
+            console.error('Error rendering performance heatmap:', error);
+            container.innerHTML = `
+                <div class="viz-placeholder">
+                    <i class="fas fa-th"></i>
+                    <h4>Performance Heatmap</h4>
+                    <p>Error loading heatmap data</p>
+                </div>
+            `;
         }
     }
 
@@ -179,6 +422,43 @@ class ProfessionalNSEDashboard {
         
         if (lastUpdatedElement) {
             lastUpdatedElement.textContent = new Date().toLocaleTimeString();
+        }
+    }
+
+    // Watchlist management functions
+    addToWatchlist(symbol) {
+        const watchlist = JSON.parse(localStorage.getItem('symbolWatchlist') || '[]');
+        if (!watchlist.includes(symbol)) {
+            watchlist.push(symbol);
+            localStorage.setItem('symbolWatchlist', JSON.stringify(watchlist));
+            this.updateWatchlistCount();
+            return true;
+        }
+        return false;
+    }
+
+    removeFromWatchlist(symbol) {
+        const watchlist = JSON.parse(localStorage.getItem('symbolWatchlist') || '[]');
+        const index = watchlist.indexOf(symbol);
+        if (index > -1) {
+            watchlist.splice(index, 1);
+            localStorage.setItem('symbolWatchlist', JSON.stringify(watchlist));
+            this.updateWatchlistCount();
+            return true;
+        }
+        return false;
+    }
+
+    isInWatchlist(symbol) {
+        const watchlist = JSON.parse(localStorage.getItem('symbolWatchlist') || '[]');
+        return watchlist.includes(symbol);
+    }
+
+    updateWatchlistCount() {
+        const watchlistElement = document.getElementById('totalWatchlistSymbols');
+        if (watchlistElement) {
+            const watchlist = JSON.parse(localStorage.getItem('symbolWatchlist') || '[]');
+            watchlistElement.textContent = watchlist.length;
         }
     }
 
@@ -463,7 +743,7 @@ class ProfessionalNSEDashboard {
             <h3>Index-Stock Relationships</h3>
             <p><strong>Nodes:</strong> ${data.nodes.length} (${data.nodes.filter(n => n.type === 'index').length} indices, ${data.nodes.filter(n => n.type === 'symbol').length} symbols)</p>
             <p><strong>Links:</strong> ${data.links.length} symbol-index connections</p>
-            <p><strong>Total Market Size:</strong> ₹${data.nodes.filter(n => n.type === 'index').reduce((sum, n) => sum + n.size, 0).toFixed(2)}L</p>
+            <p><strong>Total Market Size:</strong> ₹${data.nodes.filter(n => n.type === 'index').reduce((sum, n) => sum + (parseFloat(n.size) || 0), 0).toFixed(2)}L</p>
         `;
         container.appendChild(info);
 
@@ -479,12 +759,13 @@ class ProfessionalNSEDashboard {
             
         const indicesDisplay = topIndices.map(index => {
             const connectedSymbols = data.links.filter(link => link.source === index.id).length;
+            const indexSize = parseFloat(index.size) || 0;
             return `
                 <div class="index-card">
                     <h4>${index.id}</h4>
-                    <p>Size: ₹${index.size.toFixed(2)}L</p>
+                    <p>Size: ₹${indexSize.toFixed(2)}L</p>
                     <p>Symbols: ${connectedSymbols}</p>
-                    <div class="index-bar" style="width: ${Math.min(100, (index.size / topIndices[0].size) * 100)}%"></div>
+                    <div class="index-bar" style="width: ${Math.min(100, (indexSize / (parseFloat(topIndices[0]?.size) || 1)) * 100)}%"></div>
                 </div>
             `;
         }).join('');
@@ -515,7 +796,7 @@ class ProfessionalNSEDashboard {
             <h3>Market Hierarchy</h3>
             <p><strong>Categories:</strong> ${data.children.length}</p>
             <p><strong>Total Symbols:</strong> ${data.children.reduce((sum, cat) => sum + cat.children.length, 0)}</p>
-            <p><strong>Total Market Value:</strong> ₹${data.children.reduce((sum, cat) => sum + cat.value, 0).toFixed(2)}L</p>
+            <p><strong>Total Market Value:</strong> ₹${data.children.reduce((sum, cat) => sum + (parseFloat(cat.value) || 0), 0).toFixed(2)}L</p>
         `;
         container.appendChild(info);
 
@@ -524,13 +805,15 @@ class ProfessionalNSEDashboard {
         visualization.className = 'treemap-placeholder';
         
         const topCategories = data.children.slice(0, 5);
-        const categoryBoxes = topCategories.map(category => `
-            <div class="category-box" style="flex: ${category.value}">
+        const categoryBoxes = topCategories.map(category => {
+            const categoryValue = parseFloat(category.value) || 0;
+            return `
+            <div class="category-box" style="flex: ${categoryValue}">
                 <h4>${category.name}</h4>
-                <p>₹${category.value.toFixed(2)}L</p>
+                <p>₹${categoryValue.toFixed(2)}L</p>
                 <p>${category.children.length} symbols</p>
             </div>
-        `).join('');
+        `;}).join('');
 
         visualization.innerHTML = `
             <div class="treemap-container">
@@ -558,7 +841,7 @@ class ProfessionalNSEDashboard {
             <h3>Hierarchical Market Structure</h3>
             <p><strong>Categories:</strong> ${data.children.length}</p>
             <p><strong>Levels:</strong> Category → Symbol → Delivery</p>
-            <p><strong>Total Market:</strong> ₹${data.children.reduce((sum, cat) => sum + cat.value, 0).toFixed(2)}L</p>
+            <p><strong>Total Market:</strong> ₹${data.children.reduce((sum, cat) => sum + (parseFloat(cat.value) || 0), 0).toFixed(2)}L</p>
         `;
         container.appendChild(info);
 
@@ -567,9 +850,10 @@ class ProfessionalNSEDashboard {
         visualization.className = 'sunburst-data';
         
         // Calculate percentages for each category
-        const totalValue = data.children.reduce((sum, cat) => sum + cat.value, 0);
+        const totalValue = data.children.reduce((sum, cat) => sum + (parseFloat(cat.value) || 0), 0);
         const categoryRings = data.children.slice(0, 8).map((category, index) => {
-            const percentage = ((category.value / totalValue) * 100);
+            const categoryValue = parseFloat(category.value) || 0;
+            const percentage = totalValue > 0 ? ((categoryValue / totalValue) * 100) : 0;
             const topSymbols = category.children.slice(0, 3);
             
             return `
@@ -578,7 +862,7 @@ class ProfessionalNSEDashboard {
                         <h4>${category.name}</h4>
                         <span class="ring-percentage">${percentage.toFixed(1)}%</span>
                     </div>
-                    <div class="ring-value">₹${category.value.toFixed(2)}L</div>
+                    <div class="ring-value">₹${categoryValue.toFixed(2)}L</div>
                     <div class="ring-symbols">
                         ${topSymbols.map(symbol => `<span class="symbol-tag">${symbol.name}</span>`).join('')}
                         ${category.children.length > 3 ? `<span class="more-symbols">+${category.children.length - 3} more</span>` : ''}
@@ -794,11 +1078,11 @@ class ProfessionalNSEDashboard {
         const kpis = this.calculateSymbolAnalysisKPIs(symbolData);
         
         // Update all KPI cards with enhanced data
-        document.getElementById('currentDeliveryPercentage').textContent = `${kpis.currentDeliveryPercentage.toFixed(2)}%`;
-        document.getElementById('monthOverMonthChange').textContent = `${kpis.monthOverMonthChange >= 0 ? '+' : ''}${kpis.monthOverMonthChange.toFixed(2)}%`;
+        document.getElementById('currentDeliveryPercentage').textContent = `${(parseFloat(kpis.currentDeliveryPercentage) || 0).toFixed(2)}%`;
+        document.getElementById('monthOverMonthChange').textContent = `${(parseFloat(kpis.monthOverMonthChange) || 0) >= 0 ? '+' : ''}${(parseFloat(kpis.monthOverMonthChange) || 0).toFixed(2)}%`;
         document.getElementById('currentTradingVolume').textContent = this.formatNumber(kpis.currentTradingVolume);
-        document.getElementById('deliveryTradingRatio').textContent = `${kpis.deliveryTradingRatio.toFixed(2)}%`;
-        document.getElementById('deliveryQuantityChange').textContent = `${kpis.deliveryQuantityChange >= 0 ? '+' : ''}${this.formatNumber(kpis.deliveryQuantityChange)}`;
+        document.getElementById('deliveryTradingRatio').textContent = `${(parseFloat(kpis.deliveryTradingRatio) || 0).toFixed(2)}%`;
+        document.getElementById('deliveryQuantityChange').textContent = `${(parseFloat(kpis.deliveryQuantityChange) || 0) >= 0 ? '+' : ''}${this.formatNumber(kpis.deliveryQuantityChange)}`;
 
         // Update trend indicator with enhanced logic
         const trendElement = document.getElementById('deliveryTrend');
@@ -1098,8 +1382,8 @@ class ProfessionalNSEDashboard {
                         ${topPerformers.map(stock => `
                             <div class="performer-card" onclick="dashboard.selectSymbol('${stock.symbol}')">
                                 <div class="stock-symbol">${stock.symbol}</div>
-                                <div class="stock-gain">+${stock.delivery_increase_pct.toFixed(1)}%</div>
-                                <div class="stock-category">${stock.category}</div>
+                                <div class="stock-gain">+${(parseFloat(stock.delivery_increase_pct) || 0).toFixed(1)}%</div>
+                                <div class="stock-category">${stock.category || 'N/A'}</div>
                             </div>
                         `).join('')}
                     </div>
@@ -1125,8 +1409,8 @@ class ProfessionalNSEDashboard {
                                     <div class="stock-symbol">${stock.symbol}</div>
                                     <div class="stock-price">₹${stock.current_close_price || 'N/A'}</div>
                                 </div>
-                                <div class="delivery-change ${stock.delivery_increase_pct >= 0 ? 'positive' : 'negative'}">
-                                    ${stock.delivery_increase_pct >= 0 ? '+' : ''}${stock.delivery_increase_pct.toFixed(1)}%
+                                <div class="delivery-change ${(parseFloat(stock.delivery_increase_pct) || 0) >= 0 ? 'positive' : 'negative'}">
+                                    ${(parseFloat(stock.delivery_increase_pct) || 0) >= 0 ? '+' : ''}${(parseFloat(stock.delivery_increase_pct) || 0).toFixed(1)}%
                                 </div>
                             </div>
                         `).join('')}
@@ -1151,7 +1435,7 @@ class ProfessionalNSEDashboard {
                             <div class="champion-card" onclick="dashboard.selectSymbol('${data.symbol}')">
                                 <div class="category-name">${category}</div>
                                 <div class="champion-symbol">${data.symbol}</div>
-                                <div class="champion-performance">+${data.performance.toFixed(1)}%</div>
+                                <div class="champion-performance">+${(parseFloat(data.performance) || 0).toFixed(1)}%</div>
                             </div>
                         `).join('')}
                     </div>
@@ -1233,8 +1517,8 @@ class ProfessionalNSEDashboard {
         if (!this.data || this.data.length === 0) return [];
         
         return this.data
-            .filter(stock => stock.delivery_increase_pct > 0)
-            .sort((a, b) => b.delivery_increase_pct - a.delivery_increase_pct)
+            .filter(stock => (parseFloat(stock.delivery_increase_pct) || 0) > 0)
+            .sort((a, b) => (parseFloat(b.delivery_increase_pct) || 0) - (parseFloat(a.delivery_increase_pct) || 0))
             .slice(0, count);
     }
 
@@ -1243,8 +1527,8 @@ class ProfessionalNSEDashboard {
         
         // Get stocks with significant delivery changes (both positive and negative)
         return this.data
-            .filter(stock => Math.abs(stock.delivery_increase_pct) > 20)
-            .sort((a, b) => Math.abs(b.delivery_increase_pct) - Math.abs(a.delivery_increase_pct))
+            .filter(stock => Math.abs(parseFloat(stock.delivery_increase_pct) || 0) > 20)
+            .sort((a, b) => Math.abs(parseFloat(b.delivery_increase_pct) || 0) - Math.abs(parseFloat(a.delivery_increase_pct) || 0))
             .slice(0, count);
     }
 
@@ -1255,11 +1539,12 @@ class ProfessionalNSEDashboard {
         
         this.data.forEach(stock => {
             const category = stock.category || 'Other';
+            const deliveryPct = parseFloat(stock.delivery_increase_pct) || 0;
             if (!categoryChampions[category] || 
-                stock.delivery_increase_pct > categoryChampions[category].performance) {
+                deliveryPct > categoryChampions[category].performance) {
                 categoryChampions[category] = {
                     symbol: stock.symbol,
-                    performance: stock.delivery_increase_pct
+                    performance: deliveryPct
                 };
             }
         });
@@ -1278,9 +1563,9 @@ class ProfessionalNSEDashboard {
         }
         
         const totalStocks = this.data.length;
-        const avgIncrease = (this.data.reduce((sum, stock) => sum + stock.delivery_increase_pct, 0) / totalStocks).toFixed(1);
+        const avgIncrease = (this.data.reduce((sum, stock) => sum + (parseFloat(stock.delivery_increase_pct) || 0), 0) / totalStocks).toFixed(1);
         const categories = new Set(this.data.map(stock => stock.category || 'Other'));
-        const strongPerformers = this.data.filter(stock => stock.delivery_increase_pct > 50).length;
+        const strongPerformers = this.data.filter(stock => (parseFloat(stock.delivery_increase_pct) || 0) > 50).length;
         
         return {
             totalStocks: totalStocks.toLocaleString(),
@@ -1396,6 +1681,9 @@ class ProfessionalNSEDashboard {
     async refreshData() {
         this.showLoading();
         try {
+            // Load summary stats first for fast KPI updates
+            await this.loadSummaryStats();
+            // Then load detailed data
             await this.loadData();
             this.renderDashboard();
         } catch (error) {

@@ -25,9 +25,9 @@
             </div>
             <div class="header-stats">
                 <div class="stat-card">
-                    <span class="stat-label">Trading Date</span>
-                    <select id="tradingDateFilter" class="date-selector">
-                        <option value="">Latest Date</option>
+                    <span class="stat-label">Trading Date (disabled)</span>
+                    <select id="tradingDateFilter" class="date-selector" disabled>
+                        <option value="">All Dates</option>
                     </select>
                 </div>
                 <div class="stat-card">
@@ -131,6 +131,36 @@
                         <span class="kpi-unit">Liquidity Indicator</span>
                     </div>
                 </div>
+                <div class="kpi-card performance">
+                    <div class="kpi-icon">
+                        <i class="fas fa-trophy"></i>
+                    </div>
+                    <div class="kpi-content">
+                        <h3 id="bestPerformingIndex">--</h3>
+                        <p>Best Performing Index</p>
+                        <span class="kpi-unit" id="bestIndexDelivery">by Delivery</span>
+                    </div>
+                </div>
+                <div class="kpi-card category">
+                    <div class="kpi-icon">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <div class="kpi-content">
+                        <h3 id="bestPerformingCategory">--</h3>
+                        <p>Best Performing Category</p>
+                        <span class="kpi-unit" id="bestCategoryTurnover">by Turnover</span>
+                    </div>
+                </div>
+                <div class="kpi-card watchlist">
+                    <div class="kpi-icon">
+                        <i class="fas fa-bookmark"></i>
+                    </div>
+                    <div class="kpi-content">
+                        <h3 id="totalWatchlistSymbols">0</h3>
+                        <p>Symbols in Watchlist</p>
+                        <span class="kpi-unit">Quick Access</span>
+                    </div>
+                </div>
             </div>
 
             <!-- Visualizations Grid -->
@@ -195,6 +225,38 @@
                             <i class="fas fa-stream"></i>
                             <h4>Parallel Coordinates</h4>
                             <p>Comparative analysis across multiple dimensions</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="viz-card large">
+                    <div class="viz-header">
+                        <h3>Category Performance</h3>
+                        <div class="viz-controls">
+                            <span class="viz-type">Radial Bar</span>
+                        </div>
+                    </div>
+                    <div class="viz-content radial-chart-container" id="radialBarChart">
+                        <div class="viz-placeholder">
+                            <i class="fas fa-chart-pie"></i>
+                            <h4>Radial Bar Chart</h4>
+                            <p>Top 10 categories by delivery performance</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="viz-card large">
+                    <div class="viz-header">
+                        <h3>Performance Heatmap</h3>
+                        <div class="viz-controls">
+                            <span class="viz-type">Matrix</span>
+                        </div>
+                    </div>
+                    <div class="viz-content heatmap-container" id="performanceHeatmap">
+                        <div class="viz-placeholder">
+                            <i class="fas fa-th"></i>
+                            <h4>Symbol-Category Heatmap</h4>
+                            <p>Delivery performance matrix visualization</p>
                         </div>
                     </div>
                 </div>

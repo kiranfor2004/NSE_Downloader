@@ -9,6 +9,7 @@ import pyodbc
 import json
 import logging
 from datetime import datetime
+from email.utils import parsedate_to_datetime
 from typing import Dict, List, Optional
 import os
 
@@ -96,15 +97,61 @@ class DatabaseConnection:
 # Initialize database connection
 db = DatabaseConnection()
 
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+# Helpers
+def normalize_trading_date(date_str: Optional[str]) -> Optional[str]:
+    """Normalize incoming trading_date strings to 'YYYY-MM-DD'.
+    Accepts ISO datetimes, RFC1123 (e.g., 'Tue, 19 Aug 2025 00:00:00 GMT'),
+    or already date-like strings. Returns None if parsing fails.
+    """
+    if not date_str:
+        return None
+    try:
+        # Already like 'YYYY-MM-DD' or 'YYYY-MM-DDTHH:MM:SS'
+        if 'T' in date_str:
+            # ISO 8601
+            try:
+                dt = datetime.fromisoformat(date_str.replace('Z', '+00:00'))
+                return dt.strftime('%Y-%m-%d')
+            except Exception:
+                pass
+        # RFC1123 (from browsers)
+        try:
+            dt = parsedate_to_datetime(date_str)
+            return dt.strftime('%Y-%m-%d')
+        except Exception:
+            pass
+        # Try common date-only formats
+        for fmt in ('%Y-%m-%d', '%m/%d/%Y', '%d/%m/%Y', '%d-%m-%Y'):
+            try:
+                dt = datetime.strptime(date_str, fmt)
+                return dt.strftime('%Y-%m-%d')
+            except Exception:
+                continue
+        # As a fallback, try fromisoformat directly
+        try:
+            dt = datetime.fromisoformat(date_str)
+            return dt.strftime('%Y-%m-%d')
+        except Exception:
+            return None
+    except Exception:
+        return None
+
 @app.route('/')
 def serve_dashboard():
     """Serve the main dashboard HTML"""
-    return send_from_directory('.', 'index.html')
+    return send_from_directory(BASE_DIR, 'index.html')
+
+@app.route('/dashboard')
+def serve_dashboard_alias():
+    """Serve the dashboard when user navigates to /dashboard"""
+    return send_from_directory(BASE_DIR, 'index.html')
 
 @app.route('/<path:filename>')
 def serve_static_files(filename):
     """Serve static files like CSS, JS, etc."""
-    return send_from_directory('.', filename)
+    return send_from_directory(BASE_DIR, filename)
 
 @app.route('/api/health', methods=['GET'])
 def health_check():
@@ -127,31 +174,29 @@ def health_check():
 
 @app.route('/api/delivery-data', methods=['GET'])
 def get_delivery_data():
-    """Get all delivery analysis data"""
+    """Get all delivery analysis data with optimized performance"""
     try:
         # Get query parameters for filtering
         category = request.args.get('category')
-        trading_date = request.args.get('trading_date')  # New date filter
-        limit = request.args.get('limit', type=int)
+        # Date filter disabled: ignore any trading_date input
+        trading_date = None
+        limit = request.args.get('limit', type=int, default=100)  # Reduced default limit
         offset = request.args.get('offset', type=int, default=0)
         sort_by = request.args.get('sort_by', 'delivery_increase_pct')
         sort_order = request.args.get('sort_order', 'DESC')
         search = request.args.get('search')
 
-        # Build base query
+        # Build optimized base query - select only essential columns for faster load
         base_query = """
             SELECT 
                 symbol,
-                index_name,
                 category,
                 current_deliv_qty,
                 delivery_increase_pct,
-                comparison_type,
                 current_trade_date,
                 current_close_price,
                 previous_deliv_qty,
-                previous_baseline_date,
-                previous_close_price
+                index_name
             FROM step03_compare_monthvspreviousmonth
             WHERE 1=1
         """
@@ -163,9 +208,7 @@ def get_delivery_data():
             base_query += " AND category = ?"
             params.append(category)
         
-        if trading_date:
-            base_query += " AND current_trade_date = ?"
-            params.append(trading_date)
+        # date filter disabled
         
         if search:
             base_query += " AND symbol LIKE ?"
@@ -216,33 +259,46 @@ def get_delivery_data():
 
 @app.route('/api/summary-stats', methods=['GET'])
 def get_summary_stats():
-    """Get summary statistics for the dashboard"""
+    """Get optimized summary statistics for fast loading"""
     try:
-        # Overall statistics
-        stats_query = """
+        # Date filter disabled
+        trading_date = None
+        
+        # Build base condition for filtering
+        base_condition = "WHERE 1=1"
+        params = []
+        
+        # date filter disabled
+        
+        # Fast overall statistics with single query
+        stats_query = f"""
             SELECT 
                 COUNT(*) as total_records,
                 COUNT(DISTINCT symbol) as unique_symbols,
                 AVG(delivery_increase_pct) as avg_increase,
                 MAX(delivery_increase_pct) as max_increase,
-                MIN(delivery_increase_pct) as min_increase
+                MIN(delivery_increase_pct) as min_increase,
+                COUNT(DISTINCT category) as unique_categories,
+                COUNT(DISTINCT index_name) as unique_indices
             FROM step03_compare_monthvspreviousmonth
+            {base_condition}
         """
         
-        stats = db.execute_query(stats_query)[0]
+        stats = db.execute_query(stats_query, tuple(params))[0]
         
-        # Category distribution
-        category_query = """
-            SELECT 
+        # Top 5 categories only for speed
+        category_query = f"""
+            SELECT TOP 5
                 category,
                 COUNT(*) as count,
                 AVG(delivery_increase_pct) as avg_increase
             FROM step03_compare_monthvspreviousmonth
+            {base_condition}
             GROUP BY category
-            ORDER BY count DESC
+            ORDER BY avg_increase DESC
         """
         
-        category_stats = db.execute_query(category_query)
+        category_stats = db.execute_query(category_query, tuple(params))
         
         # Index distribution
         index_query = """
@@ -444,8 +500,26 @@ def get_trading_dates():
         
         dates = db.execute_query(query)
         
-        # Convert to simple list of date strings
-        date_list = [row['current_trade_date'] for row in dates]
+        # Convert to simple list of 'YYYY-MM-DD' strings
+        date_list = []
+        for row in dates:
+            raw = row['current_trade_date']
+            # raw may be datetime iso string; normalize
+            if isinstance(raw, str):
+                # If ISO like '2025-08-19T00:00:00', take date part
+                if 'T' in raw:
+                    date_list.append(raw.split('T', 1)[0])
+                else:
+                    normalized = normalize_trading_date(raw)
+                    date_list.append(normalized or raw)
+            else:
+                # If it came as datetime from DB handler
+                try:
+                    # our db layer already converts datetime to isoformat,
+                    # but keep a safe path
+                    date_list.append(raw.strftime('%Y-%m-%d'))
+                except Exception:
+                    date_list.append(str(raw))
         
         return jsonify({
             'trading_dates': date_list,
@@ -457,6 +531,93 @@ def get_trading_dates():
 
     except Exception as e:
         logger.error(f"Error fetching trading dates: {e}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/advanced-analytics', methods=['GET'])
+def get_advanced_analytics():
+    """Get advanced analytics for KPIs and visualizations"""
+    try:
+        # Date filter disabled
+        trading_date = None
+        
+        # Build base filter for date
+        date_filter = ""
+        params = []
+        # date filter disabled
+        
+        # Get best performing index by delivery
+        best_index_query = f"""
+            SELECT TOP 1 
+                index_name,
+                SUM(delivery_increase_pct) as total_delivery_increase,
+                COUNT(*) as symbol_count,
+                AVG(delivery_increase_pct) as avg_delivery_increase
+            FROM step03_compare_monthvspreviousmonth 
+            {date_filter}
+            GROUP BY index_name 
+            ORDER BY total_delivery_increase DESC
+        """
+        best_index = db.execute_query(best_index_query, tuple(params))
+        
+        # Get best performing category by turnover
+        best_category_query = f"""
+            SELECT TOP 1 
+                category,
+                SUM(current_turnover_lacs) as total_turnover,
+                COUNT(*) as symbol_count,
+                AVG(current_turnover_lacs) as avg_turnover
+            FROM step03_compare_monthvspreviousmonth 
+            {date_filter}
+            GROUP BY category 
+            ORDER BY total_turnover DESC
+        """
+        best_category = db.execute_query(best_category_query, tuple(params))
+        
+        # Get top 10 categories for radial chart
+        top_categories_query = f"""
+            SELECT TOP 10 
+                category,
+                AVG(delivery_increase_pct) as avg_delivery_increase,
+                SUM(delivery_increase_pct) as total_delivery_increase,
+                COUNT(*) as symbol_count
+            FROM step03_compare_monthvspreviousmonth 
+            {date_filter}
+            GROUP BY category 
+            ORDER BY avg_delivery_increase DESC
+        """
+        top_categories = db.execute_query(top_categories_query, tuple(params))
+        
+        # Get heatmap data (top symbols per category)
+        heatmap_query = f"""
+            WITH RankedSymbols AS (
+                SELECT 
+                    symbol,
+                    category,
+                    delivery_increase_pct,
+                    ROW_NUMBER() OVER (PARTITION BY category ORDER BY delivery_increase_pct DESC) as rank
+                FROM step03_compare_monthvspreviousmonth 
+                {date_filter}
+            )
+            SELECT 
+                symbol,
+                category,
+                delivery_increase_pct
+            FROM RankedSymbols 
+            WHERE rank <= 5
+            ORDER BY category, delivery_increase_pct DESC
+        """
+        heatmap_data = db.execute_query(heatmap_query, tuple(params))
+        
+        return jsonify({
+            'best_performing_index': best_index[0] if best_index else None,
+            'best_performing_category': best_category[0] if best_category else None,
+            'top_categories': top_categories,
+            'heatmap_data': heatmap_data,
+            'timestamp': datetime.now().isoformat()
+        })
+
+    except Exception as e:
+        logger.error(f"Error fetching advanced analytics: {e}")
         return jsonify({'error': str(e)}), 500
 
 @app.errorhandler(404)
@@ -478,6 +639,7 @@ if __name__ == '__main__':
     logger.info(f"  GET /api/categories - Get available categories")
     logger.info(f"  GET /api/indices - Get available indices")
     logger.info(f"  GET /api/trading-dates - Get available trading dates")
+    logger.info(f"  GET /api/advanced-analytics - Get advanced analytics and KPIs")
     logger.info(f"  GET /api/categories - Get available categories")
     logger.info(f"  GET /api/indices - Get available indices")
     
