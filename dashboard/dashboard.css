@@ -143,6 +143,37 @@ p { font-size: 14px; font-weight: 400; }
     color: var(--color-primary);
 }
 
+/* Date Selector Styling */
+.date-selector {
+    background: var(--bg-primary);
+    border: 1px solid var(--bg-tertiary);
+    color: var(--text-primary);
+    padding: 0.25rem 0.5rem;
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+    font-weight: 600;
+    min-width: 120px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.date-selector:hover {
+    border-color: var(--color-primary);
+    background: var(--bg-secondary);
+}
+
+.date-selector:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.2);
+}
+
+.date-selector option {
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    padding: 0.5rem;
+}
+
 /* Tab Navigation */
 .tab-navigation {
     background: var(--bg-secondary);
@@ -1532,5 +1563,259 @@ p { font-size: 14px; font-weight: 400; }
     .comparison-table th,
     .comparison-table td {
         padding: 0.5rem;
+    }
+}
+
+/* Enhanced Symbol Discovery Interface */
+.stock-discovery-section {
+    background: var(--bg-secondary);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    height: 100%;
+    border: 1px solid var(--bg-tertiary);
+    transition: all 0.3s ease;
+}
+
+.stock-discovery-section:hover {
+    border-color: var(--color-primary);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-medium);
+}
+
+.discovery-header {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--bg-tertiary);
+}
+
+.discovery-header i {
+    font-size: 2rem;
+    color: var(--color-primary);
+    margin-bottom: 0.5rem;
+}
+
+.discovery-header h4 {
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.discovery-header p {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+/* Top Performers List */
+.top-performers-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.performer-card {
+    background: var(--bg-tertiary);
+    border-radius: var(--radius-md);
+    padding: 1rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.performer-card:hover {
+    background: var(--bg-primary);
+    border-color: var(--color-success);
+    transform: translateX(4px);
+}
+
+.stock-symbol {
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 1rem;
+}
+
+.stock-gain {
+    background: var(--gradient-success);
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: var(--radius-sm);
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.stock-category {
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+    text-align: right;
+}
+
+/* Recent Movers List */
+.recent-movers-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.mover-card {
+    background: var(--bg-tertiary);
+    border-radius: var(--radius-md);
+    padding: 1rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.mover-card:hover {
+    background: var(--bg-primary);
+    border-color: var(--color-primary);
+    transform: scale(1.02);
+}
+
+.stock-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.stock-price {
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+}
+
+.delivery-change {
+    padding: 0.25rem 0.75rem;
+    border-radius: var(--radius-sm);
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.delivery-change.positive {
+    background: var(--gradient-success);
+    color: white;
+}
+
+.delivery-change.negative {
+    background: var(--gradient-negative);
+    color: white;
+}
+
+/* Category Champions */
+.category-champions {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+}
+
+.champion-card {
+    background: var(--bg-tertiary);
+    border-radius: var(--radius-md);
+    padding: 1rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
+    text-align: center;
+}
+
+.champion-card:hover {
+    background: var(--bg-primary);
+    border-color: var(--color-accent);
+    transform: scale(1.05);
+}
+
+.category-name {
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.champion-symbol {
+    color: var(--text-primary);
+    font-weight: 600;
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.champion-performance {
+    background: var(--gradient-accent);
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: var(--radius-sm);
+    font-weight: 600;
+    font-size: 0.85rem;
+    display: inline-block;
+}
+
+/* Market Insights */
+.market-insights {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+}
+
+.insight-stat {
+    background: var(--bg-tertiary);
+    border-radius: var(--radius-md);
+    padding: 1.5rem 1rem;
+    text-align: center;
+    border: 1px solid transparent;
+    transition: all 0.2s ease;
+}
+
+.insight-stat:hover {
+    border-color: var(--color-primary);
+    transform: translateY(-2px);
+}
+
+.stat-value {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    margin-bottom: 0.5rem;
+}
+
+.stat-label {
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Mobile Responsiveness for Discovery Interface */
+@media (max-width: 768px) {
+    .category-champions,
+    .market-insights {
+        grid-template-columns: 1fr;
+    }
+    
+    .discovery-header h4 {
+        font-size: 1rem;
+    }
+    
+    .discovery-header p {
+        font-size: 0.8rem;
+    }
+    
+    .performer-card,
+    .mover-card,
+    .champion-card {
+        padding: 0.75rem;
+    }
+    
+    .stock-symbol,
+    .champion-symbol {
+        font-size: 0.9rem;
+    }
+    
+    .stat-value {
+        font-size: 1.5rem;
     }
 }

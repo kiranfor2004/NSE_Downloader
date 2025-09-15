@@ -131,6 +131,7 @@ def get_delivery_data():
     try:
         # Get query parameters for filtering
         category = request.args.get('category')
+        trading_date = request.args.get('trading_date')  # New date filter
         limit = request.args.get('limit', type=int)
         offset = request.args.get('offset', type=int, default=0)
         sort_by = request.args.get('sort_by', 'delivery_increase_pct')
@@ -161,6 +162,10 @@ def get_delivery_data():
         if category and category != 'all':
             base_query += " AND category = ?"
             params.append(category)
+        
+        if trading_date:
+            base_query += " AND current_trade_date = ?"
+            params.append(trading_date)
         
         if search:
             base_query += " AND symbol LIKE ?"
@@ -427,6 +432,33 @@ def get_indices():
         logger.error(f"Error fetching indices: {e}")
         return jsonify({'error': str(e)}), 500
 
+@app.route('/api/trading-dates', methods=['GET'])
+def get_trading_dates():
+    """Get all available trading dates"""
+    try:
+        query = """
+            SELECT DISTINCT current_trade_date 
+            FROM step03_compare_monthvspreviousmonth 
+            ORDER BY current_trade_date DESC
+        """
+        
+        dates = db.execute_query(query)
+        
+        # Convert to simple list of date strings
+        date_list = [row['current_trade_date'] for row in dates]
+        
+        return jsonify({
+            'trading_dates': date_list,
+            'count': len(date_list),
+            'latest_date': date_list[0] if date_list else None,
+            'earliest_date': date_list[-1] if date_list else None,
+            'timestamp': datetime.now().isoformat()
+        })
+
+    except Exception as e:
+        logger.error(f"Error fetching trading dates: {e}")
+        return jsonify({'error': str(e)}), 500
+
 @app.errorhandler(404)
 def not_found(error):
     return jsonify({'error': 'Endpoint not found'}), 404
@@ -443,6 +475,9 @@ if __name__ == '__main__':
     logger.info(f"  GET /api/summary-stats - Get summary statistics")
     logger.info(f"  GET /api/performance-analysis - Get performance analysis")
     logger.info(f"  GET /api/symbol/<symbol> - Get symbol details")
+    logger.info(f"  GET /api/categories - Get available categories")
+    logger.info(f"  GET /api/indices - Get available indices")
+    logger.info(f"  GET /api/trading-dates - Get available trading dates")
     logger.info(f"  GET /api/categories - Get available categories")
     logger.info(f"  GET /api/indices - Get available indices")
     

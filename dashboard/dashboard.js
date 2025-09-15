@@ -5,6 +5,8 @@ class ProfessionalNSEDashboard {
         this.data = null;
         this.filteredData = null;
         this.selectedSymbol = null;
+        this.selectedDate = null;
+        this.tradingDates = [];
         this.apiBaseUrl = 'http://localhost:5000/api';
         this.currentTab = 'market-overview';
         
@@ -15,6 +17,8 @@ class ProfessionalNSEDashboard {
         console.log('Dashboard initializing...');
         this.showLoading();
         this.setupEventListeners();
+        console.log('Loading trading dates...');
+        await this.loadTradingDates();
         console.log('About to load data...');
         await this.loadData();
         console.log('Data loaded, rendering dashboard...');
@@ -29,6 +33,12 @@ class ProfessionalNSEDashboard {
             btn.addEventListener('click', (e) => {
                 this.switchTab(btn.dataset.tab);
             });
+        });
+
+        // Date filter
+        document.getElementById('tradingDateFilter').addEventListener('change', (e) => {
+            this.selectedDate = e.target.value;
+            this.refreshData();
         });
 
         // Refresh button
@@ -72,12 +82,60 @@ class ProfessionalNSEDashboard {
         });
     }
 
+    async loadTradingDates() {
+        try {
+            console.log('Loading trading dates...');
+            const response = await fetch(`${this.apiBaseUrl}/trading-dates`);
+            
+            if (!response.ok) throw new Error(`Failed to fetch trading dates: ${response.status}`);
+            
+            const responseData = await response.json();
+            this.tradingDates = responseData.trading_dates || [];
+            
+            // Populate the date selector
+            this.populateDateSelector();
+            
+            console.log('Trading dates loaded:', this.tradingDates.length, 'dates');
+        } catch (error) {
+            console.error('Error loading trading dates:', error);
+            this.tradingDates = [];
+        }
+    }
+
+    populateDateSelector() {
+        const selector = document.getElementById('tradingDateFilter');
+        if (!selector) return;
+        
+        // Clear existing options except the first one
+        selector.innerHTML = '<option value="">Latest Date</option>';
+        
+        // Add trading dates
+        this.tradingDates.forEach(date => {
+            const option = document.createElement('option');
+            option.value = date;
+            option.textContent = new Date(date).toLocaleDateString('en-US', {
+                weekday: 'short',
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            });
+            selector.appendChild(option);
+        });
+    }
+
     async loadData() {
         try {
             console.log('Starting to load data...');
-            console.log('API URL:', `${this.apiBaseUrl}/delivery-data?limit=5000`);
             
-            const response = await fetch(`${this.apiBaseUrl}/delivery-data?limit=5000`);
+            // Build URL with date filter if selected
+            let url = `${this.apiBaseUrl}/delivery-data?limit=5000`;
+            if (this.selectedDate) {
+                url += `&trading_date=${this.selectedDate}`;
+            }
+            
+            console.log('API URL:', url);
+            
+            const response = await fetch(url);
             console.log('Response received:', response.status, response.statusText);
             
             if (!response.ok) throw new Error(`Failed to fetch data: ${response.status} ${response.statusText}`);
@@ -1013,29 +1071,126 @@ class ProfessionalNSEDashboard {
     }
 
     renderDefaultSymbolView() {
-        // Show default values when no symbol is selected
+        // Show engaging default content when no symbol is selected
         document.getElementById('currentDeliveryPercentage').textContent = '--';
         document.getElementById('monthOverMonthChange').textContent = '--';
         document.getElementById('currentTradingVolume').textContent = '--';
         document.getElementById('deliveryTradingRatio').textContent = '--';
         document.getElementById('deliveryQuantityChange').textContent = '--';
-        document.getElementById('deliveryTrend').textContent = 'Select a symbol';
+        document.getElementById('deliveryTrend').textContent = 'Discover Stocks';
         document.getElementById('deliveryTrend').className = 'kpi-trend';
         
-        // Clear visualization containers
+        // Create an engaging discovery interface
         const containers = ['deliveryTrendChart', 'volumeProfileChart', 'deliveryEfficiencyGauge', 'comparativeMetricsTable'];
-        containers.forEach(containerId => {
-            const container = document.getElementById(containerId);
-            if (container) {
-                container.innerHTML = `
-                    <div class="no-symbol-message">
-                        <i class="fas fa-search"></i>
-                        <h4>No Symbol Selected</h4>
-                        <p>Please select a symbol to view detailed analysis</p>
+        
+        // Show top performers in the first container
+        const firstContainer = document.getElementById(containers[0]);
+        if (firstContainer && this.data && this.data.length > 0) {
+            const topPerformers = this.getTopPerformers(5);
+            firstContainer.innerHTML = `
+                <div class="stock-discovery-section">
+                    <div class="discovery-header">
+                        <i class="fas fa-rocket"></i>
+                        <h4>🚀 Top Delivery Performers</h4>
+                        <p>Stocks with highest delivery increase</p>
                     </div>
-                `;
-            }
-        });
+                    <div class="top-performers-list">
+                        ${topPerformers.map(stock => `
+                            <div class="performer-card" onclick="dashboard.selectSymbol('${stock.symbol}')">
+                                <div class="stock-symbol">${stock.symbol}</div>
+                                <div class="stock-gain">+${stock.delivery_increase_pct.toFixed(1)}%</div>
+                                <div class="stock-category">${stock.category}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+        
+        // Show recent movers in the second container
+        const secondContainer = document.getElementById(containers[1]);
+        if (secondContainer && this.data && this.data.length > 0) {
+            const recentMovers = this.getRecentMovers(5);
+            secondContainer.innerHTML = `
+                <div class="stock-discovery-section">
+                    <div class="discovery-header">
+                        <i class="fas fa-chart-line"></i>
+                        <h4>📈 Recent Movers</h4>
+                        <p>Stocks with significant delivery changes</p>
+                    </div>
+                    <div class="recent-movers-list">
+                        ${recentMovers.map(stock => `
+                            <div class="mover-card" onclick="dashboard.selectSymbol('${stock.symbol}')">
+                                <div class="stock-info">
+                                    <div class="stock-symbol">${stock.symbol}</div>
+                                    <div class="stock-price">₹${stock.current_close_price || 'N/A'}</div>
+                                </div>
+                                <div class="delivery-change ${stock.delivery_increase_pct >= 0 ? 'positive' : 'negative'}">
+                                    ${stock.delivery_increase_pct >= 0 ? '+' : ''}${stock.delivery_increase_pct.toFixed(1)}%
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+        
+        // Show category highlights in the third container
+        const thirdContainer = document.getElementById(containers[2]);
+        if (thirdContainer && this.data && this.data.length > 0) {
+            const categoryStats = this.getCategoryHighlights();
+            thirdContainer.innerHTML = `
+                <div class="stock-discovery-section">
+                    <div class="discovery-header">
+                        <i class="fas fa-layer-group"></i>
+                        <h4>🏆 Category Champions</h4>
+                        <p>Best performing stock in each category</p>
+                    </div>
+                    <div class="category-champions">
+                        ${Object.entries(categoryStats).slice(0, 4).map(([category, data]) => `
+                            <div class="champion-card" onclick="dashboard.selectSymbol('${data.symbol}')">
+                                <div class="category-name">${category}</div>
+                                <div class="champion-symbol">${data.symbol}</div>
+                                <div class="champion-performance">+${data.performance.toFixed(1)}%</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+        
+        // Show market insights in the fourth container
+        const fourthContainer = document.getElementById(containers[3]);
+        if (fourthContainer && this.data && this.data.length > 0) {
+            const marketInsights = this.getMarketInsights();
+            fourthContainer.innerHTML = `
+                <div class="stock-discovery-section">
+                    <div class="discovery-header">
+                        <i class="fas fa-lightbulb"></i>
+                        <h4>💡 Market Insights</h4>
+                        <p>Key statistics from the current dataset</p>
+                    </div>
+                    <div class="market-insights">
+                        <div class="insight-stat">
+                            <div class="stat-value">${marketInsights.totalStocks}</div>
+                            <div class="stat-label">Total Stocks</div>
+                        </div>
+                        <div class="insight-stat">
+                            <div class="stat-value">${marketInsights.avgIncrease}%</div>
+                            <div class="stat-label">Avg Delivery Increase</div>
+                        </div>
+                        <div class="insight-stat">
+                            <div class="stat-value">${marketInsights.topCategories}</div>
+                            <div class="stat-label">Categories</div>
+                        </div>
+                        <div class="insight-stat">
+                            <div class="stat-value">${marketInsights.strongPerformers}</div>
+                            <div class="stat-label">Strong Performers (>50%)</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
     }
 
     renderSymbolNotFound() {
@@ -1071,6 +1226,68 @@ class ProfessionalNSEDashboard {
     calculateSymbolKPIs(symbolData) {
         // Legacy function - now calls the enhanced calculateSymbolAnalysisKPIs
         return this.calculateSymbolAnalysisKPIs(symbolData);
+    }
+
+    // Helper functions for the enhanced Symbol Analysis discovery interface
+    getTopPerformers(count = 5) {
+        if (!this.data || this.data.length === 0) return [];
+        
+        return this.data
+            .filter(stock => stock.delivery_increase_pct > 0)
+            .sort((a, b) => b.delivery_increase_pct - a.delivery_increase_pct)
+            .slice(0, count);
+    }
+
+    getRecentMovers(count = 5) {
+        if (!this.data || this.data.length === 0) return [];
+        
+        // Get stocks with significant delivery changes (both positive and negative)
+        return this.data
+            .filter(stock => Math.abs(stock.delivery_increase_pct) > 20)
+            .sort((a, b) => Math.abs(b.delivery_increase_pct) - Math.abs(a.delivery_increase_pct))
+            .slice(0, count);
+    }
+
+    getCategoryHighlights() {
+        if (!this.data || this.data.length === 0) return {};
+        
+        const categoryChampions = {};
+        
+        this.data.forEach(stock => {
+            const category = stock.category || 'Other';
+            if (!categoryChampions[category] || 
+                stock.delivery_increase_pct > categoryChampions[category].performance) {
+                categoryChampions[category] = {
+                    symbol: stock.symbol,
+                    performance: stock.delivery_increase_pct
+                };
+            }
+        });
+        
+        return categoryChampions;
+    }
+
+    getMarketInsights() {
+        if (!this.data || this.data.length === 0) {
+            return {
+                totalStocks: 0,
+                avgIncrease: 0,
+                topCategories: 0,
+                strongPerformers: 0
+            };
+        }
+        
+        const totalStocks = this.data.length;
+        const avgIncrease = (this.data.reduce((sum, stock) => sum + stock.delivery_increase_pct, 0) / totalStocks).toFixed(1);
+        const categories = new Set(this.data.map(stock => stock.category || 'Other'));
+        const strongPerformers = this.data.filter(stock => stock.delivery_increase_pct > 50).length;
+        
+        return {
+            totalStocks: totalStocks.toLocaleString(),
+            avgIncrease,
+            topCategories: categories.size,
+            strongPerformers
+        };
     }
 
     // Tab 3: Category & Index Performance
