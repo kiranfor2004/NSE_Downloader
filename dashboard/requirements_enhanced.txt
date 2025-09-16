@@ -1,0 +1,15 @@
+# Enhanced NSE Delivery Analysis Dashboard Requirements
+
+# Core web framework
+Flask==2.3.3
+Flask-CORS==4.0.0
+
+# Database connectivity
+pyodbc==4.0.39
+
+# Data processing and analysis
+numpy==1.24.3
+pandas==2.0.3
+
+# Additional utilities for enhanced features
+python-dateutil==2.8.2
