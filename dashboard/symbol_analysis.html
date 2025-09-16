@@ -1,0 +1,1995 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Symbol Analysis - NSE Dashboard</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #0A0A0A;
+            color: #E0E0E0;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            background: linear-gradient(135deg, #7C3AED, #A855F7);
+            padding: 25px;
+            border-radius: 15px;
+            border: 1px solid #8B5CF6;
+        }
+        
+        .header h1 {
+            color: #FFFFFF;
+            font-size: 2.8rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            color: #E5E7EB;
+            font-size: 1.2rem;
+        }
+        
+        .tabs {
+            display: flex;
+            background: #1F2937;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            border: 1px solid #374151;
+        }
+        
+        .tab-button {
+            flex: 1;
+            padding: 15px 20px;
+            background: transparent;
+            color: #9CA3AF;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .tab-button.active {
+            background: #7C3AED;
+            color: #FFFFFF;
+        }
+        
+        .tab-button:hover {
+            color: #FFFFFF;
+            background: #6D28D9;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: #1F2937;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            border: 1px solid #374151;
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #A855F7;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: #9CA3AF;
+            text-transform: uppercase;
+        }
+        
+        .charts-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .chart-card {
+            background: #1F2937;
+            border-radius: 15px;
+            padding: 25px;
+            border: 1px solid #374151;
+        }
+        
+        .chart-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #A855F7;
+            margin-bottom: 20px;
+            text-align: center;
+            border-bottom: 2px solid #374151;
+            padding-bottom: 10px;
+        }
+        
+        .chart-container {
+            height: 400px;
+            position: relative;
+        }
+        
+        .full-width {
+            grid-column: 1 / -1;
+        }
+        
+        .search-section {
+            background: #1F2937;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #374151;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 12px;
+            background: #374151;
+            border: 1px solid #4B5563;
+            border-radius: 8px;
+            color: #E0E0E0;
+            font-size: 1rem;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: #A855F7;
+        }
+        
+        .symbol-list {
+            max-height: 300px;
+            overflow-y: auto;
+            background: #374151;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+        
+        .symbol-item {
+            padding: 10px 15px;
+            border-bottom: 1px solid #4B5563;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .symbol-item:hover {
+            background: #4B5563;
+        }
+        
+        .symbol-name {
+            font-weight: 600;
+            color: #E0E0E0;
+        }
+        
+        .symbol-details {
+            font-size: 0.9rem;
+            color: #9CA3AF;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔍 Symbol Analysis</h1>
+            <p>Deep Dive into Individual Stock Performance • 2025-09-16 18:23:10</p>
+        </div>
+        
+        <div class="tabs">
+            <button class="tab-button active" onclick="showTab('volume-leaders', this)">Volume Leaders</button>
+            <button class="tab-button" onclick="showTab('turnover-leaders', this)">Turnover Leaders</button>
+            <button class="tab-button" onclick="showTab('delivery-champions', this)">Delivery Champions</button>
+            <button class="tab-button" onclick="showTab('technical-view', this)">Technical View</button>
+        </div>
+        
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value" id="total-symbols">-</div>
+                <div class="stat-label">Total Symbols</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="avg-volatility">-</div>
+                <div class="stat-label">Avg Volatility %</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="market-turnover">-</div>
+                <div class="stat-label">Market Turnover (Cr)</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="high-volume-count">-</div>
+                <div class="stat-label">High Volume Stocks</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="strong-delivery-count">-</div>
+                <div class="stat-label">Strong Delivery (>70%)</div>
+            </div>
+        </div>
+        
+        <!-- Volume Leaders Tab -->
+        <div id="volume-leaders" class="tab-content active">
+            <div class="charts-grid">
+                <div class="chart-card">
+                    <div class="chart-title">📊 Top Volume Leaders</div>
+                    <div class="chart-container" id="volume-chart"></div>
+                </div>
+                <div class="chart-card">
+                    <div class="chart-title">🎯 Volume vs Delivery Analysis</div>
+                    <div class="chart-container" id="volume-delivery-chart"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Turnover Leaders Tab -->
+        <div id="turnover-leaders" class="tab-content">
+            <div class="charts-grid">
+                <div class="chart-card">
+                    <div class="chart-title">💰 Turnover Champions</div>
+                    <div class="chart-container" id="turnover-chart"></div>
+                </div>
+                <div class="chart-card">
+                    <div class="chart-title">📈 Trade Size Analysis</div>
+                    <div class="chart-container" id="trade-size-chart"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Delivery Champions Tab -->
+        <div id="delivery-champions" class="tab-content">
+            <div class="charts-grid">
+                <div class="chart-card">
+                    <div class="chart-title">🏆 Delivery Leaders</div>
+                    <div class="chart-container" id="delivery-chart"></div>
+                </div>
+                <div class="chart-card">
+                    <div class="chart-title">💎 Quality vs Performance</div>
+                    <div class="chart-container" id="quality-performance-chart"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Technical View Tab -->
+        <div id="technical-view" class="tab-content">
+            <div class="search-section">
+                <input type="text" class="search-input" placeholder="Search for a symbol..." id="symbol-search">
+                <div class="symbol-list" id="symbol-list"></div>
+            </div>
+            <div class="charts-grid">
+                <div class="chart-card">
+                    <div class="chart-title">📊 Volatility Heatmap</div>
+                    <div class="chart-container" id="volatility-chart"></div>
+                </div>
+                <div class="chart-card">
+                    <div class="chart-title">🎯 Risk-Return Matrix</div>
+                    <div class="chart-container" id="risk-return-chart"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Symbol analysis data from Python
+        const symbolData = {
+  "top_volume_stocks": {
+    "symbols": [
+      "IDEA",
+      "IDEA",
+      "IDEA",
+      "IDEA",
+      "YESBANK",
+      "YESBANK",
+      "IDEA",
+      "GTLINFRA",
+      "GTLINFRA",
+      "IDEA",
+      "VMM",
+      "VMM",
+      "OLAELEC",
+      "IDEA",
+      "JPPOWER",
+      "IDEA",
+      "JPPOWER",
+      "IDEA",
+      "OLAELEC",
+      "YESBANK",
+      "IDEA",
+      "JPPOWER",
+      "OLAELEC",
+      "OLAELEC",
+      "IDEA",
+      "RTNPOWER",
+      "RTNPOWER",
+      "PCJEWELLER",
+      "OLAELEC",
+      "SUZLON"
+    ],
+    "volumes": [
+      2300669706,
+      2300669706,
+      1873654285,
+      1659929445,
+      1425654994,
+      1425654994,
+      1381513115,
+      1207510174,
+      1207510174,
+      1166246458,
+      1161343466,
+      1161343466,
+      1108164821,
+      1047323375,
+      1033357031,
+      955968263,
+      931561171,
+      817733412,
+      779430294,
+      728005767,
+      718941405,
+      708814670,
+      597328587,
+      583185438,
+      579796225,
+      575641471,
+      575641471,
+      569324732,
+      564355661,
+      547640042
+    ],
+    "price_changes": [
+      19.11764705882353,
+      19.11764705882353,
+      -5.800756620428752,
+      7.938931297709924,
+      -10.395189003436426,
+      -10.395189003436426,
+      -9.324324324324325,
+      13.259668508287293,
+      13.259668508287293,
+      4.667609618104668,
+      1.537845414497397,
+      1.537845414497397,
+      18.692839616328353,
+      10.39671682626539,
+      15.23487092678798,
+      -1.704545454545455,
+      19.525065963060687,
+      -1.734104046242775,
+      7.910271546635183,
+      9.81897970378497,
+      4.958677685950413,
+      -1.147902869757174,
+      18.266331658291456,
+      8.70514064015519,
+      -1.538461538461538,
+      6.648005598320504,
+      6.648005598320504,
+      12.043139604553625,
+      -8.269122345423794,
+      9.263222256190767
+    ],
+    "delivery_pcts": [
+      21.34,
+      21.34,
+      65.28,
+      16.4,
+      37.92,
+      37.92,
+      26.54,
+      24.05,
+      24.05,
+      19.82,
+      78.68,
+      78.68,
+      16.98,
+      21.94,
+      14.49,
+      53.3,
+      22.18,
+      49.75,
+      17.79,
+      26.73,
+      46.6,
+      19.62,
+      18.36,
+      24.62,
+      38.55,
+      17.31,
+      17.31,
+      18.36,
+      21.18,
+      31.97
+    ],
+    "sectors": [
+      "Others",
+      "Others",
+      "Others",
+      "Others",
+      "Banking",
+      "Banking",
+      "Others",
+      "Others",
+      "Others",
+      "Others",
+      "Others",
+      "Others",
+      "Others",
+      "Others",
+      "Others",
+      "Others",
+      "Others",
+      "Others",
+      "Others",
+      "Banking",
+      "Others",
+      "Others",
+      "Others",
+      "Others",
+      "Others",
+      "Others",
+      "Others",
+      "Others",
+      "Others",
+      "Others"
+    ],
+    "close_prices": [
+      8.1,
+      8.1,
+      7.47,
+      7.07,
+      20.86,
+      20.86,
+      6.71,
+      2.05,
+      2.05,
+      7.4,
+      126.77,
+      126.77,
+      53.21,
+      8.07,
+      27.23,
+      6.92,
+      22.65,
+      6.8,
+      54.84,
+      20.02,
+      7.62,
+      22.39,
+      47.07,
+      44.83,
+      7.04,
+      15.24,
+      15.24,
+      18.7,
+      48.81,
+      71.48
+    ]
+  },
+  "top_turnover_stocks": {
+    "symbols": [
+      "BHARTIARTL",
+      "ITC",
+      "BHARTIARTL",
+      "INDIGO",
+      "ETERNAL",
+      "VMM",
+      "VMM",
+      "ETERNAL",
+      "ETERNAL",
+      "INDIGO",
+      "BSE",
+      "ZOMATO",
+      "ICICIBANK",
+      "ETERNAL",
+      "INDUSINDBK",
+      "BSE",
+      "INDUSINDBK",
+      "COCHINSHIP",
+      "HINDZINC",
+      "HINDZINC",
+      "WAAREEENER",
+      "TRENT",
+      "TRENT",
+      "MAZDOCK",
+      "OLAELEC",
+      "INDUSINDBK",
+      "SWIGGY",
+      "COCHINSHIP",
+      "COCHINSHIP",
+      "ETERNAL"
+    ],
+    "turnovers": [
+      1827196.66,
+      1792550.84,
+      1755037.12,
+      1508499.79,
+      1394264.37,
+      1335219.81,
+      1335219.81,
+      1147538.95,
+      1110272.13,
+      1080083.58,
+      1004357.95,
+      824001.48,
+      811585.65,
+      811087.65,
+      730750.15,
+      726877.53,
+      698655.99,
+      672010.95,
+      647642.73,
+      647642.73,
+      627078.33,
+      613948.06,
+      613948.06,
+      569206.45,
+      562046.87,
+      551244.38,
+      542963.3,
+      537361.17,
+      537361.17,
+      504960.53
+    ],
+    "price_changes": [
+      -2.849185946872322,
+      -3.157409541368979,
+      -3.328825548736087,
+      -1.964944649446494,
+      -0.422866092404072,
+      1.537845414497397,
+      1.537845414497397,
+      0.970386481512464,
+      4.352585716162368,
+      -5.338842975206612,
+      16.98101123955298,
+      1.470805253578632,
+      1.61912688204585,
+      10.34228928965771,
+      4.382956017989176,
+      6.525220176140913,
+      -27.157134925041643,
+      12.333756415208875,
+      -6.898324252081834,
+      -6.898324252081834,
+      14.977636759814978,
+      3.040097842229405,
+      3.040097842229405,
+      10.683760683760685,
+      18.692839616328353,
+      -5.407471099646508,
+      1.151180547398097,
+      12.656347342694206,
+      12.656347342694206,
+      -0.886243386243386
+    ],
+    "delivery_pcts": [
+      75.06,
+      75.06,
+      71.74,
+      78.43,
+      67.81,
+      78.68,
+      78.68,
+      51.83,
+      60.89,
+      50.25,
+      12.62,
+      75.63,
+      81.17,
+      34.62,
+      13.14,
+      12.8,
+      31.58,
+      12.69,
+      49.68,
+      49.68,
+      12.06,
+      72.18,
+      72.18,
+      16.14,
+      16.98,
+      51.46,
+      70.8,
+      18.2,
+      18.2,
+      67.29
+    ],
+    "avg_trade_sizes": [
+      6.366605434900016,
+      4.335204831107145,
+      7.088424181718311,
+      8.174555588069536,
+      5.107831634709085,
+      2.804794905566444,
+      2.804794905566444,
+      2.500471641582903,
+      2.1184114091424253,
+      4.005516727301047,
+      1.0388530660584716,
+      1.528056627006498,
+      2.3541690355742233,
+      0.7569717402868903,
+      0.6567330514377127,
+      1.083304067769329,
+      0.6425628255783153,
+      0.824915668477687,
+      1.9342087768340321,
+      1.9342087768340321,
+      0.7735757929395045,
+      3.070999409758001,
+      3.070999409758001,
+      0.9871602122751946,
+      0.5061082441039254,
+      1.4376437788835685,
+      2.0829128224801,
+      0.8092910586002802,
+      0.8092910586002802,
+      0.7385800456639038
+    ]
+  },
+  "delivery_leaders": {
+    "symbols": [
+      "SDL26BEES",
+      "SDL26BEES",
+      "UNIONGOLD",
+      "UNIONGOLD",
+      "GSEC10ABSL",
+      "EQUAL50",
+      "KESORAMIND",
+      "KESORAMIND",
+      "RELIABLE",
+      "AARTISURF",
+      "ALKALI",
+      "SOMATEX",
+      "LIQGRWBEES",
+      "MANORG",
+      "RAJTV",
+      "ABGSEC",
+      "LICNETFSEN",
+      "SECMARK",
+      "GSEC10ABSL",
+      "INFOMEDIA",
+      "INFOMEDIA",
+      "GSEC10ABSL",
+      "MOPSE",
+      "GSEC10ABSL",
+      "MOPSE",
+      "MOPSE",
+      "GSEC10ABSL",
+      "MOPSE",
+      "MOMGF",
+      "MOMGF"
+    ],
+    "delivery_pcts": [
+      100.0,
+      100.0,
+      100.0,
+      100.0,
+      100.0,
+      100.0,
+      100.0,
+      100.0,
+      100.0,
+      100.0,
+      100.0,
+      100.0,
+      100.0,
+      100.0,
+      100.0,
+      100.0,
+      100.0,
+      100.0,
+      100.0,
+      100.0,
+      100.0,
+      100.0,
+      100.0,
+      100.0,
+      100.0,
+      100.0,
+      100.0,
+      100.0,
+      100.0,
+      100.0
+    ],
+    "price_changes": [
+      0.15255530129672,
+      0.15255530129672,
+      -0.177095631641086,
+      0.467289719626168,
+      0.330500472143532,
+      -0.194726425333589,
+      -10.032894736842104,
+      -10.16260162601626,
+      19.98818141527552,
+      9.99122721512818,
+      20.0,
+      19.995546648853264,
+      0.010974320090987,
+      4.998165810711665,
+      -5.006858710562414,
+      0.14058106841612,
+      -0.553097345132743,
+      9.993948301201694,
+      0.539798719121683,
+      4.95049504950495,
+      4.95049504950495,
+      0.448901623686724,
+      -1.761190900513681,
+      0.904331270823417,
+      -0.807577268195414,
+      0.079459674215336,
+      0.529253271747498,
+      -1.518961875062871,
+      0.476868327402135,
+      0.476868327402135
+    ],
+    "volumes": [
+      1264183,
+      1264183,
+      1600067,
+      1075043,
+      580164,
+      70386,
+      3927836,
+      2589765,
+      132313,
+      17155,
+      71357,
+      131063,
+      6304,
+      6723,
+      62339,
+      27102,
+      3008,
+      9691,
+      7309,
+      61334,
+      61334,
+      4243,
+      2453,
+      1547,
+      1386,
+      1231,
+      958,
+      962,
+      513,
+      513
+    ],
+    "sectors": [
+      "Others",
+      "Others",
+      "Others",
+      "Others",
+      "Others",
+      "Others",
+      "Others",
+      "Others",
+      "Others",
+      "Others",
+      "Others",
+      "Others",
+      "Others",
+      "Others",
+      "Others",
+      "Others",
+      "Others",
+      "Others",
+      "Others",
+      "Others",
+      "Others",
+      "Others",
+      "Others",
+      "Others",
+      "Others",
+      "Others",
+      "Others",
+      "Others",
+      "Others",
+      "Others"
+    ]
+  },
+  "volatile_stocks": {
+    "symbols": [
+      "CGCL",
+      "DBSTOCKBRO",
+      "URAVIDEF",
+      "CYBERMEDIA",
+      "NAGAFERT",
+      "TECILCHEM",
+      "ALPHAGEO",
+      "PGEL",
+      "UNIINFO",
+      "ONELIFECAP",
+      "RUCHINFRA",
+      "DRCSYSTEMS",
+      "IEX",
+      "AFFORDABLE",
+      "SILLYMONKS",
+      "CELEBRITY",
+      "NDLVENTURE",
+      "NRL",
+      "DPWIRES",
+      "RUCHINFRA"
+    ],
+    "volatility": [
+      42.05579138872043,
+      34.85086342229201,
+      31.80993235439696,
+      31.7103620474407,
+      31.313131313131315,
+      30.989155438711798,
+      30.697157376528494,
+      30.426290760869563,
+      30.165289256198346,
+      29.701060752169724,
+      29.483282674772028,
+      29.166666666666668,
+      28.415961305925023,
+      27.839484055893937,
+      27.81456953642385,
+      27.684210526315802,
+      27.581009796533536,
+      27.55686467026674,
+      27.514231499051245,
+      27.490542244640604
+    ],
+    "price_changes": [
+      -15.375141126962948,
+      0.026171159382361,
+      -16.847304156948827,
+      -13.592233009708737,
+      -15.48780487804878,
+      19.99211356466877,
+      -19.60934507851398,
+      -20.0922847255208,
+      -20.0,
+      -20.046260601387818,
+      -17.12846347607053,
+      15.874855156431053,
+      -29.57581563680877,
+      -19.99426687688118,
+      -7.102908277404922,
+      -9.090909090909092,
+      -13.239620791108205,
+      -8.036117381489841,
+      2.211016291698991,
+      -9.886363636363637
+    ],
+    "delivery_pcts": [
+      4.74,
+      59.49,
+      45.63,
+      37.66,
+      35.98,
+      57.61,
+      56.82,
+      28.96,
+      44.7,
+      71.97,
+      59.08,
+      43.17,
+      43.75,
+      53.73,
+      35.06,
+      73.98,
+      52.28,
+      50.46,
+      26.74,
+      43.12
+    ],
+    "volumes": [
+      120844388,
+      253576,
+      82452,
+      220459,
+      10438954,
+      36691,
+      131234,
+      21337870,
+      101165,
+      90989,
+      2202962,
+      3111143,
+      127736986,
+      437478,
+      808089,
+      515034,
+      528730,
+      832628,
+      98157,
+      2860427
+    ]
+  },
+  "technical_analysis": {
+    "all_symbols": [
+      "BHARTIARTL",
+      "ITC",
+      "BHARTIARTL",
+      "INDIGO",
+      "ETERNAL",
+      "VMM",
+      "VMM",
+      "ETERNAL",
+      "ETERNAL",
+      "INDIGO",
+      "BSE",
+      "ZOMATO",
+      "ICICIBANK",
+      "ETERNAL",
+      "INDUSINDBK",
+      "BSE",
+      "INDUSINDBK",
+      "COCHINSHIP",
+      "HINDZINC",
+      "HINDZINC",
+      "WAAREEENER",
+      "TRENT",
+      "TRENT",
+      "MAZDOCK",
+      "OLAELEC",
+      "INDUSINDBK",
+      "SWIGGY",
+      "COCHINSHIP",
+      "COCHINSHIP",
+      "ETERNAL",
+      "HYUNDAI",
+      "HDFCBANK",
+      "HDFCBANK",
+      "BEL",
+      "BEL",
+      "VMM",
+      "BSE",
+      "WAAREEENER",
+      "HDFCBANK",
+      "HDFCBANK",
+      "BSE",
+      "BSE",
+      "RELIANCE",
+      "HDFCBANK",
+      "IEX",
+      "JIOFIN",
+      "OLAELEC",
+      "RELIANCE",
+      "RELIANCE",
+      "RELIANCE",
+      "AXISBANK",
+      "GRSE",
+      "SAILIFE",
+      "COCHINSHIP",
+      "MAZDOCK",
+      "BSE",
+      "HAL",
+      "WAAREEENER",
+      "WAAREEENER",
+      "SUZLON",
+      "NYKAA",
+      "COROMANDEL",
+      "KOTAKBANK",
+      "BSE",
+      "GRSE",
+      "COCHINSHIP",
+      "POWERINDIA",
+      "COCHINSHIP",
+      "BSE",
+      "RELIANCE",
+      "TRENT",
+      "BAJFINANCE",
+      "MAZDOCK",
+      "BSE",
+      "BEML",
+      "BDL",
+      "MAZDOCK",
+      "BSE",
+      "CLEAN",
+      "BAJFINANCE",
+      "GLENMARK",
+      "HAL",
+      "ADANIGREEN",
+      "BSE",
+      "SWIGGY",
+      "GRSE",
+      "MANAPPURAM",
+      "RPOWER",
+      "RPOWER",
+      "INDUSINDBK",
+      "BEL",
+      "TRENT",
+      "ICICIBANK",
+      "ICICIBANK",
+      "NTPC",
+      "NTPC",
+      "CDSL",
+      "CDSL",
+      "BRITANNIA",
+      "360ONE"
+    ],
+    "close_prices": [
+      1814.0,
+      420.2,
+      1858.6,
+      5313.5,
+      317.9,
+      126.77,
+      126.77,
+      301.75,
+      238.31,
+      5727.0,
+      5479.8,
+      206.28,
+      1343.1,
+      299.8,
+      684.7,
+      6652.5,
+      655.95,
+      2035.6,
+      452.8,
+      452.8,
+      3007.7,
+      5897.5,
+      5897.5,
+      3522.4,
+      53.21,
+      990.1,
+      430.55,
+      2350.8,
+      2350.8,
+      224.79,
+      1729.9,
+      2021.8,
+      2021.8,
+      408.25,
+      408.25,
+      153.14,
+      2674.0,
+      3265.3,
+      1732.4,
+      1864.9,
+      4299.1,
+      2477.0,
+      1399.7,
+      1961.7,
+      145.02,
+      225.78,
+      54.84,
+      1466.2,
+      1466.2,
+      1368.8,
+      1099.3,
+      2756.2,
+      861.1,
+      1982.2,
+      3027.9,
+      2448.0,
+      4768.0,
+      2989.0,
+      2989.0,
+      71.48,
+      203.26,
+      2289.4,
+      2079.0,
+      7315.5,
+      2188.0,
+      1699.4,
+      19780.0,
+      1812.1,
+      6690.0,
+      1405.0,
+      4740.95,
+      8425.8,
+      3478.2,
+      6996.5,
+      4279.7,
+      1746.7,
+      2201.15,
+      2635.2,
+      1149.0,
+      8634.5,
+      2181.1,
+      5127.7,
+      774.4,
+      4633.7,
+      417.15,
+      1957.8,
+      234.16,
+      71.27,
+      71.27,
+      785.0,
+      383.0,
+      5277.1,
+      1462.2,
+      1462.2,
+      329.95,
+      329.95,
+      1682.9,
+      1682.9,
+      4841.2,
+      1144.1
+    ],
+    "volumes": [
+      100662047,
+      431851622,
+      93801105,
+      28753330,
+      438503024,
+      1161343466,
+      1161343466,
+      391548871,
+      467574032,
+      18614885,
+      18773111,
+      400414753,
+      60494318,
+      269332774,
+      108682122,
+      10872465,
+      101075220,
+      33598999,
+      142069446,
+      142069446,
+      21378307,
+      10424185,
+      10424185,
+      16561103,
+      1108164821,
+      55666745,
+      126308057,
+      23864711,
+      23864711,
+      224659198,
+      29179375,
+      25042415,
+      25042415,
+      122552435,
+      122552435,
+      318291485,
+      18465797,
+      14456797,
+      27258364,
+      24649172,
+      10904577,
+      18415480,
+      32538970,
+      22980875,
+      298471535,
+      188868886,
+      779430294,
+      29010635,
+      29010635,
+      31104496,
+      38053695,
+      15650434,
+      47023647,
+      19775890,
+      13653093,
+      16556320,
+      8438062,
+      13607575,
+      13607575,
+      547640042,
+      193439927,
+      17116295,
+      18850808,
+      5385278,
+      17289335,
+      21390019,
+      1850704,
+      20187233,
+      5271948,
+      25480745,
+      7644740,
+      4336926,
+      10048866,
+      5026831,
+      8489083,
+      20367702,
+      14991371,
+      12917060,
+      30337769,
+      3969057,
+      15680321,
+      6753397,
+      43947584,
+      7179306,
+      82273537,
+      17639880,
+      146360729,
+      460345451,
+      460345451,
+      43477564,
+      88688170,
+      6021478,
+      22532899,
+      22532899,
+      100814893,
+      100814893,
+      19982537,
+      19982537,
+      6750074,
+      28185822
+    ],
+    "delivery_pcts": [
+      75.06,
+      75.06,
+      71.74,
+      78.43,
+      67.81,
+      78.68,
+      78.68,
+      51.83,
+      60.89,
+      50.25,
+      12.62,
+      75.63,
+      81.17,
+      34.62,
+      13.14,
+      12.8,
+      31.58,
+      12.69,
+      49.68,
+      49.68,
+      12.06,
+      72.18,
+      72.18,
+      16.14,
+      16.98,
+      51.46,
+      70.8,
+      18.2,
+      18.2,
+      67.29,
+      54.11,
+      68.21,
+      68.21,
+      78.96,
+      78.96,
+      65.44,
+      30.09,
+      59.96,
+      71.72,
+      72.97,
+      15.92,
+      31.04,
+      66.65,
+      71.86,
+      12.87,
+      78.21,
+      17.79,
+      78.35,
+      78.35,
+      57.67,
+      64.33,
+      14.99,
+      67.69,
+      17.33,
+      19.2,
+      18.73,
+      26.86,
+      39.71,
+      39.71,
+      31.97,
+      57.71,
+      63.12,
+      82.73,
+      17.9,
+      15.56,
+      16.62,
+      71.49,
+      14.91,
+      13.9,
+      71.84,
+      33.07,
+      62.98,
+      28.78,
+      21.02,
+      11.34,
+      18.48,
+      12.37,
+      37.25,
+      33.95,
+      45.66,
+      33.37,
+      28.0,
+      58.42,
+      21.1,
+      38.64,
+      11.74,
+      32.51,
+      22.26,
+      22.26,
+      22.84,
+      33.93,
+      33.81,
+      83.76,
+      83.76,
+      55.75,
+      55.75,
+      23.33,
+      23.33,
+      79.43,
+      64.1
+    ],
+    "volatility": [
+      1.3175303197353965,
+      2.2846263683960073,
+      2.033788873345527,
+      1.834948715535899,
+      2.028939918213271,
+      12.936814703794278,
+      12.936814703794278,
+      4.90472245236123,
+      6.898577483110234,
+      2.889820150165881,
+      9.752180736523224,
+      4.062439402753537,
+      2.7846027846027916,
+      7.204803202134764,
+      13.385424273404405,
+      7.440811724915446,
+      24.613156490586178,
+      11.42169384947927,
+      3.0477031802120167,
+      3.0477031802120167,
+      12.484622801476212,
+      5.256464603645612,
+      5.256464603645612,
+      11.128775834658187,
+      15.767712835933095,
+      7.125542874457132,
+      4.7381256532342295,
+      14.407861153649822,
+      14.407861153649822,
+      2.833755949997778,
+      9.101682178160589,
+      2.3296072806410084,
+      2.3296072806410084,
+      3.0006123698714022,
+      3.0006123698714022,
+      7.241739584693748,
+      8.264771877337322,
+      6.578262334241882,
+      3.016047102285846,
+      1.168963483296689,
+      7.851643367216388,
+      10.05248284214776,
+      2.9220547260127234,
+      1.8147525105775557,
+      8.957385188249903,
+      2.954203206661346,
+      9.24507658643326,
+      2.925930978038473,
+      2.925930978038473,
+      3.9742840444184586,
+      2.719912671700181,
+      12.80748857122125,
+      3.2226222273835794,
+      12.107759055594794,
+      7.609234122659271,
+      6.25,
+      4.570050335570462,
+      11.719638675142194,
+      11.719638675142194,
+      5.246222719641858,
+      4.176916264882407,
+      5.813750327596746,
+      3.0110630110630066,
+      4.982571252819356,
+      7.7605118829981805,
+      9.297399082028951,
+      5.358948432760364,
+      6.158600518735165,
+      3.9312406576980568,
+      3.0889679715302556,
+      10.938735907360348,
+      6.150751263974924,
+      4.8272094761658355,
+      6.081612234688773,
+      15.949716101595904,
+      12.76120684719758,
+      12.625218635713154,
+      6.257589556769888,
+      16.214099216710178,
+      3.8450402455266666,
+      8.729540140296185,
+      6.46293659925502,
+      7.082902892561986,
+      13.980188618166911,
+      5.405729353949422,
+      13.535601185003577,
+      11.902118209771098,
+      8.559000982180432,
+      8.559000982180432,
+      9.031847133757974,
+      5.195822454308089,
+      11.369881184741619,
+      1.9764738065928114,
+      1.9764738065928114,
+      3.136838914987109,
+      3.136838914987109,
+      9.917404480361286,
+      9.917404480361286,
+      3.0023547880690624,
+      4.011887072808329
+    ],
+    "price_changes": [
+      -2.849185946872322,
+      -3.157409541368979,
+      -3.328825548736087,
+      -1.964944649446494,
+      -0.422866092404072,
+      1.537845414497397,
+      1.537845414497397,
+      0.970386481512464,
+      4.352585716162368,
+      -5.338842975206612,
+      16.98101123955298,
+      1.470805253578632,
+      1.61912688204585,
+      10.34228928965771,
+      4.382956017989176,
+      6.525220176140913,
+      -27.157134925041643,
+      12.333756415208875,
+      -6.898324252081834,
+      -6.898324252081834,
+      14.977636759814978,
+      3.040097842229405,
+      3.040097842229405,
+      10.683760683760685,
+      18.692839616328353,
+      -5.407471099646508,
+      1.151180547398097,
+      12.656347342694206,
+      12.656347342694206,
+      -0.886243386243386,
+      0.400464306442252,
+      2.100797899202101,
+      2.100797899202101,
+      2.433822606950194,
+      2.433822606950194,
+      2.854456310027537,
+      8.500710083181174,
+      3.62413125575196,
+      1.863938378314812,
+      3.218486232184862,
+      -3.470187374400772,
+      -6.038995523860102,
+      2.257451782583285,
+      1.795443931295729,
+      9.59794437726723,
+      1.396685678358108,
+      7.910271546635183,
+      2.295402218656248,
+      2.295402218656248,
+      5.259920024607813,
+      -5.216416623555785,
+      10.225954809038193,
+      -5.055405479905177,
+      -2.623305168009432,
+      8.670997380038044,
+      -65.01107696705496,
+      3.431819167859777,
+      11.89727463312369,
+      11.89727463312369,
+      9.263222256190767,
+      -0.611217055400714,
+      -0.844558014639006,
+      2.129540932871564,
+      5.175760189777874,
+      14.267808648422813,
+      7.761572606214331,
+      1.696658097686375,
+      6.631752383194068,
+      0.56369785794814,
+      0.378652568407516,
+      -14.774800686698365,
+      5.321183485206435,
+      -7.277671145233525,
+      -4.223134839151266,
+      15.11068076064445,
+      11.26186381298172,
+      -1.302573760200879,
+      -6.55650508847204,
+      -2.693089430894309,
+      -5.0423402617398,
+      14.553571428571429,
+      5.404127610590363,
+      -4.60117031105636,
+      -10.243099273607749,
+      5.674477517416086,
+      11.899862825788752,
+      7.659770114942529,
+      0.042111173498035,
+      0.042111173498035,
+      1.954672381323463,
+      5.277625068719076,
+      -8.223549769998,
+      1.605169897852825,
+      1.605169897852825,
+      -0.796752856283824,
+      -0.796752856283824,
+      10.015035627900897,
+      10.015035627900897,
+      -0.175268573313813,
+      -6.313462168358991
+    ]
+  },
+  "market_stats": {
+    "total_symbols": 31830,
+    "avg_volatility": 6.529144057439734,
+    "total_market_turnover": 400852595.44000006,
+    "high_vol_count": 3183,
+    "strong_delivery_count": 6856
+  }
+};
+        
+        console.log('Symbol analysis data loaded:', symbolData);
+        
+        // Initialize dashboard when DOM is ready
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Initializing Symbol Analysis dashboard...');
+            
+            updateStats();
+            initializeVolumeTab();
+            setupSymbolSearch();
+        });
+        
+        function showTab(tabId, buttonElement) {
+            console.log('Switching to tab:', tabId);
+            
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Remove active class from all buttons
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Show selected tab
+            const targetTab = document.getElementById(tabId);
+            if (targetTab) {
+                targetTab.classList.add('active');
+            }
+            
+            // Activate clicked button
+            if (buttonElement) {
+                buttonElement.classList.add('active');
+            }
+            
+            // Initialize charts for the active tab
+            setTimeout(() => {
+                if (tabId === 'volume-leaders') {
+                    initializeVolumeTab();
+                } else if (tabId === 'turnover-leaders') {
+                    initializeTurnoverTab();
+                } else if (tabId === 'delivery-champions') {
+                    initializeDeliveryTab();
+                } else if (tabId === 'technical-view') {
+                    initializeTechnicalTab();
+                }
+            }, 100);
+        }
+        
+        function updateStats() {
+            const stats = symbolData.market_stats;
+            
+            document.getElementById('total-symbols').textContent = stats.total_symbols.toLocaleString();
+            document.getElementById('avg-volatility').textContent = stats.avg_volatility.toFixed(1) + '%';
+            document.getElementById('market-turnover').textContent = (stats.total_market_turnover / 100).toFixed(0);
+            document.getElementById('high-volume-count').textContent = stats.high_vol_count;
+            document.getElementById('strong-delivery-count').textContent = stats.strong_delivery_count;
+        }
+        
+        function initializeVolumeTab() {
+            createVolumeChart();
+            createVolumeDeliveryChart();
+        }
+        
+        function initializeTurnoverTab() {
+            createTurnoverChart();
+            createTradeSizeChart();
+        }
+        
+        function initializeDeliveryTab() {
+            createDeliveryChart();
+            createQualityPerformanceChart();
+        }
+        
+        function initializeTechnicalTab() {
+            createVolatilityChart();
+            createRiskReturnChart();
+        }
+        
+        function createVolumeChart() {
+            const container = document.getElementById('volume-chart');
+            const data = symbolData.top_volume_stocks;
+            
+            const plotlyData = [{
+                x: data.symbols.slice(0, 15),
+                y: data.volumes.slice(0, 15),
+                type: 'bar',
+                marker: {
+                    color: data.price_changes.slice(0, 15),
+                    colorscale: [[0, '#EF4444'], [0.5, '#F59E0B'], [1, '#10B981']],
+                    showscale: false
+                },
+                hovertemplate: '<b>%{x}</b><br>Volume: %{y:,.0f}<br>Price Change: %{customdata:.1f}%<br>Delivery: %{customdata2:.1f}%<extra></extra>',
+                customdata: data.price_changes.slice(0, 15),
+                customdata2: data.delivery_pcts.slice(0, 15)
+            }];
+            
+            const layout = {
+                font: { color: '#E0E0E0', family: 'Poppins' },
+                paper_bgcolor: 'transparent',
+                plot_bgcolor: 'transparent',
+                xaxis: { 
+                    gridcolor: '#374151',
+                    titlefont: { color: '#E0E0E0' },
+                    tickfont: { color: '#E0E0E0', size: 10 },
+                    tickangle: -45
+                },
+                yaxis: { 
+                    title: 'Volume',
+                    gridcolor: '#374151',
+                    titlefont: { color: '#E0E0E0' },
+                    tickfont: { color: '#E0E0E0' }
+                },
+                margin: { t: 10, b: 100, l: 60, r: 10 }
+            };
+            
+            Plotly.newPlot(container, plotlyData, layout, { responsive: true, displayModeBar: false });
+        }
+        
+        function createVolumeDeliveryChart() {
+            const container = document.getElementById('volume-delivery-chart');
+            const data = symbolData.top_volume_stocks;
+            
+            const plotlyData = [{
+                x: data.volumes,
+                y: data.delivery_pcts,
+                mode: 'markers',
+                type: 'scatter',
+                text: data.symbols,
+                marker: {
+                    size: 10,
+                    color: data.price_changes,
+                    colorscale: [[0, '#EF4444'], [0.5, '#F59E0B'], [1, '#10B981']],
+                    showscale: true,
+                    colorbar: {
+                        title: 'Price Change %',
+                        titlefont: { color: '#E0E0E0' },
+                        tickfont: { color: '#E0E0E0' }
+                    }
+                },
+                hovertemplate: '<b>%{text}</b><br>Volume: %{x:,.0f}<br>Delivery: %{y:.1f}%<br>Price Change: %{customdata:.1f}%<extra></extra>',
+                customdata: data.price_changes
+            }];
+            
+            const layout = {
+                font: { color: '#E0E0E0', family: 'Poppins' },
+                paper_bgcolor: 'transparent',
+                plot_bgcolor: 'transparent',
+                xaxis: { 
+                    title: 'Volume',
+                    gridcolor: '#374151',
+                    titlefont: { color: '#E0E0E0' },
+                    tickfont: { color: '#E0E0E0' }
+                },
+                yaxis: { 
+                    title: 'Delivery %',
+                    gridcolor: '#374151',
+                    titlefont: { color: '#E0E0E0' },
+                    tickfont: { color: '#E0E0E0' }
+                },
+                margin: { t: 10, b: 50, l: 60, r: 10 }
+            };
+            
+            Plotly.newPlot(container, plotlyData, layout, { responsive: true, displayModeBar: false });
+        }
+        
+        function createTurnoverChart() {
+            const container = document.getElementById('turnover-chart');
+            const data = symbolData.top_turnover_stocks;
+            
+            const plotlyData = [{
+                x: data.symbols.slice(0, 15),
+                y: data.turnovers.slice(0, 15),
+                type: 'bar',
+                marker: { color: '#A855F7' },
+                hovertemplate: '<b>%{x}</b><br>Turnover: ₹%{y:,.0f} Lacs<br>Price Change: %{customdata:.1f}%<extra></extra>',
+                customdata: data.price_changes.slice(0, 15)
+            }];
+            
+            const layout = {
+                font: { color: '#E0E0E0', family: 'Poppins' },
+                paper_bgcolor: 'transparent',
+                plot_bgcolor: 'transparent',
+                xaxis: { 
+                    gridcolor: '#374151',
+                    titlefont: { color: '#E0E0E0' },
+                    tickfont: { color: '#E0E0E0', size: 10 },
+                    tickangle: -45
+                },
+                yaxis: { 
+                    title: 'Turnover (₹ Lacs)',
+                    gridcolor: '#374151',
+                    titlefont: { color: '#E0E0E0' },
+                    tickfont: { color: '#E0E0E0' }
+                },
+                margin: { t: 10, b: 100, l: 80, r: 10 }
+            };
+            
+            Plotly.newPlot(container, plotlyData, layout, { responsive: true, displayModeBar: false });
+        }
+        
+        function createTradeSizeChart() {
+            const container = document.getElementById('trade-size-chart');
+            const data = symbolData.top_turnover_stocks;
+            
+            const plotlyData = [{
+                x: data.symbols.slice(0, 15),
+                y: data.avg_trade_sizes.slice(0, 15),
+                type: 'bar',
+                marker: { color: '#10B981' },
+                hovertemplate: '<b>%{x}</b><br>Avg Trade Size: ₹%{y:,.0f}<br>Delivery: %{customdata:.1f}%<extra></extra>',
+                customdata: data.delivery_pcts.slice(0, 15)
+            }];
+            
+            const layout = {
+                font: { color: '#E0E0E0', family: 'Poppins' },
+                paper_bgcolor: 'transparent',
+                plot_bgcolor: 'transparent',
+                xaxis: { 
+                    gridcolor: '#374151',
+                    titlefont: { color: '#E0E0E0' },
+                    tickfont: { color: '#E0E0E0', size: 10 },
+                    tickangle: -45
+                },
+                yaxis: { 
+                    title: 'Average Trade Size (₹)',
+                    gridcolor: '#374151',
+                    titlefont: { color: '#E0E0E0' },
+                    tickfont: { color: '#E0E0E0' }
+                },
+                margin: { t: 10, b: 100, l: 80, r: 10 }
+            };
+            
+            Plotly.newPlot(container, plotlyData, layout, { responsive: true, displayModeBar: false });
+        }
+        
+        function createDeliveryChart() {
+            const container = document.getElementById('delivery-chart');
+            const data = symbolData.delivery_leaders;
+            
+            const plotlyData = [{
+                x: data.symbols.slice(0, 20),
+                y: data.delivery_pcts.slice(0, 20),
+                type: 'bar',
+                marker: {
+                    color: data.delivery_pcts.slice(0, 20),
+                    colorscale: [[0, '#F59E0B'], [1, '#10B981']],
+                    showscale: false
+                },
+                hovertemplate: '<b>%{x}</b><br>Delivery: %{y:.1f}%<br>Price Change: %{customdata:.1f}%<extra></extra>',
+                customdata: data.price_changes.slice(0, 20)
+            }];
+            
+            const layout = {
+                font: { color: '#E0E0E0', family: 'Poppins' },
+                paper_bgcolor: 'transparent',
+                plot_bgcolor: 'transparent',
+                xaxis: { 
+                    gridcolor: '#374151',
+                    titlefont: { color: '#E0E0E0' },
+                    tickfont: { color: '#E0E0E0', size: 10 },
+                    tickangle: -45
+                },
+                yaxis: { 
+                    title: 'Delivery %',
+                    gridcolor: '#374151',
+                    titlefont: { color: '#E0E0E0' },
+                    tickfont: { color: '#E0E0E0' }
+                },
+                margin: { t: 10, b: 100, l: 60, r: 10 }
+            };
+            
+            Plotly.newPlot(container, plotlyData, layout, { responsive: true, displayModeBar: false });
+        }
+        
+        function createQualityPerformanceChart() {
+            const container = document.getElementById('quality-performance-chart');
+            const data = symbolData.delivery_leaders;
+            
+            const plotlyData = [{
+                x: data.delivery_pcts,
+                y: data.price_changes,
+                mode: 'markers',
+                type: 'scatter',
+                text: data.symbols,
+                marker: {
+                    size: data.volumes.map(v => Math.max(5, Math.min(20, v/10000000))),
+                    color: '#A855F7',
+                    line: { color: '#FFFFFF', width: 1 }
+                },
+                hovertemplate: '<b>%{text}</b><br>Delivery: %{x:.1f}%<br>Price Change: %{y:.1f}%<br>Volume: %{customdata:,.0f}<extra></extra>',
+                customdata: data.volumes
+            }];
+            
+            const layout = {
+                font: { color: '#E0E0E0', family: 'Poppins' },
+                paper_bgcolor: 'transparent',
+                plot_bgcolor: 'transparent',
+                xaxis: { 
+                    title: 'Delivery %',
+                    gridcolor: '#374151',
+                    titlefont: { color: '#E0E0E0' },
+                    tickfont: { color: '#E0E0E0' }
+                },
+                yaxis: { 
+                    title: 'Price Change %',
+                    gridcolor: '#374151',
+                    titlefont: { color: '#E0E0E0' },
+                    tickfont: { color: '#E0E0E0' }
+                },
+                margin: { t: 10, b: 50, l: 60, r: 10 }
+            };
+            
+            Plotly.newPlot(container, plotlyData, layout, { responsive: true, displayModeBar: false });
+        }
+        
+        function createVolatilityChart() {
+            const container = document.getElementById('volatility-chart');
+            const data = symbolData.volatile_stocks;
+            
+            const plotlyData = [{
+                x: data.symbols,
+                y: data.volatility,
+                type: 'bar',
+                marker: {
+                    color: data.volatility,
+                    colorscale: [[0, '#10B981'], [1, '#EF4444']],
+                    showscale: false
+                },
+                hovertemplate: '<b>%{x}</b><br>Volatility: %{y:.1f}%<br>Price Change: %{customdata:.1f}%<extra></extra>',
+                customdata: data.price_changes
+            }];
+            
+            const layout = {
+                font: { color: '#E0E0E0', family: 'Poppins' },
+                paper_bgcolor: 'transparent',
+                plot_bgcolor: 'transparent',
+                xaxis: { 
+                    gridcolor: '#374151',
+                    titlefont: { color: '#E0E0E0' },
+                    tickfont: { color: '#E0E0E0', size: 10 },
+                    tickangle: -45
+                },
+                yaxis: { 
+                    title: 'Volatility %',
+                    gridcolor: '#374151',
+                    titlefont: { color: '#E0E0E0' },
+                    tickfont: { color: '#E0E0E0' }
+                },
+                margin: { t: 10, b: 100, l: 60, r: 10 }
+            };
+            
+            Plotly.newPlot(container, plotlyData, layout, { responsive: true, displayModeBar: false });
+        }
+        
+        function createRiskReturnChart() {
+            const container = document.getElementById('risk-return-chart');
+            const data = symbolData.technical_analysis;
+            
+            const plotlyData = [{
+                x: data.volatility.slice(0, 50),
+                y: data.price_changes.slice(0, 50),
+                mode: 'markers',
+                type: 'scatter',
+                text: data.all_symbols.slice(0, 50),
+                marker: {
+                    size: 8,
+                    color: data.delivery_pcts.slice(0, 50),
+                    colorscale: [[0, '#EF4444'], [0.5, '#F59E0B'], [1, '#10B981']],
+                    showscale: true,
+                    colorbar: {
+                        title: 'Delivery %',
+                        titlefont: { color: '#E0E0E0' },
+                        tickfont: { color: '#E0E0E0' }
+                    }
+                },
+                hovertemplate: '<b>%{text}</b><br>Volatility: %{x:.1f}%<br>Return: %{y:.1f}%<br>Delivery: %{customdata:.1f}%<extra></extra>',
+                customdata: data.delivery_pcts.slice(0, 50)
+            }];
+            
+            const layout = {
+                font: { color: '#E0E0E0', family: 'Poppins' },
+                paper_bgcolor: 'transparent',
+                plot_bgcolor: 'transparent',
+                xaxis: { 
+                    title: 'Risk (Volatility %)',
+                    gridcolor: '#374151',
+                    titlefont: { color: '#E0E0E0' },
+                    tickfont: { color: '#E0E0E0' }
+                },
+                yaxis: { 
+                    title: 'Return (Price Change %)',
+                    gridcolor: '#374151',
+                    titlefont: { color: '#E0E0E0' },
+                    tickfont: { color: '#E0E0E0' }
+                },
+                margin: { t: 10, b: 50, l: 70, r: 10 }
+            };
+            
+            Plotly.newPlot(container, plotlyData, layout, { responsive: true, displayModeBar: false });
+        }
+        
+        function setupSymbolSearch() {
+            const searchInput = document.getElementById('symbol-search');
+            const symbolList = document.getElementById('symbol-list');
+            const allSymbols = symbolData.technical_analysis.all_symbols;
+            
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                const filteredSymbols = allSymbols.filter(symbol => 
+                    symbol.toLowerCase().includes(searchTerm)
+                ).slice(0, 10);
+                
+                symbolList.innerHTML = filteredSymbols.map(symbol => {
+                    const index = allSymbols.indexOf(symbol);
+                    const price = symbolData.technical_analysis.close_prices[index];
+                    const delivery = symbolData.technical_analysis.delivery_pcts[index];
+                    const change = symbolData.technical_analysis.price_changes[index];
+                    
+                    return `
+                        <div class="symbol-item" onclick="selectSymbol('${symbol}')">
+                            <div class="symbol-name">${symbol}</div>
+                            <div class="symbol-details">₹${price?.toFixed(2) || 'N/A'} | ${change?.toFixed(1) || 'N/A'}% | Del: ${delivery?.toFixed(1) || 'N/A'}%</div>
+                        </div>
+                    `;
+                }).join('');
+            });
+        }
+        
+        function selectSymbol(symbol) {
+            console.log('Selected symbol:', symbol);
+            // Add symbol-specific analysis here
+            alert(`Selected: ${symbol} - Detailed analysis coming soon!`);
+        }
+        
+    </script>
+</body>
+</html>

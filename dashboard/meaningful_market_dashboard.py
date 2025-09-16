@@ -124,7 +124,7 @@ def create_meaningful_dashboard():
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NSE Market Intelligence Dashboard</title>
+    <title>Market Overview - NSE Dashboard</title>
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -283,8 +283,8 @@ def create_meaningful_dashboard():
 <body>
     <div class="container">
         <div class="header">
-            <h1>🚀 NSE Market Intelligence Dashboard</h1>
-            <p>Advanced Analytics for Smart Investment Decisions • {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}</p>
+            <h1>� Market Overview</h1>
+            <p>Comprehensive Market Analytics & Investment Intelligence • {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}</p>
         </div>
         
         <div class="kpi-grid">
@@ -635,11 +635,11 @@ def create_meaningful_dashboard():
 '''
     
     # Save dashboard
-    dashboard_path = 'dashboard/meaningful_market_dashboard.html'
+    dashboard_path = 'dashboard/market_overview.html'
     with open(dashboard_path, 'w', encoding='utf-8') as f:
         f.write(html_content)
     
-    print(f"Meaningful Market Dashboard created: {dashboard_path}")
+    print(f"Market Overview Dashboard created: {dashboard_path}")
     print(f"\nKey Insights:")
     print(f"- High Delivery Stocks (>80%): {dashboard_data['market_summary']['high_delivery_count']}")
     print(f"- Momentum Stocks: {dashboard_data['market_summary']['momentum_stocks_count']}")
