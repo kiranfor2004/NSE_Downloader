@@ -1,0 +1,811 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NSE Market Intelligence Dashboard</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #0A0A0A;
+            color: #E0E0E0;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            background: linear-gradient(135deg, #1E3A8A, #3B82F6);
+            padding: 25px;
+            border-radius: 15px;
+            border: 1px solid #1E40AF;
+        }
+        
+        .header h1 {
+            color: #FFFFFF;
+            font-size: 2.8rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            color: #E5E7EB;
+            font-size: 1.2rem;
+        }
+        
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .kpi-card {
+            background: linear-gradient(135deg, #1F2937, #374151);
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+            border: 1px solid #4B5563;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .kpi-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.15);
+        }
+        
+        .kpi-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        
+        .kpi-value.positive { color: #10B981; }
+        .kpi-value.negative { color: #EF4444; }
+        .kpi-value.neutral { color: #3B82F6; }
+        
+        .kpi-label {
+            font-size: 0.95rem;
+            color: #9CA3AF;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .charts-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .chart-card {
+            background: #1F2937;
+            border-radius: 15px;
+            padding: 25px;
+            border: 1px solid #374151;
+            transition: transform 0.3s ease;
+        }
+        
+        .chart-card:hover {
+            transform: translateY(-3px);
+        }
+        
+        .chart-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #3B82F6;
+            margin-bottom: 20px;
+            text-align: center;
+            border-bottom: 2px solid #374151;
+            padding-bottom: 10px;
+        }
+        
+        .chart-container {
+            height: 400px;
+            position: relative;
+        }
+        
+        .full-width {
+            grid-column: 1 / -1;
+        }
+        
+        .insights-section {
+            background: #1F2937;
+            border-radius: 15px;
+            padding: 30px;
+            border: 1px solid #374151;
+            margin-bottom: 20px;
+        }
+        
+        .insights-title {
+            font-size: 1.6rem;
+            font-weight: 600;
+            color: #3B82F6;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .insight-item {
+            background: #374151;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border-left: 4px solid #3B82F6;
+        }
+        
+        .insight-header {
+            font-weight: 600;
+            color: #F3F4F6;
+            margin-bottom: 5px;
+        }
+        
+        .insight-text {
+            color: #D1D5DB;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 NSE Market Intelligence Dashboard</h1>
+            <p>Advanced Analytics for Smart Investment Decisions • 2025-09-16 17:16:00</p>
+        </div>
+        
+        <div class="kpi-grid">
+            <div class="kpi-card">
+                <div class="kpi-value positive" id="high-delivery-count">-</div>
+                <div class="kpi-label">High Delivery Stocks (>80%)</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-value neutral" id="momentum-count">-</div>
+                <div class="kpi-label">Momentum Stocks (+5% & >70% Del)</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-value negative" id="value-opportunities">-</div>
+                <div class="kpi-label">Value Opportunities (Dip + High Del)</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-value neutral" id="market-trend">-</div>
+                <div class="kpi-label">Market Trend</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-value positive" id="avg-delivery">-</div>
+                <div class="kpi-label">Average Delivery %</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-value neutral" id="top-sector">-</div>
+                <div class="kpi-label">Best Performing Sector</div>
+            </div>
+        </div>
+        
+        <div class="charts-grid">
+            <div class="chart-card">
+                <div class="chart-title">💎 Sector Performance Matrix</div>
+                <div class="chart-container" id="sector-performance-chart"></div>
+            </div>
+            
+            <div class="chart-card">
+                <div class="chart-title">📊 Price Band Analysis</div>
+                <div class="chart-container" id="price-band-chart"></div>
+            </div>
+            
+            <div class="chart-card full-width">
+                <div class="chart-title">🚀 Top Momentum Stocks (High Price Movement + Strong Delivery)</div>
+                <div class="chart-container" id="momentum-stocks-chart"></div>
+            </div>
+            
+            <div class="chart-card full-width">
+                <div class="chart-title">💰 Value Opportunities (Price Dip + Strong Fundamentals)</div>
+                <div class="chart-container" id="value-opportunities-chart"></div>
+            </div>
+        </div>
+        
+        <div class="insights-section">
+            <div class="insights-title">🎯 Key Market Insights</div>
+            <div id="insights-container"></div>
+        </div>
+    </div>
+
+    <script>
+        // Dashboard data from Python
+        const dashboardData = {
+  "high_delivery_stocks": {
+    "symbols": [
+      "GSEC10ABSL",
+      "RELIABLE",
+      "UNIONGOLD",
+      "UNIONGOLD",
+      "GSEC10ABSL",
+      "MODTHREAD",
+      "GSEC10ABSL",
+      "KESORAMIND",
+      "ABGSEC",
+      "GSEC10ABSL",
+      "KESORAMIND",
+      "RAJTV",
+      "SECMARK",
+      "AARTISURF",
+      "MANORG",
+      "ALKALI",
+      "MOMGF",
+      "INFOMEDIA",
+      "MOMGF",
+      "SDL26BEES"
+    ],
+    "delivery_pcts": [
+      100.0,
+      100.0,
+      100.0,
+      100.0,
+      100.0,
+      100.0,
+      100.0,
+      100.0,
+      100.0,
+      100.0,
+      100.0,
+      100.0,
+      100.0,
+      100.0,
+      100.0,
+      100.0,
+      100.0,
+      100.0,
+      100.0,
+      100.0
+    ],
+    "price_changes": [
+      0.529253271747498,
+      19.98818141527552,
+      -0.177095631641086,
+      0.467289719626168,
+      0.448901623686724,
+      -0.851553509781358,
+      0.904331270823417,
+      -10.032894736842104,
+      0.14058106841612,
+      0.330500472143532,
+      -10.16260162601626,
+      -5.006858710562414,
+      9.993948301201694,
+      9.99122721512818,
+      4.998165810711665,
+      20.0,
+      0.476868327402135,
+      4.95049504950495,
+      -1.579350170458499,
+      0.15255530129672
+    ],
+    "sectors": [
+      "Others",
+      "Others",
+      "Others",
+      "Others",
+      "Others",
+      "Others",
+      "Others",
+      "Others",
+      "Others",
+      "Others",
+      "Others",
+      "Others",
+      "Others",
+      "Others",
+      "Others",
+      "Others",
+      "Others",
+      "Others",
+      "Others",
+      "Others"
+    ]
+  },
+  "momentum_stocks": {
+    "symbols": [
+      "RELIABLE",
+      "SECMARK",
+      "AARTISURF",
+      "ALKALI",
+      "SOMATEX",
+      "KAPSTON",
+      "HONDAPOWER",
+      "WELINV",
+      "WELINV",
+      "INFOMEDIA",
+      "INFOMEDIA",
+      "MANORG",
+      "INFOMEDIA",
+      "INFOMEDIA",
+      "RADAAN"
+    ],
+    "delivery_pcts": [
+      100.0,
+      100.0,
+      100.0,
+      100.0,
+      100.0,
+      99.41,
+      98.53,
+      97.84,
+      97.36,
+      96.91,
+      96.91,
+      96.85,
+      95.89,
+      95.89,
+      95.68
+    ],
+    "price_changes": [
+      19.98818141527552,
+      9.993948301201694,
+      9.99122721512818,
+      20.0,
+      19.995546648853264,
+      20.0,
+      19.999141483516485,
+      5.112142304717711,
+      5.740922473012758,
+      9.97340425531915,
+      9.97340425531915,
+      9.997348183505702,
+      9.915356711003628,
+      9.915356711003628,
+      9.887640449438202
+    ],
+    "turnover": [
+      107.46,
+      12.33,
+      96.79,
+      77.24,
+      70.63,
+      76.92,
+      531.59,
+      127.77,
+      118.58,
+      7.2,
+      7.2,
+      63.72,
+      31.02,
+      31.02,
+      3.97
+    ]
+  },
+  "sector_performance": {
+    "sectors": [
+      "Auto",
+      "Banking",
+      "Energy",
+      "FMCG",
+      "IT",
+      "Others",
+      "Pharma"
+    ],
+    "avg_delivery": [
+      56.57,
+      61.29,
+      55.18,
+      62.29,
+      62.99,
+      51.36,
+      59.6
+    ],
+    "avg_price_change": [
+      0.31,
+      0.68,
+      0.39,
+      0.43,
+      -0.81,
+      1.37,
+      -0.41
+    ],
+    "total_turnover": [
+      5345063.02,
+      17947655.98,
+      5055201.06,
+      5404524.53,
+      6631713.14,
+      356861411.11,
+      3607026.6
+    ],
+    "stock_count": [
+      40,
+      388,
+      43,
+      46,
+      47,
+      31212,
+      54
+    ]
+  },
+  "price_band_analysis": {
+    "bands": [
+      "<\u20b9100",
+      "\u20b9100-500",
+      "\u20b9500-1K",
+      "\u20b91K-5K",
+      ">\u20b95K"
+    ],
+    "avg_delivery": [
+      58.34,
+      48.65,
+      46.53,
+      49.85,
+      48.57
+    ],
+    "avg_price_change": [
+      1.03,
+      1.65,
+      1.36,
+      1.29,
+      1.3
+    ],
+    "stock_count": [
+      9917,
+      11803,
+      4516,
+      4601,
+      993
+    ]
+  },
+  "value_opportunities": {
+    "symbols": [
+      "KESORAMIND",
+      "KESORAMIND",
+      "RAJTV",
+      "GTECJAINX",
+      "GTECJAINX",
+      "BALAXI",
+      "MODTHREAD",
+      "ESILVER",
+      "SINTERCOM",
+      "PRUDMOULI"
+    ],
+    "delivery_pcts": [
+      100.0,
+      100.0,
+      100.0,
+      99.86,
+      99.86,
+      99.84,
+      99.74,
+      99.59,
+      99.23,
+      99.01
+    ],
+    "price_changes": [
+      -10.032894736842104,
+      -10.16260162601626,
+      -5.006858710562414,
+      -5.023255813953488,
+      -5.023255813953488,
+      -4.015009380863039,
+      -3.393264117498101,
+      -2.774212656728206,
+      -2.29617562640602,
+      -5.019774870702768
+    ],
+    "close_prices": [
+      5.47,
+      4.42,
+      55.4,
+      30.63,
+      30.63,
+      51.16,
+      38.15,
+      98.48,
+      125.95,
+      31.22
+    ]
+  },
+  "market_summary": {
+    "total_stocks": 31830,
+    "high_delivery_count": 3793,
+    "momentum_stocks_count": 300,
+    "value_opportunities_count": 2551,
+    "avg_delivery": 51.53631511153001,
+    "market_trend": "Bullish",
+    "top_sector": "IT"
+  }
+};
+        
+        console.log('Dashboard data loaded:', dashboardData);
+        
+        // Initialize dashboard when DOM is ready
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Initializing meaningful dashboard...');
+            
+            updateKPIs();
+            createSectorPerformanceChart();
+            createPriceBandChart();
+            createMomentumStocksChart();
+            createValueOpportunitiesChart();
+            generateInsights();
+        });
+        
+        function updateKPIs() {
+            const summary = dashboardData.market_summary;
+            
+            document.getElementById('high-delivery-count').textContent = summary.high_delivery_count;
+            document.getElementById('momentum-count').textContent = summary.momentum_stocks_count;
+            document.getElementById('value-opportunities').textContent = summary.value_opportunities_count;
+            document.getElementById('market-trend').textContent = summary.market_trend;
+            document.getElementById('avg-delivery').textContent = summary.avg_delivery.toFixed(1) + '%';
+            document.getElementById('top-sector').textContent = summary.top_sector;
+        }
+        
+        function createSectorPerformanceChart() {
+            const container = document.getElementById('sector-performance-chart');
+            const data = dashboardData.sector_performance;
+            
+            const plotlyData = [{
+                x: data.avg_delivery,
+                y: data.avg_price_change,
+                mode: 'markers+text',
+                type: 'scatter',
+                text: data.sectors,
+                textposition: 'middle center',
+                marker: {
+                    size: data.stock_count.map(count => Math.max(10, Math.min(50, count/10))),
+                    color: data.avg_price_change,
+                    colorscale: [[0, '#EF4444'], [0.5, '#F59E0B'], [1, '#10B981']],
+                    showscale: true,
+                    colorbar: {
+                        title: 'Price Change %',
+                        titlefont: { color: '#E0E0E0' },
+                        tickfont: { color: '#E0E0E0' }
+                    }
+                },
+                hovertemplate: '<b>%{text}</b><br>Avg Delivery: %{x:.1f}%<br>Avg Price Change: %{y:.1f}%<br>Stocks: %{customdata}<extra></extra>',
+                customdata: data.stock_count
+            }];
+            
+            const layout = {
+                font: { color: '#E0E0E0', family: 'Poppins' },
+                paper_bgcolor: 'transparent',
+                plot_bgcolor: 'transparent',
+                xaxis: { 
+                    title: 'Average Delivery %',
+                    gridcolor: '#374151',
+                    titlefont: { color: '#E0E0E0' },
+                    tickfont: { color: '#E0E0E0' }
+                },
+                yaxis: { 
+                    title: 'Average Price Change %',
+                    gridcolor: '#374151',
+                    titlefont: { color: '#E0E0E0' },
+                    tickfont: { color: '#E0E0E0' }
+                },
+                margin: { t: 10, b: 50, l: 60, r: 10 }
+            };
+            
+            Plotly.newPlot(container, plotlyData, layout, { responsive: true, displayModeBar: false });
+        }
+        
+        function createPriceBandChart() {
+            const container = document.getElementById('price-band-chart');
+            const data = dashboardData.price_band_analysis;
+            
+            const plotlyData = [{
+                x: data.bands,
+                y: data.avg_delivery,
+                type: 'bar',
+                name: 'Avg Delivery %',
+                marker: { color: '#3B82F6' },
+                yaxis: 'y',
+                hovertemplate: '<b>%{x}</b><br>Avg Delivery: %{y:.1f}%<br>Stocks: %{customdata}<extra></extra>',
+                customdata: data.stock_count
+            }, {
+                x: data.bands,
+                y: data.avg_price_change,
+                type: 'scatter',
+                mode: 'lines+markers',
+                name: 'Avg Price Change %',
+                line: { color: '#10B981', width: 3 },
+                marker: { color: '#10B981', size: 8 },
+                yaxis: 'y2',
+                hovertemplate: '<b>%{x}</b><br>Avg Price Change: %{y:.1f}%<extra></extra>'
+            }];
+            
+            const layout = {
+                font: { color: '#E0E0E0', family: 'Poppins' },
+                paper_bgcolor: 'transparent',
+                plot_bgcolor: 'transparent',
+                xaxis: { 
+                    title: 'Price Bands',
+                    gridcolor: '#374151',
+                    titlefont: { color: '#E0E0E0' },
+                    tickfont: { color: '#E0E0E0' }
+                },
+                yaxis: { 
+                    title: 'Average Delivery %',
+                    gridcolor: '#374151',
+                    titlefont: { color: '#E0E0E0' },
+                    tickfont: { color: '#E0E0E0' },
+                    side: 'left'
+                },
+                yaxis2: {
+                    title: 'Average Price Change %',
+                    titlefont: { color: '#10B981' },
+                    tickfont: { color: '#10B981' },
+                    overlaying: 'y',
+                    side: 'right'
+                },
+                legend: { 
+                    font: { color: '#E0E0E0' },
+                    bgcolor: 'rgba(0,0,0,0)'
+                },
+                margin: { t: 10, b: 50, l: 60, r: 60 }
+            };
+            
+            Plotly.newPlot(container, plotlyData, layout, { responsive: true, displayModeBar: false });
+        }
+        
+        function createMomentumStocksChart() {
+            const container = document.getElementById('momentum-stocks-chart');
+            const data = dashboardData.momentum_stocks;
+            
+            if (data.symbols.length === 0) {
+                container.innerHTML = '<div style="text-align: center; padding: 50px; color: #9CA3AF;">No momentum stocks found with current criteria</div>';
+                return;
+            }
+            
+            const plotlyData = [{
+                x: data.symbols,
+                y: data.price_changes,
+                type: 'bar',
+                marker: {
+                    color: data.price_changes,
+                    colorscale: [[0, '#F59E0B'], [1, '#10B981']],
+                    showscale: false
+                },
+                hovertemplate: '<b>%{x}</b><br>Price Change: %{y:.1f}%<br>Delivery: %{customdata:.1f}%<extra></extra>',
+                customdata: data.delivery_pcts
+            }];
+            
+            const layout = {
+                font: { color: '#E0E0E0', family: 'Poppins' },
+                paper_bgcolor: 'transparent',
+                plot_bgcolor: 'transparent',
+                xaxis: { 
+                    title: 'Stocks',
+                    gridcolor: '#374151',
+                    titlefont: { color: '#E0E0E0' },
+                    tickfont: { color: '#E0E0E0', size: 10 },
+                    tickangle: -45
+                },
+                yaxis: { 
+                    title: 'Price Change %',
+                    gridcolor: '#374151',
+                    titlefont: { color: '#E0E0E0' },
+                    tickfont: { color: '#E0E0E0' }
+                },
+                margin: { t: 10, b: 100, l: 60, r: 10 }
+            };
+            
+            Plotly.newPlot(container, plotlyData, layout, { responsive: true, displayModeBar: false });
+        }
+        
+        function createValueOpportunitiesChart() {
+            const container = document.getElementById('value-opportunities-chart');
+            const data = dashboardData.value_opportunities;
+            
+            if (data.symbols.length === 0) {
+                container.innerHTML = '<div style="text-align: center; padding: 50px; color: #9CA3AF;">No value opportunities found with current criteria</div>';
+                return;
+            }
+            
+            const plotlyData = [{
+                x: data.delivery_pcts,
+                y: data.price_changes,
+                mode: 'markers+text',
+                type: 'scatter',
+                text: data.symbols,
+                textposition: 'top center',
+                marker: {
+                    size: data.close_prices.map(price => Math.max(8, Math.min(20, price/100))),
+                    color: '#EF4444',
+                    line: { color: '#FFFFFF', width: 1 }
+                },
+                hovertemplate: '<b>%{text}</b><br>Delivery: %{x:.1f}%<br>Price Change: %{y:.1f}%<br>Price: ₹%{customdata:.0f}<extra></extra>',
+                customdata: data.close_prices
+            }];
+            
+            const layout = {
+                font: { color: '#E0E0E0', family: 'Poppins' },
+                paper_bgcolor: 'transparent',
+                plot_bgcolor: 'transparent',
+                xaxis: { 
+                    title: 'Delivery %',
+                    gridcolor: '#374151',
+                    titlefont: { color: '#E0E0E0' },
+                    tickfont: { color: '#E0E0E0' }
+                },
+                yaxis: { 
+                    title: 'Price Change % (Negative = Opportunity)',
+                    gridcolor: '#374151',
+                    titlefont: { color: '#E0E0E0' },
+                    tickfont: { color: '#E0E0E0' }
+                },
+                margin: { t: 30, b: 50, l: 80, r: 10 }
+            };
+            
+            Plotly.newPlot(container, plotlyData, layout, { responsive: true, displayModeBar: false });
+        }
+        
+        function generateInsights() {
+            const container = document.getElementById('insights-container');
+            const summary = dashboardData.market_summary;
+            const sectorData = dashboardData.sector_performance;
+            
+            let insights = [];
+            
+            // Market trend insight
+            if (summary.market_trend === 'Bullish') {
+                insights.push({
+                    header: '📈 Bullish Market Sentiment',
+                    text: `Market is showing positive momentum. Consider momentum stocks and avoid contrarian plays.`
+                });
+            } else {
+                insights.push({
+                    header: '📉 Bearish Market Sentiment',
+                    text: `Market is in correction mode. Focus on value opportunities and high-delivery stocks.`
+                });
+            }
+            
+            // High delivery insight
+            if (summary.high_delivery_count > 0) {
+                insights.push({
+                    header: '💎 Strong Fundamental Stocks',
+                    text: `${summary.high_delivery_count} stocks show >80% delivery, indicating strong institutional interest and reduced speculation.`
+                });
+            }
+            
+            // Momentum insight
+            if (summary.momentum_stocks_count > 0) {
+                insights.push({
+                    header: '🚀 Momentum Opportunities',
+                    text: `${summary.momentum_stocks_count} stocks combine price momentum (+5%) with strong delivery (>70%). Good for trend following strategies.`
+                });
+            }
+            
+            // Value opportunities
+            if (summary.value_opportunities_count > 0) {
+                insights.push({
+                    header: '💰 Value Opportunities',
+                    text: `${summary.value_opportunities_count} quality stocks are available at discount (price dip + high delivery). Consider for contrarian investing.`
+                });
+            }
+            
+            // Sector insight
+            insights.push({
+                header: '🏆 Sector Leadership',
+                text: `${summary.top_sector} sector is leading with highest delivery percentage, indicating institutional preference.`
+            });
+            
+            // Render insights
+            container.innerHTML = insights.map(insight => `
+                <div class="insight-item">
+                    <div class="insight-header">${insight.header}</div>
+                    <div class="insight-text">${insight.text}</div>
+                </div>
+            `).join('');
+        }
+        
+    </script>
+</body>
+</html>
