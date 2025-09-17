@@ -1,0 +1,41 @@
+﻿# Azure SQL Database Import Instructions
+
+## Files Generated:
+1. step03_data.csv - Main data export
+2. database_stats.csv - Database statistics
+3. symbol_metadata.csv - Symbol metadata
+4. azure_validation_queries.sql - Validation queries
+5. step03_format.fmt - BCP format file
+
+## Import Methods:
+
+### Method 1: Using Azure Data Studio
+1. Connect to Azure SQL Database
+2. Right-click database â†’ Import Wizard
+3. Select step03_data.csv
+4. Map columns to table structure
+5. Execute import
+
+### Method 2: Using BCP (Bulk Copy Program)
+`cmd
+bcp dbo.step03_compare_monthvspreviousmonth in "step03_data.csv" -S your-server.database.windows.net -d your-database -U your-username -P your-password -f step03_format.fmt -c
+`
+
+### Method 3: Using PowerShell (Recommended)
+`powershell
+# See azure_import_script.ps1 in this directory
+`
+
+### Method 4: Using Azure Data Factory
+1. Create Azure Data Factory instance
+2. Create pipeline with Copy Data activity
+3. Source: CSV file in Blob Storage
+4. Sink: Azure SQL Database table
+
+## Post-Import Validation:
+Run the queries in azure_validation_queries.sql to verify data integrity.
+
+## Estimated Import Time:
+- Small dataset (<100K records): 1-2 minutes
+- Medium dataset (100K-1M records): 5-10 minutes
+- Large dataset (>1M records): 15-30 minutes
