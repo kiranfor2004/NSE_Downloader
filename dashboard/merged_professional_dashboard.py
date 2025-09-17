@@ -30,6 +30,9 @@ def create_merged_dashboard():
         ISNULL(current_no_of_trades, 0) as no_of_trades,
         ISNULL(index_name, 'Others') as index_name,
         ISNULL(category, 'Others') as category,
+        ISNULL(previous_deliv_qty, 0) as prev_delivery_qty,
+        ISNULL(delivery_increase_abs, 0) as delivery_increase_abs,
+        ISNULL(delivery_increase_pct, 0) as delivery_increase_pct,
         CASE 
             WHEN symbol LIKE '%BANK%' OR symbol IN ('HDFCBANK', 'ICICIBANK', 'SBIN', 'AXISBANK', 'KOTAKBANK') THEN 'Banking'
             WHEN symbol IN ('TCS', 'INFY', 'WIPRO', 'HCLTECH', 'TECHM') THEN 'IT'
@@ -87,6 +90,64 @@ def create_merged_dashboard():
     # Find best performers for Tab 3
     best_index = index_data.loc[index_data['price_change_pct'].idxmax()]
     best_category = category_data.loc[category_data['price_change_pct'].idxmax()]
+    
+    # Sankey chart data preparation for Tab 4
+    # Filter for meaningful delivery changes
+    sankey_df = df[
+        (df['prev_delivery_qty'] > 0) & 
+        (df['delivery_qty'] > 0) & 
+        (abs(df['delivery_increase_pct']) > 1)  # At least 1% change
+    ].copy()
+    
+    # Create flow categories based on delivery increase percentage
+    def get_flow_category(pct):
+        if pct > 50:
+            return "High Growth (>50%)"
+        elif pct > 20:
+            return "Strong Growth (20-50%)"
+        elif pct > 5:
+            return "Moderate Growth (5-20%)"
+        elif pct > -5:
+            return "Stable (-5% to 5%)"
+        elif pct > -20:
+            return "Moderate Decline (-20% to -5%)"
+        else:
+            return "Strong Decline (<-20%)"
+    
+    sankey_df['flow_category'] = sankey_df['delivery_increase_pct'].apply(get_flow_category)
+    
+    # Aggregate data for Sankey chart by different dimensions
+    sankey_by_sector = sankey_df.groupby(['sector', 'flow_category']).agg({
+        'prev_delivery_qty': 'sum',
+        'delivery_qty': 'sum',
+        'delivery_increase_abs': 'sum',
+        'symbol': 'count'
+    }).reset_index()
+    
+    sankey_by_category = sankey_df.groupby(['category', 'flow_category']).agg({
+        'prev_delivery_qty': 'sum',
+        'delivery_qty': 'sum',
+        'delivery_increase_abs': 'sum',
+        'symbol': 'count'
+    }).reset_index()
+    
+    sankey_by_index = sankey_df.groupby(['index_name', 'flow_category']).agg({
+        'prev_delivery_qty': 'sum',
+        'delivery_qty': 'sum',
+        'delivery_increase_abs': 'sum',
+        'symbol': 'count'
+    }).reset_index()
+    
+    # Top symbols for detailed Sankey
+    top_sankey_symbols = sankey_df.nlargest(50, 'delivery_increase_abs')
+    
+    # Calculate summary stats for KPIs
+    total_prev_delivery = sankey_df['prev_delivery_qty'].sum()
+    total_current_delivery = sankey_df['delivery_qty'].sum()
+    net_delivery_change = ((total_current_delivery - total_prev_delivery) / total_prev_delivery * 100) if total_prev_delivery > 0 else 0
+    positive_flow_stocks = len(sankey_df[sankey_df['delivery_increase_pct'] > 0])
+    negative_flow_stocks = len(sankey_df[sankey_df['delivery_increase_pct'] < 0])
+    high_growth_stocks = len(sankey_df[sankey_df['delivery_increase_pct'] > 20])
     
     # Top performers
     top_gainers = df.nlargest(10, 'price_change_pct')
@@ -161,6 +222,45 @@ def create_merged_dashboard():
                 'total_turnover': index_data['turnover'].tolist(),
                 'stock_count': index_data['symbol'].tolist(),
                 'delivery_qty': index_data['delivery_qty'].tolist()
+            }
+        },
+        'delivery_flow': {
+            'kpis': {
+                'total_prev_delivery': round(total_prev_delivery / 100000, 2),  # Convert to Lacs
+                'total_current_delivery': round(total_current_delivery / 100000, 2),  # Convert to Lacs
+                'net_delivery_change': round(net_delivery_change, 2),
+                'positive_flow_stocks': positive_flow_stocks,
+                'negative_flow_stocks': negative_flow_stocks,
+                'high_growth_stocks': high_growth_stocks
+            },
+            'sankey_by_sector': {
+                'sectors': sankey_by_sector['sector'].tolist(),
+                'flow_categories': sankey_by_sector['flow_category'].tolist(),
+                'prev_delivery': sankey_by_sector['prev_delivery_qty'].tolist(),
+                'current_delivery': sankey_by_sector['delivery_qty'].tolist(),
+                'stock_count': sankey_by_sector['symbol'].tolist()
+            },
+            'sankey_by_category': {
+                'categories': sankey_by_category['category'].tolist(),
+                'flow_categories': sankey_by_category['flow_category'].tolist(),
+                'prev_delivery': sankey_by_category['prev_delivery_qty'].tolist(),
+                'current_delivery': sankey_by_category['delivery_qty'].tolist(),
+                'stock_count': sankey_by_category['symbol'].tolist()
+            },
+            'sankey_by_index': {
+                'indices': sankey_by_index['index_name'].tolist(),
+                'flow_categories': sankey_by_index['flow_category'].tolist(),
+                'prev_delivery': sankey_by_index['prev_delivery_qty'].tolist(),
+                'current_delivery': sankey_by_index['delivery_qty'].tolist(),
+                'stock_count': sankey_by_index['symbol'].tolist()
+            },
+            'top_symbols_flow': {
+                'symbols': top_sankey_symbols['symbol'].tolist(),
+                'prev_delivery': top_sankey_symbols['prev_delivery_qty'].tolist(),
+                'current_delivery': top_sankey_symbols['delivery_qty'].tolist(),
+                'delivery_increase_pct': top_sankey_symbols['delivery_increase_pct'].tolist(),
+                'sectors': top_sankey_symbols['sector'].tolist(),
+                'categories': top_sankey_symbols['category'].tolist()
             }
         },
         'search_symbols': {
@@ -484,6 +584,9 @@ def create_merged_dashboard():
             <button class="tab-button" onclick="showTab('category-index', this)">
                 📊 Category & Index Performance
             </button>
+            <button class="tab-button" onclick="showTab('delivery-flow', this)">
+                🔀 Delivery Flow Analysis
+            </button>
         </div>
         
         <!-- Market Overview Tab -->
@@ -630,6 +733,65 @@ def create_merged_dashboard():
                 </div>
             </div>
         </div>
+
+        <!-- Delivery Flow Analysis Tab -->
+        <div id="delivery-flow" class="tab-content">
+            <div class="dashboard-grid">
+                <!-- KPI Cards for Delivery Flow -->
+                <div class="kpi-card" id="total-prev-delivery">
+                    <div class="kpi-label">Previous Month Delivery</div>
+                    <div class="kpi-value">₹ {dashboard_data['delivery_flow']['kpis']['total_prev_delivery']} Lacs</div>
+                </div>
+                
+                <div class="kpi-card" id="total-current-delivery">
+                    <div class="kpi-label">Current Month Delivery</div>
+                    <div class="kpi-value">₹ {dashboard_data['delivery_flow']['kpis']['total_current_delivery']} Lacs</div>
+                </div>
+                
+                <div class="kpi-card" id="net-delivery-change">
+                    <div class="kpi-label">Net Delivery Change</div>
+                    <div class="kpi-value {'positive' if dashboard_data['delivery_flow']['kpis']['net_delivery_change'] > 0 else 'negative'}">
+                        {'+' if dashboard_data['delivery_flow']['kpis']['net_delivery_change'] > 0 else ''}{dashboard_data['delivery_flow']['kpis']['net_delivery_change']}%
+                    </div>
+                </div>
+                
+                <div class="kpi-card" id="positive-flow-stocks">
+                    <div class="kpi-label">Positive Flow Stocks</div>
+                    <div class="kpi-value positive">{dashboard_data['delivery_flow']['kpis']['positive_flow_stocks']}</div>
+                </div>
+                
+                <div class="kpi-card" id="negative-flow-stocks">
+                    <div class="kpi-label">Negative Flow Stocks</div>
+                    <div class="kpi-value negative">{dashboard_data['delivery_flow']['kpis']['negative_flow_stocks']}</div>
+                </div>
+                
+                <div class="kpi-card" id="high-growth-stocks">
+                    <div class="kpi-label">High Growth Stocks (>50%)</div>
+                    <div class="kpi-value accent">{dashboard_data['delivery_flow']['kpis']['high_growth_stocks']}</div>
+                </div>
+                
+                <!-- Delivery Flow Charts -->
+                <div class="chart-card full-width">
+                    <div class="chart-title">🔀 Delivery Flow by Sector</div>
+                    <div class="chart-container" id="sector-sankey"></div>
+                </div>
+                
+                <div class="chart-card full-width">
+                    <div class="chart-title">🔄 Delivery Flow by Category</div>
+                    <div class="chart-container" id="category-sankey"></div>
+                </div>
+                
+                <div class="chart-card full-width">
+                    <div class="chart-title">📊 Delivery Flow by Index</div>
+                    <div class="chart-container" id="index-sankey"></div>
+                </div>
+                
+                <div class="chart-card full-width">
+                    <div class="chart-title">⭐ Top Symbols Delivery Flow</div>
+                    <div class="chart-container" id="top-symbols-flow"></div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -643,6 +805,7 @@ def create_merged_dashboard():
             initializeMarketOverview();
             initializeSymbolAnalysis();
             initializeCategoryIndex();
+            initializeDeliveryFlow();
             setupSymbolSearch();
         }});
         
@@ -980,6 +1143,180 @@ def create_merged_dashboard():
             }};
             
             Plotly.newPlot('index-treemap', plotlyData, layout, {{ responsive: true, displayModeBar: false }});
+        }}
+        
+        // Delivery Flow Analysis Chart Functions
+        function initializeDeliveryFlow() {{
+            createSectorSankeyChart();
+            createCategorySankeyChart();
+            createIndexSankeyChart();
+            createTopSymbolsFlowChart();
+        }}
+        
+        function createSectorSankeyChart() {{
+            const sankeyData = data.delivery_flow.sankey_by_sector;
+            
+            // Create Sankey diagram showing flow from previous to current delivery by sector
+            const plotlyData = [{{
+                type: 'sankey',
+                node: {{
+                    pad: 15,
+                    thickness: 30,
+                    line: {{ color: '#2C2C2C', width: 0.5 }},
+                    label: [...sankeyData.sectors.map(s => s + ' (Prev)'), ...sankeyData.sectors.map(s => s + ' (Current)')],
+                    color: '#00B0FF'
+                }},
+                link: {{
+                    source: Array.from({{length: sankeyData.sectors.length}}, (_, i) => i),
+                    target: Array.from({{length: sankeyData.sectors.length}}, (_, i) => i + sankeyData.sectors.length),
+                    value: sankeyData.current_delivery,
+                    color: sankeyData.flow_categories.map(cat => {{
+                        switch(cat) {{
+                            case 'High Growth (>50%)': return 'rgba(0, 200, 83, 0.6)';
+                            case 'Strong Growth (20-50%)': return 'rgba(76, 175, 80, 0.6)';
+                            case 'Moderate Growth (5-20%)': return 'rgba(255, 193, 7, 0.6)';
+                            case 'Stable (-5% to 5%)': return 'rgba(158, 158, 158, 0.6)';
+                            case 'Decline (<-5%)': return 'rgba(213, 0, 0, 0.6)';
+                            default: return 'rgba(0, 176, 255, 0.6)';
+                        }}
+                    }})
+                }}
+            }}];
+            
+            const layout = {{
+                paper_bgcolor: 'transparent',
+                plot_bgcolor: 'transparent',
+                font: {{ color: '#E0E0E0', size: 10 }},
+                margin: {{ t: 30, b: 30, l: 30, r: 30 }},
+                title: {{ text: 'Delivery Flow by Sector', font: {{ color: '#E0E0E0' }} }}
+            }};
+            
+            Plotly.newPlot('sector-sankey', plotlyData, layout, {{ responsive: true, displayModeBar: false }});
+        }}
+        
+        function createCategorySankeyChart() {{
+            const sankeyData = data.delivery_flow.sankey_by_category;
+            
+            const plotlyData = [{{
+                type: 'sankey',
+                node: {{
+                    pad: 15,
+                    thickness: 30,
+                    line: {{ color: '#2C2C2C', width: 0.5 }},
+                    label: [...sankeyData.categories.map(c => c + ' (Prev)'), ...sankeyData.categories.map(c => c + ' (Current)')],
+                    color: '#00C853'
+                }},
+                link: {{
+                    source: Array.from({{length: sankeyData.categories.length}}, (_, i) => i),
+                    target: Array.from({{length: sankeyData.categories.length}}, (_, i) => i + sankeyData.categories.length),
+                    value: sankeyData.current_delivery,
+                    color: sankeyData.flow_categories.map(cat => {{
+                        switch(cat) {{
+                            case 'High Growth (>50%)': return 'rgba(0, 200, 83, 0.6)';
+                            case 'Strong Growth (20-50%)': return 'rgba(76, 175, 80, 0.6)';
+                            case 'Moderate Growth (5-20%)': return 'rgba(255, 193, 7, 0.6)';
+                            case 'Stable (-5% to 5%)': return 'rgba(158, 158, 158, 0.6)';
+                            case 'Decline (<-5%)': return 'rgba(213, 0, 0, 0.6)';
+                            default: return 'rgba(0, 176, 255, 0.6)';
+                        }}
+                    }})
+                }}
+            }}];
+            
+            const layout = {{
+                paper_bgcolor: 'transparent',
+                plot_bgcolor: 'transparent',
+                font: {{ color: '#E0E0E0', size: 10 }},
+                margin: {{ t: 30, b: 30, l: 30, r: 30 }},
+                title: {{ text: 'Delivery Flow by Category', font: {{ color: '#E0E0E0' }} }}
+            }};
+            
+            Plotly.newPlot('category-sankey', plotlyData, layout, {{ responsive: true, displayModeBar: false }});
+        }}
+        
+        function createIndexSankeyChart() {{
+            const sankeyData = data.delivery_flow.sankey_by_index;
+            
+            const plotlyData = [{{
+                type: 'sankey',
+                node: {{
+                    pad: 15,
+                    thickness: 30,
+                    line: {{ color: '#2C2C2C', width: 0.5 }},
+                    label: [...sankeyData.indices.map(i => i + ' (Prev)'), ...sankeyData.indices.map(i => i + ' (Current)')],
+                    color: '#F59E0B'
+                }},
+                link: {{
+                    source: Array.from({{length: sankeyData.indices.length}}, (_, i) => i),
+                    target: Array.from({{length: sankeyData.indices.length}}, (_, i) => i + sankeyData.indices.length),
+                    value: sankeyData.current_delivery,
+                    color: sankeyData.flow_categories.map(cat => {{
+                        switch(cat) {{
+                            case 'High Growth (>50%)': return 'rgba(0, 200, 83, 0.6)';
+                            case 'Strong Growth (20-50%)': return 'rgba(76, 175, 80, 0.6)';
+                            case 'Moderate Growth (5-20%)': return 'rgba(255, 193, 7, 0.6)';
+                            case 'Stable (-5% to 5%)': return 'rgba(158, 158, 158, 0.6)';
+                            case 'Decline (<-5%)': return 'rgba(213, 0, 0, 0.6)';
+                            default: return 'rgba(0, 176, 255, 0.6)';
+                        }}
+                    }})
+                }}
+            }}];
+            
+            const layout = {{
+                paper_bgcolor: 'transparent',
+                plot_bgcolor: 'transparent',
+                font: {{ color: '#E0E0E0', size: 10 }},
+                margin: {{ t: 30, b: 30, l: 30, r: 30 }},
+                title: {{ text: 'Delivery Flow by Index', font: {{ color: '#E0E0E0' }} }}
+            }};
+            
+            Plotly.newPlot('index-sankey', plotlyData, layout, {{ responsive: true, displayModeBar: false }});
+        }}
+        
+        function createTopSymbolsFlowChart() {{
+            const flowData = data.delivery_flow.top_symbols_flow;
+            
+            // Create a horizontal bar chart showing top symbols with delivery flow
+            const plotlyData = [{{
+                type: 'bar',
+                orientation: 'h',
+                y: flowData.symbols,
+                x: flowData.delivery_increase_pct,
+                text: flowData.symbols.map((symbol, i) => 
+                    `{{symbol}}<br>{{flowData.sectors[i]}}<br>{{flowData.delivery_increase_pct[i]}}%`
+                ),
+                textposition: 'auto',
+                marker: {{
+                    color: flowData.delivery_increase_pct.map(pct => {{
+                        if (pct > 50) return '#00C853';
+                        if (pct > 20) return '#4CAF50';
+                        if (pct > 5) return '#FFC107';
+                        if (pct >= -5) return '#9E9E9E';
+                        return '#D50000';
+                    }}),
+                    line: {{ color: '#2C2C2C', width: 1 }}
+                }}
+            }}];
+            
+            const layout = {{
+                paper_bgcolor: 'transparent',
+                plot_bgcolor: 'transparent',
+                font: {{ color: '#E0E0E0' }},
+                margin: {{ t: 30, b: 30, l: 150, r: 30 }},
+                xaxis: {{ 
+                    title: 'Delivery Increase %',
+                    gridcolor: '#444',
+                    zerolinecolor: '#666'
+                }},
+                yaxis: {{ 
+                    title: 'Symbols',
+                    gridcolor: '#444'
+                }},
+                title: {{ text: 'Top Symbols Delivery Flow', font: {{ color: '#E0E0E0' }} }}
+            }};
+            
+            Plotly.newPlot('top-symbols-flow', plotlyData, layout, {{ responsive: true, displayModeBar: false }});
         }}
         
     </script>
