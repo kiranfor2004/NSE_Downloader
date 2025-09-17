@@ -66,6 +66,28 @@ def create_merged_dashboard():
         'symbol': 'count'
     }).round(2)
     
+    # Category analysis for Tab 3
+    category_data = df.groupby('category').agg({
+        'delivery_percentage': 'mean',
+        'price_change_pct': 'mean',
+        'turnover': 'sum',
+        'symbol': 'count',
+        'delivery_qty': 'sum'
+    }).round(2)
+    
+    # Index analysis for Tab 3
+    index_data = df.groupby('index_name').agg({
+        'delivery_percentage': 'mean',
+        'price_change_pct': 'mean',
+        'turnover': 'sum',
+        'symbol': 'count',
+        'delivery_qty': 'sum'
+    }).round(2)
+    
+    # Find best performers for Tab 3
+    best_index = index_data.loc[index_data['price_change_pct'].idxmax()]
+    best_category = category_data.loc[category_data['price_change_pct'].idxmax()]
+    
     # Top performers
     top_gainers = df.nlargest(10, 'price_change_pct')
     top_volume = df.nlargest(15, 'volume')
@@ -115,6 +137,32 @@ def create_merged_dashboard():
                 'volumes': top_delivery['volume'].tolist()
             }
         },
+        'category_index': {
+            'kpis': {
+                'best_index': best_index.name,
+                'best_index_performance': round(best_index['price_change_pct'], 2),
+                'best_category': best_category.name,
+                'best_category_performance': round(best_category['price_change_pct'], 2),
+                'total_categories': len(category_data),
+                'total_indices': len(index_data)
+            },
+            'category_performance': {
+                'categories': category_data.index.tolist(),
+                'avg_delivery': category_data['delivery_percentage'].tolist(),
+                'avg_price_change': category_data['price_change_pct'].tolist(),
+                'total_turnover': category_data['turnover'].tolist(),
+                'stock_count': category_data['symbol'].tolist(),
+                'delivery_qty': category_data['delivery_qty'].tolist()
+            },
+            'index_performance': {
+                'indices': index_data.index.tolist(),
+                'avg_delivery': index_data['delivery_percentage'].tolist(),
+                'avg_price_change': index_data['price_change_pct'].tolist(),
+                'total_turnover': index_data['turnover'].tolist(),
+                'stock_count': index_data['symbol'].tolist(),
+                'delivery_qty': index_data['delivery_qty'].tolist()
+            }
+        },
         'search_symbols': {
             symbol: {
                 'delivery': float(row['delivery_percentage']),
@@ -145,7 +193,7 @@ def create_merged_dashboard():
         
         body {{
             font-family: 'Poppins', sans-serif;
-            background: #0A0A0A;
+            background: #1A1A1A;
             color: #E0E0E0;
             line-height: 1.6;
         }}
@@ -232,11 +280,11 @@ def create_merged_dashboard():
         }}
         
         .kpi-card {{
-            background: linear-gradient(135deg, #1F2937, #374151);
+            background: linear-gradient(135deg, #2C2C2C, #3C3C3C);
             padding: 25px;
             border-radius: 15px;
             text-align: center;
-            border: 1px solid #4B5563;
+            border: 1px solid #404040;
             transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
@@ -249,33 +297,33 @@ def create_merged_dashboard():
             left: 0;
             width: 100%;
             height: 3px;
-            background: linear-gradient(90deg, #10B981, #3B82F6, #EF4444);
+            background: linear-gradient(90deg, #00C853, #00B0FF, #D50000);
         }}
         
         .kpi-card:hover {{
             transform: translateY(-5px);
-            box-shadow: 0 12px 25px rgba(59, 130, 246, 0.15);
+            box-shadow: 0 12px 25px rgba(0, 176, 255, 0.15);
         }}
         
         .kpi-value {{
             font-size: 2.2rem;
             font-weight: 700;
             margin-bottom: 8px;
-            background: linear-gradient(45deg, #3B82F6, #10B981);
+            background: linear-gradient(45deg, #00B0FF, #00C853);
             background-clip: text;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }}
         
         .kpi-value.positive {{ 
-            background: linear-gradient(45deg, #10B981, #34D399);
+            background: linear-gradient(45deg, #00C853, #4CAF50);
             background-clip: text;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }}
         
         .kpi-value.negative {{ 
-            background: linear-gradient(45deg, #EF4444, #F87171);
+            background: linear-gradient(45deg, #D50000, #F44336);
             background-clip: text;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -283,7 +331,7 @@ def create_merged_dashboard():
         
         .kpi-label {{
             font-size: 0.9rem;
-            color: #9CA3AF;
+            color: #B0B0B0;
             text-transform: uppercase;
             letter-spacing: 0.5px;
             font-weight: 500;
@@ -297,25 +345,25 @@ def create_merged_dashboard():
         }}
         
         .chart-card {{
-            background: #1F2937;
+            background: #2C2C2C;
             border-radius: 15px;
             padding: 25px;
-            border: 1px solid #374151;
+            border: 1px solid #404040;
             transition: all 0.3s ease;
         }}
         
         .chart-card:hover {{
             transform: translateY(-3px);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.25);
         }}
         
         .chart-title {{
             font-size: 1.3rem;
             font-weight: 600;
-            color: #3B82F6;
+            color: #00B0FF;
             margin-bottom: 20px;
             text-align: center;
-            border-bottom: 2px solid #374151;
+            border-bottom: 2px solid #404040;
             padding-bottom: 12px;
         }}
         
@@ -329,18 +377,18 @@ def create_merged_dashboard():
         }}
         
         .search-section {{
-            background: #1F2937;
+            background: #2C2C2C;
             padding: 20px;
             border-radius: 12px;
             margin-bottom: 25px;
-            border: 1px solid #374151;
+            border: 1px solid #404040;
         }}
         
         .search-input {{
             width: 100%;
             padding: 12px 18px;
-            background: #374151;
-            border: 2px solid #4B5563;
+            background: #3C3C3C;
+            border: 2px solid #404040;
             border-radius: 8px;
             color: #E0E0E0;
             font-size: 1rem;
@@ -350,13 +398,13 @@ def create_merged_dashboard():
         
         .search-input:focus {{
             outline: none;
-            border-color: #3B82F6;
-            box-shadow: 0 0 10px rgba(59, 130, 246, 0.3);
+            border-color: #00B0FF;
+            box-shadow: 0 0 10px rgba(0, 176, 255, 0.3);
         }}
         
         .suggestions {{
-            background: #374151;
-            border: 1px solid #4B5563;
+            background: #3C3C3C;
+            border: 1px solid #404040;
             border-radius: 8px;
             margin-top: 8px;
             max-height: 200px;
@@ -368,25 +416,25 @@ def create_merged_dashboard():
             padding: 12px 15px;
             cursor: pointer;
             transition: background 0.3s ease;
-            border-bottom: 1px solid #4B5563;
+            border-bottom: 1px solid #404040;
         }}
         
         .suggestion-item:hover {{
-            background: #4B5563;
-            color: #3B82F6;
+            background: #4C4C4C;
+            color: #00B0FF;
         }}
         
         .symbol-info {{
-            background: #374151;
+            background: #3C3C3C;
             padding: 20px;
             border-radius: 8px;
             margin-top: 15px;
-            border: 1px solid #4B5563;
+            border: 1px solid #404040;
             display: none;
         }}
         
         .symbol-info h3 {{
-            color: #3B82F6;
+            color: #00B0FF;
             margin-bottom: 15px;
             text-align: center;
             font-size: 1.5rem;
@@ -400,7 +448,7 @@ def create_merged_dashboard():
         }}
         
         .stat-item {{
-            background: #4B5563;
+            background: #4C4C4C;
             padding: 12px;
             border-radius: 6px;
             text-align: center;
@@ -409,12 +457,12 @@ def create_merged_dashboard():
         .stat-value {{
             font-size: 1.2rem;
             font-weight: 600;
-            color: #10B981;
+            color: #00C853;
         }}
         
         .stat-label {{
             font-size: 0.8rem;
-            color: #9CA3AF;
+            color: #B0B0B0;
             text-transform: uppercase;
         }}
     </style>
@@ -432,6 +480,9 @@ def create_merged_dashboard():
             </button>
             <button class="tab-button" onclick="showTab('symbol-analysis', this)">
                 🔍 Symbol Analysis
+            </button>
+            <button class="tab-button" onclick="showTab('category-index', this)">
+                📊 Category & Index Performance
             </button>
         </div>
         
@@ -527,6 +578,58 @@ def create_merged_dashboard():
                 </div>
             </div>
         </div>
+        
+        <!-- Category & Index Performance Tab -->
+        <div id="category-index" class="tab-content">
+            <div class="kpi-grid">
+                <div class="kpi-card">
+                    <div class="kpi-value positive">{dashboard_data['category_index']['kpis']['best_index']}</div>
+                    <div class="kpi-label">Best Performing Index</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-value">{dashboard_data['category_index']['kpis']['best_index_performance']:.2f}%</div>
+                    <div class="kpi-label">Best Index Performance</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-value positive">{dashboard_data['category_index']['kpis']['best_category']}</div>
+                    <div class="kpi-label">Best Performing Category</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-value">{dashboard_data['category_index']['kpis']['best_category_performance']:.2f}%</div>
+                    <div class="kpi-label">Best Category Performance</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-value">{dashboard_data['category_index']['kpis']['total_categories']}</div>
+                    <div class="kpi-label">Total Categories</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-value">{dashboard_data['category_index']['kpis']['total_indices']}</div>
+                    <div class="kpi-label">Total Indices</div>
+                </div>
+            </div>
+            
+            <div class="charts-grid">
+                <div class="chart-card">
+                    <div class="chart-title">🎯 Category Performance Radial</div>
+                    <div class="chart-container" id="category-radial"></div>
+                </div>
+                
+                <div class="chart-card">
+                    <div class="chart-title">📊 Index Performance Heatmap</div>
+                    <div class="chart-container" id="index-heatmap"></div>
+                </div>
+                
+                <div class="chart-card full-width">
+                    <div class="chart-title">🌞 Category Delivery Sunburst</div>
+                    <div class="chart-container" id="category-sunburst"></div>
+                </div>
+                
+                <div class="chart-card full-width">
+                    <div class="chart-title">🌐 Index Treemap</div>
+                    <div class="chart-container" id="index-treemap"></div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -539,6 +642,7 @@ def create_merged_dashboard():
         document.addEventListener('DOMContentLoaded', function() {{
             initializeMarketOverview();
             initializeSymbolAnalysis();
+            initializeCategoryIndex();
             setupSymbolSearch();
         }});
         
@@ -562,6 +666,13 @@ def create_merged_dashboard():
             createVolumeLeadersChart();
             createTurnoverLeadersChart();
             createDeliveryChampionsChart();
+        }}
+        
+        function initializeCategoryIndex() {{
+            createCategoryRadialChart();
+            createIndexHeatmapChart();
+            createCategorySunburstChart();
+            createIndexTreemapChart();
         }}
         
         function createSectorPerformanceChart() {{
@@ -767,6 +878,110 @@ def create_merged_dashboard():
             }}
         }}
         
+        // Category & Index Performance Chart Functions
+        function createCategoryRadialChart() {{
+            const categoryData = data.category_index.category_performance;
+            
+            const plotlyData = [{{
+                type: 'scatterpolar',
+                r: categoryData.avg_delivery,
+                theta: categoryData.categories,
+                fill: 'toself',
+                name: 'Delivery %',
+                marker: {{ color: '#00C853' }}
+            }}, {{
+                type: 'scatterpolar',
+                r: categoryData.avg_price_change.map(x => Math.max(0, x + 10)), // Normalize negative values
+                theta: categoryData.categories,
+                fill: 'toself',
+                name: 'Price Change %',
+                marker: {{ color: '#00B0FF' }}
+            }}];
+            
+            const layout = {{
+                polar: {{
+                    radialaxis: {{
+                        visible: true,
+                        range: [0, Math.max(...categoryData.avg_delivery)]
+                    }}
+                }},
+                paper_bgcolor: 'transparent',
+                font: {{ color: '#E0E0E0' }},
+                margin: {{ t: 30, b: 30, l: 30, r: 30 }}
+            }};
+            
+            Plotly.newPlot('category-radial', plotlyData, layout, {{ responsive: true, displayModeBar: false }});
+        }}
+        
+        function createIndexHeatmapChart() {{
+            const indexData = data.category_index.index_performance;
+            
+            const plotlyData = [{{
+                z: [indexData.avg_delivery],
+                x: indexData.indices,
+                y: ['Delivery %'],
+                type: 'heatmap',
+                colorscale: [[0, '#D50000'], [0.5, '#F59E0B'], [1, '#00C853']],
+                showscale: true
+            }}];
+            
+            const layout = {{
+                paper_bgcolor: 'transparent',
+                plot_bgcolor: 'transparent',
+                font: {{ color: '#E0E0E0' }},
+                margin: {{ t: 30, b: 60, l: 80, r: 30 }},
+                xaxis: {{ tickangle: -45 }}
+            }};
+            
+            Plotly.newPlot('index-heatmap', plotlyData, layout, {{ responsive: true, displayModeBar: false }});
+        }}
+        
+        function createCategorySunburstChart() {{
+            const categoryData = data.category_index.category_performance;
+            
+            const plotlyData = [{{
+                type: 'sunburst',
+                labels: categoryData.categories,
+                parents: Array(categoryData.categories.length).fill(''),
+                values: categoryData.delivery_qty,
+                branchvalues: 'total',
+                marker: {{ colors: ['#00C853', '#00B0FF', '#F59E0B', '#D50000', '#9C27B0', '#4CAF50', '#FF5722'] }}
+            }}];
+            
+            const layout = {{
+                paper_bgcolor: 'transparent',
+                font: {{ color: '#E0E0E0' }},
+                margin: {{ t: 30, b: 30, l: 30, r: 30 }}
+            }};
+            
+            Plotly.newPlot('category-sunburst', plotlyData, layout, {{ responsive: true, displayModeBar: false }});
+        }}
+        
+        function createIndexTreemapChart() {{
+            const indexData = data.category_index.index_performance;
+            
+            const plotlyData = [{{
+                type: 'treemap',
+                labels: indexData.indices,
+                values: indexData.total_turnover,
+                parents: Array(indexData.indices.length).fill(''),
+                textinfo: 'label+value',
+                marker: {{ 
+                    colors: indexData.avg_price_change,
+                    colorscale: [[0, '#D50000'], [0.5, '#F59E0B'], [1, '#00C853']],
+                    showscale: true
+                }}
+            }}];
+            
+            const layout = {{
+                paper_bgcolor: 'transparent',
+                font: {{ color: '#E0E0E0' }},
+                margin: {{ t: 30, b: 30, l: 30, r: 30 }}
+            }};
+            
+            Plotly.newPlot('index-treemap', plotlyData, layout, {{ responsive: true, displayModeBar: false }});
+        }}
+        
     </script>
 </body>
 </html>
@@ -777,13 +992,15 @@ def create_merged_dashboard():
     with open(dashboard_path, 'w', encoding='utf-8') as f:
         f.write(html_content)
     
-    print(f"Merged Professional Dashboard created: {dashboard_path}")
+    print(f"Enhanced Professional Dashboard created: {dashboard_path}")
     print(f"\nFeatures:")
     print(f"📈 Market Overview: 6 KPIs + 3 interactive charts")
     print(f"🔍 Symbol Analysis: Search + 3 detailed charts")
+    print(f"📊 Category & Index: 6 KPIs + 4 advanced visualizations")
     print(f"⚡ Fast Loading: Optimized for 1,000 top stocks")
-    print(f"🎨 Professional Design: Bloomberg-style dark theme")
+    print(f"🎨 Professional Design: Modern dark theme with color palette")
     print(f"📱 Responsive: Works on all devices")
+    print(f"🌟 Advanced Charts: Radial, Heatmap, Sunburst, Treemap")
     
     return dashboard_path
 
